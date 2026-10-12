@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>작전명 수탉 자료실</title>
+<script>
+(function(){ var d = document.documentElement; if (window.self !== window.top || new URLSearchParams(location.search).has('embed')) { d.dataset.theme = 'light'; d.dataset.embed = '1'; } })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=Nanum+Myeongjo:wght@700;800&display=swap">
+<style>
+/* Layout: 종류 버튼 한 줄 + 두 묶음(우리 글 / 함께 읽을 자료) 카드 격자. 카드 전체가 링크. */
+:root{
+  --bg:#f5f6f7; --panel:#ffffff; --fg:#16181b; --fg2:#3b4047; --muted:#5b6169; --line:#dde0e4;
+  --accent:#7b302d; --accent-soft:#f4ebe9;
+  --display:"Nanum Myeongjo","Noto Serif KR","AppleMyungjo","Batang",serif;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141619; --panel:#1c1f23; --fg:#eceef0; --fg2:#c9cdd2; --muted:#a6acb3; --line:#2e3238;
+  --accent:#d08a82; --accent-soft:#2e2220; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141619; --panel:#1c1f23; --fg:#eceef0; --fg2:#c9cdd2; --muted:#a6acb3; --line:#2e3238;
+  --accent:#d08a82; --accent-soft:#2e2220; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.65;padding:24px 16px 32px}
+html[data-embed] body{background:transparent;padding:4px 2px 8px}
+main{max-width:52rem;margin:0 auto;display:flex;flex-direction:column;gap:36px}
+.controls{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:13px;border:1px solid var(--line);background:transparent;color:var(--fg2);border-radius:999px;padding:3px 12px;cursor:pointer;min-height:32px}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip:focus-visible,.card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grp{display:flex;flex-direction:column;gap:14px}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(20px,4vw,24px);line-height:1.35;margin:0;padding-bottom:8px;border-bottom:2px solid var(--fg)}
+.lead{margin:-4px 0 0;color:var(--muted);font-size:13.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,18rem),1fr));gap:14px}
+.card{display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;color:inherit;text-decoration:none;transition:border-color .15s,transform .15s;min-width:0}
+.card:hover{border-color:var(--fg2);transform:translateY(-1px)}
+.card.ours{border-top:3px solid var(--accent)}
+.kind{align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--muted);background:var(--bg);border-radius:3px;padding:1px 7px}
+.ours .kind{color:var(--accent);background:var(--accent-soft)}
+h3{font-family:var(--display);font-weight:800;font-size:17.5px;line-height:1.45;margin:0;text-wrap:pretty;word-break:keep-all}
+.card p{margin:0;font-size:13.5px;color:var(--fg2);flex:1;word-break:keep-all}
+.meta{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px;margin-top:2px}
+.meta b{font-weight:600;color:var(--accent);white-space:nowrap}
+.card[hidden],.grp[hidden]{display:none}
+</style>
+</head>
+<body>
+<main>
+  <div class="controls" role="group" aria-label="종류로 거르기"><button class="chip" aria-pressed="true" data-k="">전체 10</button><button class="chip" aria-pressed="false" data-k="의견서">의견서 3</button><button class="chip" aria-pressed="false" data-k="참고 자료">참고 자료 7</button></div>
+  <section class="grp"><h2>작전명 수탉이 쓴 글</h2><div class="grid"><a class="card ours" href="https://iridescent-viscose-6fb.notion.site/3f73f6d3ec2f810caf2cfb5fad891749" target="_blank" rel="noopener" data-t="의견서"><span class="kind">의견서</span><h3>[호소문] 차가운 땅속으로 사라지는 비명, 이제는 멈춰야 합니다</h3><p>살처분 반대 및 백신 도입을 위한 시민협의회를 결성하며 낸 호소문이에요. 영문 Appeal도 함께 실렸어요.</p><span class="meta">2026.1.21 · 작전명 수탉<b>읽기 →</b></span></a><a class="card ours" href="https://iridescent-viscose-6fb.notion.site/3f73f6d3ec2f812e9865fe52f284760a" target="_blank" rel="noopener" data-t="의견서"><span class="kind">의견서</span><h3>[의견서] 고병원성 조류인플루엔자 대유행과 한국의 관리체계</h3><p>산안마을 작전명 수탉 팀이 정부 자료를 분석해 살처분 중심 방역의 한계, 징벌적 보상 감액, 통계 분류 문제를 짚고 고위험 지역부터 HPAI 백신 도입을 제안한 의견서예요.</p><span class="meta">2026.1.12 · 작전명 수탉<b>읽기 →</b></span></a><a class="card ours" href="https://iridescent-viscose-6fb.notion.site/3f73f6d3ec2f813188acd224abbb6428" target="_blank" rel="noopener" data-t="의견서"><span class="kind">의견서</span><h3>살처분 중심 방역의 한계와 양계산업의 지속가능성 검토를 위해 (산안마을 농가 보고서)</h3><p>두 번 살처분을 겪은 동물복지 양계농장 산안마을이 사육·방역 방식과 살처분 이후 회복 과정을 기록하고, 백신 검토와 보상체계 개선 등 다각화된 방역정책을 제안하는 현장 보고서.</p><span class="meta">작전명 수탉<b>읽기 →</b></span></a></div></section><section class="grp"><h2>함께 읽을 자료</h2><p class="lead">정부·국제기구 문서와 연구 논문입니다. 원문 사이트로 연결됩니다.</p><div class="grid"><a class="card" href="https://doi.org/10.1016/j.prevetmed.2025.106722" target="_blank" rel="noopener" data-t="참고 자료"><span class="kind">참고 자료</span><h3>한국의 HPAI 대응 15년, 돌아보고 내다보기 (2025)</h3><p>한국이 15년 동안 고병원성 조류인플루엔자에 어떻게 대응해 왔는지 돌아보고 앞으로의 방향을 다룬 논문이에요. Preventive Veterinary Medicine, 2025. DOI 10.1016/j.prevetmed.2025.106722</p><span class="meta">2025 · DOI<b>원문 보기 →</b></span></a><a class="card" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12230410/" target="_blank" rel="noopener" data-t="참고 자료"><span class="kind">참고 자료</span><h3>미국과 세계의 조류인플루엔자 대응 강화하기 (2025)</h3><p>미국 젖소·사람 감염까지 번진 H5N1 상황을 짚고 대응을 어떻게 강화해야 하는지 다룬 논문이에요. Bartlett 외, 2025.</p><span class="meta">2025 · PubMed Central<b>원문 보기 →</b></span></a><a class="card" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11682810/" target="_blank" rel="noopener" data-t="참고 자료"><span class="kind">참고 자료</span><h3>백신 맞은 오리 농장의 감시 전략 (프랑스, 2025)</h3><p>프랑스가 2023년부터 오리에 HPAI 백신을 접종하면서 어떻게 감시했는지 정리한 논문이에요. Planchand 외, Emerging Infectious Diseases 31(1), 2025. DOI 10.3201/eid3101.241140</p><span class="meta">2025 · PubMed Central<b>원문 보기 →</b></span></a><a class="card" href="https://www.internationalegg.com/resource/iec-launches-paper-on-the-considerations-and-essential-components-for-hpai-vaccination-and-surveillance" target="_blank" rel="noopener" data-t="참고 자료"><span class="kind">참고 자료</span><h3>HPAI 백신 접종과 감시의 핵심 요소 (국제계란위원회, 2023)</h3><p>국제계란위원회(IEC)가 산란계 HPAI 백신 접종을 할 때 필요한 조건과 감시 체계를 정리한 문서예요.</p><span class="meta">2023.4 · 국제계란위원회<b>원문 보기 →</b></span></a><a class="card" href="https://www.woah.org/app/uploads/2013/04/guidelines20on20ai20vaccination.pdf" target="_blank" rel="noopener" data-t="참고 자료"><span class="kind">참고 자료</span><h3>조류인플루엔자 백신 접종 안내 문서 (세계동물보건기구)</h3><p>세계동물보건기구(WOAH, 옛 OIE)가 조류인플루엔자 백신을 언제, 어떻게 쓸 수 있는지 정리한 공식 문서예요.</p><span class="meta">2006 · 세계동물보건기구 · PDF<b>원문 보기 →</b></span></a><a class="card" href="https://openknowledge.worldbank.org/entities/publication/c5793d8e-6a95-5762-b0ba-596af965bb17" target="_blank" rel="noopener" data-t="참고 자료"><span class="kind">참고 자료</span><h3>보상 제도로 조류인플루엔자 통제하기 (세계은행, 2006)</h3><p>살처분 농가 보상이 신고와 방역 협조에 어떤 영향을 주는지 다룬 세계은행 보고서예요.</p><span class="meta">2006 · 세계은행<b>원문 보기 →</b></span></a><a class="card" href="https://www.law.go.kr/법령/가축전염병예방법시행령" target="_blank" rel="noopener" data-t="참고 자료"><span class="kind">참고 자료</span><h3>가축전염병 예방법 시행령 (살처분 보상금 지급·감액 기준)</h3><p>살처분 보상금을 얼마나 주고 어떤 경우 깎는지 정한 법령 원문이에요. 별표 2에 지급·감액 기준이 있어요. 국가법령정보센터.</p><span class="meta">국가법령정보센터<b>원문 보기 →</b></span></a></div></section>
+</main>
+<script>
+(function(){
+  const chips = document.querySelectorAll('.chip');
+  chips.forEach(b => b.addEventListener('click', () => {
+    chips.forEach(x => x.setAttribute('aria-pressed', x === b));
+    const k = b.dataset.k;
+    document.querySelectorAll('.card').forEach(c => c.hidden = !!k && c.dataset.t !== k);
+    document.querySelectorAll('.grp').forEach(g => g.hidden = !g.querySelector('.card:not([hidden])'));
+  }));
+  /* 끼워 넣을 때 높이 알려 주기 (불렛 Body 코드가 받음) */
+  if (window.parent !== window){
+    const post = () => window.parent.postMessage({ opRooster: 'library', h: Math.ceil(document.querySelector('main').getBoundingClientRect().bottom + window.scrollY + 8) }, '*');
+    new ResizeObserver(post).observe(document.body); post();
+  }
+})();
+</script>
+</body>
+</html>
