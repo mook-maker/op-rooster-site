@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+</head>
+<body>
+<title>작전명 수탉 그림</title>
+<script>
+/* 불렛(op-rooster.com)에 끼워 넣는 모드: ?only=network 처럼 부르면 그 부분만 보여 줌. 그냥 열면 사이트로 보냄. */
+(function(){
+  var o = new URLSearchParams(location.search).get('only');
+  if (!o) { if (/github\.io$/.test(location.hostname)) location.replace('https://www.op-rooster.com'); return; }
+  var d = document.documentElement;
+  d.dataset.only = o; d.dataset.theme = 'light';
+  o.split(',').forEach(function(s){ d.classList.add('only-' + s.trim()); });
+  var b = document.createElement('base'); b.target = '_blank'; document.head.appendChild(b);
+})();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=Nanum+Myeongjo:wght@700;800&display=swap">
+<style>
+/* Layout: one quiet reading column (46rem) like a printed report; only the 관계망 figure widens to 74rem. */
+:root{
+  --bg:#f5f6f7; --panel:#ffffff; --fg:#16181b; --fg2:#3b4047; --muted:#5b6169; --faint:#8a9098; --line:#dde0e4;
+  --accent:#7b302d; --accent-soft:#f2e6e3;
+  --c-civil:#4d6b64; --c-farm:#87744e; --c-gov:#4a5b77; --c-press:#745e6d; --c-art:#b3b8be;
+  --f-display:"Nanum Myeongjo","Noto Serif KR","AppleMyungjo","Batang",serif;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+  --gutter:clamp(16px,4vw,32px); --read:46rem; --wide:74rem;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141619; --panel:#1c1f23; --fg:#eceef0; --fg2:#c9cdd2; --muted:#a6acb3; --faint:#7b818a; --line:#2e3238;
+  --accent:#d08a82; --accent-soft:#33221f;
+  --c-civil:#86aaa1; --c-farm:#c4ab7b; --c-gov:#8fa0c1; --c-press:#b49bac; --c-art:#5b626b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141619; --panel:#1c1f23; --fg:#eceef0; --fg2:#c9cdd2; --muted:#a6acb3; --faint:#7b818a; --line:#2e3238;
+  --accent:#d08a82; --accent-soft:#33221f;
+  --c-civil:#86aaa1; --c-farm:#c4ab7b; --c-gov:#8fa0c1; --c-press:#b49bac; --c-art:#5b626b; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-padding-top:4.5rem}
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.75;
+  padding-inline:var(--gutter);padding-block:0;word-break:keep-all;overflow-wrap:anywhere;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-underline-offset:3px;text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+p{margin:0}
+.read{max-width:var(--read);margin-inline:auto}
+.wide{max-width:var(--wide);margin-inline:auto}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
+  margin-inline:calc(-1 * var(--gutter));padding-inline:var(--gutter)}
+.top-in{max-width:var(--wide);margin-inline:auto;display:flex;align-items:center;gap:1.75rem;height:3.25rem}
+.brand{font-family:var(--f-display);font-weight:800;font-size:1.2rem;text-decoration:none;letter-spacing:.02em;flex:none}
+.top nav{display:flex;gap:1.25rem;overflow-x:auto;scrollbar-width:none;min-width:0}
+.top nav::-webkit-scrollbar{display:none}
+.top nav a{white-space:nowrap;color:var(--muted);text-decoration:none;font-size:.875rem}
+.top nav a:hover{color:var(--fg)}
+
+/* type */
+.eyebrow,.kicker{font-size:.8125rem;letter-spacing:.08em;color:var(--muted);font-weight:500}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(1.9rem,1.2rem + 3vw,3.1rem);line-height:1.32;letter-spacing:-.01em}
+h1 span{display:block}
+h2{font-family:var(--f-display);font-weight:800;font-size:clamp(1.55rem,1.2rem + 1.5vw,2.1rem);line-height:1.35}
+h3{font-size:1.0625rem;font-weight:600;line-height:1.5}
+.lede{font-size:1.0625rem;color:var(--fg2);max-width:40rem}
+.sec{padding-block:4.5rem;border-top:1px solid var(--line);display:grid;gap:1.5rem}
+.sec-head{display:grid;gap:.6rem}
+.sec-head p:not(.kicker){color:var(--muted);max-width:38rem}
+.small{font-size:.875rem;color:var(--muted)}
+
+/* hero */
+.hero{padding-block:4rem 3rem;display:grid;gap:1.4rem}
+.flock{margin:1rem 0 0;display:grid;gap:.6rem}
+.flock canvas{display:block;width:100%;height:auto}
+.flock figcaption{display:flex;flex-wrap:wrap;gap:.4rem 1.25rem;font-size:.8125rem;color:var(--muted)}
+.key{display:inline-flex;align-items:center;gap:.45rem}
+.key i{width:.55rem;height:.55rem;border-radius:50%;background:var(--accent);display:inline-block}
+
+/* figures */
+.figs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;border-block:1px solid var(--line)}
+.figs > div{padding:1.25rem 1rem 1.25rem 0;display:grid;gap:.35rem;align-content:start}
+.figs > div + div{padding-left:1rem;border-left:1px solid var(--line)}
+.figs dt{font-size:.8125rem;color:var(--muted);line-height:1.5}
+.figs dd{margin:0;font-family:var(--f-display);font-weight:800;font-size:1.9rem;line-height:1.15;font-variant-numeric:tabular-nums}
+.figs dd small{font-family:var(--f-body);font-weight:500;font-size:.8125rem;color:var(--muted);margin-left:.2rem}
+.src{font-size:.8125rem;color:var(--faint);margin-top:.75rem}
+@media (max-width:640px){
+  .figs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .figs > div:nth-child(3){padding-left:0;border-left:0}
+  .figs > div:nth-child(n+3){border-top:1px solid var(--line)}
+}
+
+/* about */
+.path{list-style:none;margin:0;padding:0;display:grid;gap:0}
+.path li{display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:1rem;padding-block:1rem;border-top:1px solid var(--line)}
+.path li:last-child{border-bottom:1px solid var(--line)}
+.path time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.9375rem;padding-top:.05rem}
+.path p{color:var(--fg2);font-size:.9375rem}
+.demand{margin:0;padding:1.5rem 0 0;display:grid;gap:.6rem}
+.demand blockquote{margin:0;font-family:var(--f-display);font-weight:700;font-size:clamp(1.25rem,1.05rem + .9vw,1.6rem);line-height:1.6}
+.allies{display:grid;gap:1rem}
+.allies h3{font-size:.875rem;color:var(--muted);font-weight:500}
+.ally-list{list-style:none;margin:.4rem 0 0;padding:0;display:flex;flex-wrap:wrap;gap:.35rem 1.25rem}
+.ally-list li{font-weight:500}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{font:inherit;font-size:.8125rem;line-height:1;padding:.5rem .75rem;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--fg2);cursor:pointer}
+.chip:hover{border-color:var(--faint)}
+.chip[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+
+/* dated lists: activities and press */
+.log{list-style:none;margin:0;padding:0}
+.log > li{display:grid;grid-template-columns:6.5rem minmax(0,1fr);gap:1rem;padding-block:1.25rem;border-top:1px solid var(--line)}
+.log > li:last-child{border-bottom:1px solid var(--line)}
+.log time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.875rem;padding-top:.15rem}
+.log .body{display:grid;gap:.4rem;min-width:0}
+.log .desc{color:var(--fg2);font-size:.9375rem}
+.log .meta{font-size:.8125rem;color:var(--muted)}
+.tags{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.3rem}
+.tags li{font-size:.75rem;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:.1rem .45rem;line-height:1.6}
+.badge{display:inline-block;font-size:.6875rem;font-weight:600;letter-spacing:.04em;color:var(--accent);background:var(--accent-soft);border-radius:3px;padding:.05rem .4rem;margin-left:.4rem;vertical-align:.15em}
+.outlet{font-size:.8125rem;color:var(--muted)}
+.press h3 a{text-decoration:none}
+.press h3 a:hover{text-decoration:underline}
+.press h3 .ext{font-weight:400;color:var(--faint);font-size:.8em;margin-left:.25rem}
+.more{justify-self:start}
+@media (max-width:560px){.log > li,.path li{grid-template-columns:minmax(0,1fr);gap:.25rem}}
+
+/* buttons */
+.btn{font:inherit;font-size:.875rem;font-weight:500;display:inline-flex;align-items:center;gap:.5rem;padding:.55rem .95rem;border-radius:4px;
+  border:1px solid var(--fg);background:var(--fg);color:var(--bg);cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{color:var(--bg);opacity:.88}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--faint);color:var(--fg);opacity:1}
+
+/* network */
+.net{display:grid;gap:.9rem}
+.net-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1rem}
+.net-bar input[type=range]{flex:1 1 12rem;min-width:0;accent-color:var(--accent)}
+.net-count{font-size:.8125rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.net-body{display:grid;grid-template-columns:minmax(0,1fr) 18rem;gap:1rem;align-items:stretch}
+@media (max-width:860px){.net-body{grid-template-columns:minmax(0,1fr)}}
+.graph-wrap{position:relative;height:clamp(420px,58vw,620px);background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.graph-wrap svg{display:block;width:100%;height:100%;touch-action:none}
+.stamp{position:absolute;left:1rem;top:.8rem;pointer-events:none;display:grid;gap:.15rem;max-width:calc(100% - 2rem)}
+.stamp b{font-family:var(--f-display);font-weight:800;font-size:1.6rem;color:var(--faint);font-variant-numeric:tabular-nums;line-height:1.2}
+.stamp span{font-size:.8125rem;color:var(--muted)}
+@media (max-width:560px){.graph-wrap{height:540px}.stamp b{font-size:1.1rem}.stamp span{display:none}}
+.links line{stroke:var(--line);stroke-width:1.1}
+.links line.l-art{stroke-dasharray:2 3}
+.links line.hi{stroke:var(--muted);stroke-width:1.5}
+.links line.dim{opacity:.25}
+.node{cursor:pointer}
+.node:focus{outline:none}
+.node .shape{stroke:var(--panel);stroke-width:1.5}
+.node:focus-visible .shape{stroke:var(--fg);stroke-width:2}
+.t-hub .shape{fill:var(--accent)}
+.t-org .shape{fill:var(--faint)}
+.k-civil .shape{fill:var(--c-civil)}
+.k-farm .shape{fill:var(--c-farm)}
+.k-gov .shape{fill:var(--c-gov)}
+.k-press .shape{fill:var(--c-press)}
+.t-topic .shape{fill:var(--panel);stroke:var(--muted);stroke-width:1.6}
+.t-act .shape{fill:var(--fg2)}
+.t-article .shape{fill:var(--c-art);stroke:none}
+.node.sel .shape{stroke:var(--fg);stroke-width:2}
+.node.dim{opacity:.16}
+.halo{fill:none;stroke:var(--accent);stroke-width:1.3}
+@media (prefers-reduced-motion: no-preference){.halo{animation:halo 2.6s ease-out infinite}}
+@keyframes halo{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(2)}}
+.ripple{fill:none;stroke:var(--faint);stroke-width:1}
+.lbl{font-family:var(--f-body);font-size:11.5px;fill:var(--fg);paint-order:stroke;stroke:var(--panel);stroke-width:3.5px;stroke-linejoin:round;pointer-events:none}
+.t-hub .lbl{font-family:var(--f-display);font-weight:800;font-size:15px}
+.t-topic .lbl{fill:var(--muted)}
+.lbl.opt{display:none}
+.node:hover .lbl.opt,.node:focus-visible .lbl.opt,.node.sel .lbl.opt,.node.nb .lbl.opt{display:inline}
+.net-panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:1.1rem 1.1rem 1.25rem;display:grid;gap:.6rem;align-content:start;min-width:0;max-height:clamp(420px,58vw,620px);overflow:auto}
+@media (max-width:860px){.net-panel{max-height:none}}
+.net-panel h3{font-family:var(--f-display);font-weight:800;font-size:1.2rem;line-height:1.45}
+.net-panel h4{font-size:.8125rem;font-weight:500;color:var(--muted);margin-top:.5rem}
+.net-panel p{font-size:.875rem;color:var(--fg2)}
+.nb-list{list-style:none;margin:0;padding:0;display:grid;gap:.15rem}
+.nb-list button{font:inherit;font-size:.875rem;text-align:left;width:100%;background:none;border:0;padding:.35rem .25rem;border-radius:3px;color:var(--fg);cursor:pointer;display:flex;gap:.5rem;align-items:baseline}
+.nb-list button:hover{background:var(--bg)}
+.nb-list small{color:var(--faint);font-size:.75rem;flex:none}
+.legend{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;font-size:.8125rem;color:var(--muted)}
+.legend li{display:inline-flex;align-items:center;gap:.4rem}
+.legend svg{flex:none;overflow:visible}
+
+/* voice */
+.talk{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:1.25rem;display:grid;gap:.9rem}
+.talk-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem;font-size:.875rem;color:var(--muted)}
+.talk label{font-size:.8125rem;color:var(--muted);display:grid;gap:.3rem}
+.talk input,.talk textarea{font:inherit;font-size:.9375rem;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:.6rem .7rem;width:100%}
+.talk textarea{min-height:6rem;resize:vertical}
+.talk-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75rem}
+.talk-note{font-size:.8125rem;color:var(--muted)}
+.talk-empty{font-size:.875rem;color:var(--faint);border-top:1px solid var(--line);padding-top:.9rem}
+.mock{font-size:.75rem;color:var(--accent);letter-spacing:.04em}
+
+/* footer */
+.foot{border-top:1px solid var(--line);padding-block:2.5rem 3.5rem;display:grid;gap:.5rem;font-size:.8125rem;color:var(--muted)}
+.foot strong{font-family:var(--f-display);font-weight:800;font-size:1rem;color:var(--fg)}
+
+/* 끼워 넣기 모드 */
+html[data-only] .top, html[data-only] .foot, html[data-only] main > section, html[data-only] .sec-head{display:none}
+html.only-about #about, html.only-activity #activity, html.only-network #network, html.only-press #press{display:grid}
+html[data-only] body{padding-inline:0}
+html[data-only] .sec{padding-block:.25rem 1rem;border-top:0}
+html[data-only] .read, html[data-only] .wide{max-width:none}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="#top">살반연</a>
+    <nav aria-label="섹션">
+      <a href="#about">단체소개</a>
+      <a href="#activity">활동</a>
+      <a href="#network">관계망</a>
+      <a href="#press">관련 기사</a>
+      <a href="#voice">의견 나누기</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero read" id="top">
+    <p class="eyebrow">살처분을 반대하는 생명들의 연대</p>
+    <h1><span>닭 네 마리가 확인된 날,</span><span>4만 마리의 죽음이 결정되었습니다.</span></h1>
+    <p class="lede">2025년 11월, 화성 산안마을 양계장에서 고병원성 조류인플루엔자에 걸린 닭 네 마리가 확인되었습니다. 같은 농장의 아프지 않은 닭까지 모두 살처분되었습니다. 살반연은 백신 같은 책임 있는 대안으로 이 반복을 끝내려는 농가, 동물권 활동가, 수의사, 연구자, 시민의 연대입니다.</p>
+    <figure class="flock">
+      <canvas id="flock" role="img" aria-label="닭 4만 마리를 점 4만 개로 나타낸 그림. 그중 감염이 확인된 4마리만 붉게 표시되어 있습니다."></canvas>
+      <figcaption><span class="key"><i></i>감염 확인 4마리</span><span>회색 점 하나가 닭 한 마리, 모두 40,000마리</span></figcaption>
+    </figure>
+  </section>
+
+  <section class="read" aria-label="숫자로 보는 살처분">
+    <dl class="figs">
+      <div><dt>지난 겨울 살처분된 가금</dt><dd>1,500<small>만 마리</small></dd></div>
+      <div><dt>지금까지 살처분으로 사라진 생명</dt><dd>7,000<small>만 마리</small></dd></div>
+      <div><dt>공식 발생 농가 / 실제 발생 추정 농가</dt><dd>62 / 140+<small>곳</small></dd></div>
+      <div><dt>살처분 반대·백신 도입 서명</dt><dd>1,500<small>명</small></dd></div>
+    </dl>
+    <p class="src">출처: 살반연 입장문 초안. 공식 통계와 맞춰 고칠 예정입니다.</p>
+  </section>
+
+  <section class="sec read" id="about">
+    <div class="sec-head">
+      <p class="kicker">단체소개</p>
+      <h2>산안마을의 겨울에서 시작된 연대</h2>
+      <p>살처분 현장의 당사자와 이 문제에 주목한 사람들이 정기적으로 대화하며 만든 모임입니다. 정책 개선 활동을 하고 공론장을 엽니다.</p>
+    </div>
+    <ol class="path">
+      <li><time>2025.11</time><div><h3>산안마을 예방적 살처분</h3><p>40년 동안 생명 중심 양계를 해 온 농장의 닭 4만 마리가 살처분되었습니다.</p></div></li>
+      <li><time>2025.12</time><div><h3>작전명 수탉</h3><p>산안마을 안에 리서치 팀이 꾸려지고, 한 달 만에 의견서 「한국의 HPAI 관리체계」를 냈습니다.</p></div></li>
+      <li><time>2025.12</time><div><h3>시민협의회</h3><p>‘살처분 반대와 백신 도입을 위한 시민협의회’로 매주 온라인 모임을 시작했습니다.</p></div></li>
+      <li><time>2026</time><div><h3>살처분을 반대하는 생명들의 연대</h3><p>수탉팀을 포함한 더 큰 연대로 넓어졌습니다. 줄여서 살반연입니다.</p></div></li>
+    </ol>
+    <div class="demand">
+      <p class="kicker">우리가 요구하는 것</p>
+      <blockquote>한국에 맞는 백신, 접종, 사후관리를 포함한 종합 연구와 적극적인 투자. 기술이 모자란 것이 아니라 의지가 모자랍니다.</blockquote>
+    </div>
+    <div class="allies" id="allies"></div>
+  </section>
+
+  <section class="sec read" id="activity">
+    <div class="sec-head">
+      <p class="kicker">활동</p>
+      <h2 id="act-title">걸어온 기록</h2>
+      <p>주제를 고르면 그 주제와 이어진 활동만 볼 수 있습니다.</p>
+    </div>
+    <div class="chips" id="act-chips" role="group" aria-label="활동 주제"></div>
+    <ol class="log" id="act-list"></ol>
+  </section>
+
+  <section class="sec wide" id="network">
+    <div class="sec-head read" style="margin-inline:0">
+      <p class="kicker">관계망</p>
+      <h2>누구와 함께, 무엇을 두고</h2>
+      <p>기록이 쌓인 순서대로 관계망이 자랍니다. 노션에 단체, 활동, 기사가 더해지면 다음 날 아침 이 그림에 새 점으로 나타납니다.</p>
+    </div>
+    <div class="net">
+      <div class="net-bar">
+        <button class="btn" id="net-play" type="button">처음부터 보기</button>
+        <input id="net-range" type="range" min="0" max="0" step="1" value="0" aria-label="날짜 이동">
+        <span class="net-count" id="net-count" aria-live="polite"></span>
+      </div>
+      <div class="net-body">
+        <div class="graph-wrap" id="graph-wrap">
+          <svg id="graph" role="group" aria-label="살반연 관계망"></svg>
+          <div class="stamp" aria-hidden="true"><b id="stamp-date"></b><span id="stamp-items"></span></div>
+        </div>
+        <aside class="net-panel" id="net-panel" aria-live="polite"></aside>
+      </div>
+      <ul class="legend" aria-label="범례">
+        <li><svg width="14" height="14" viewBox="-7 -7 14 14"><circle r="6" fill="var(--accent)"/></svg>살반연</li>
+        <li><svg width="12" height="12" viewBox="-6 -6 12 12"><circle r="5" fill="var(--c-civil)"/></svg>시민사회</li>
+        <li><svg width="12" height="12" viewBox="-6 -6 12 12"><circle r="5" fill="var(--c-farm)"/></svg>농가·업계·연구</li>
+        <li><svg width="12" height="12" viewBox="-6 -6 12 12"><circle r="5" fill="var(--c-gov)"/></svg>국회·행정</li>
+        <li><svg width="12" height="12" viewBox="-6 -6 12 12"><circle r="5" fill="var(--c-press)"/></svg>언론</li>
+        <li><svg width="12" height="12" viewBox="-6 -6 12 12"><circle r="4.5" fill="var(--panel)" stroke="var(--muted)" stroke-width="1.6"/></svg>주제</li>
+        <li><svg width="12" height="12" viewBox="-6 -6 12 12"><rect x="-3.6" y="-3.6" width="7.2" height="7.2" transform="rotate(45)" fill="var(--fg2)"/></svg>활동</li>
+        <li><svg width="10" height="10" viewBox="-5 -5 10 10"><circle r="3" fill="var(--c-art)"/></svg>기사</li>
+        <li><svg width="16" height="16" viewBox="-8 -8 16 16"><circle r="3" fill="var(--faint)"/><circle r="6.5" fill="none" stroke="var(--accent)" stroke-width="1.3"/></svg>최근 2주 새 소식</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec read press" id="press">
+    <div class="sec-head">
+      <p class="kicker">관련 기사</p>
+      <h2>살처분과 백신을 다룬 보도</h2>
+      <p id="press-sub">매일 아침 새 기사를 찾아 더합니다.</p>
+    </div>
+    <div class="chips" id="press-chips" role="group" aria-label="기사 주제"></div>
+    <ol class="log" id="press-list"></ol>
+    <button class="btn ghost more" id="press-more" type="button" hidden>기사 더 보기</button>
+  </section>
+
+  <section class="sec read" id="voice">
+    <div class="sec-head">
+      <p class="kicker">의견 나누기</p>
+      <h2>당신의 생각을 들려주세요</h2>
+      <p>살처분과 백신에 관한 생각, 현장에서 겪은 일을 남겨 주세요. 로그인 없이 이름만 쓰면 됩니다. 운영진이 읽고 확인한 글만 공개됩니다.</p>
+    </div>
+    <div class="talk" aria-label="댓글창 자리">
+      <div class="talk-head"><span>의견 <span id="voice-count">0</span>개</span><span class="mock">시안: 실제 사이트에서는 이 자리에 댓글창이 들어갑니다</span></div>
+      <label for="talk-name">이름<input id="talk-name" type="text" placeholder="이름 또는 별명" disabled></label>
+      <label for="talk-text">의견<textarea id="talk-text" placeholder="살처분과 백신에 관한 생각을 적어 주세요" disabled></textarea></label>
+      <div class="talk-foot">
+        <p class="talk-note">보내 주신 글은 운영진이 확인한 뒤 공개됩니다.</p>
+        <button class="btn" type="button" disabled>보내기</button>
+      </div>
+      <div id="voice-list"><p class="talk-empty">아직 공개된 의견이 없습니다.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot read">
+  <strong>살처분을 반대하는 생명들의 연대 · 살반연</strong>
+  <p>활동, 관계망, 관련 기사는 노션 기록에서 매일 아침 다시 그려집니다. 마지막 갱신 <span id="updated"></span>.</p>
+  <p>이 페이지는 시안입니다. 연락처는 운영진이 정해 넣습니다.</p>
+</footer>
+
+<script id="site-data" type="application/json">{"today":"2026-10-12","updated":"2026년 10월 12일 07:49","nodes":[{"id":"3f63f6d3ec2f8103bbd2d30f277d42d9","name":"민변","type":"org","date":"2025-12-19","desc":"법률 자문을 함께합니다.","deg":2,"new":false,"cat":"시민사회"},{"id":"3f63f6d3ec2f810a9072f526617289b8","name":"백신","type":"topic","date":"2024-09-11","desc":"가금 HPAI 백신 도입과 접종·사후관리","deg":13,"new":false},{"id":"3f63f6d3ec2f810a9bbacf20f3142693","name":"작전명 수탉","type":"org","date":"2025-12-15","desc":"산안마을 안의 리서치 팀. 의견서와 기고문을 씁니다.","deg":3,"new":false,"cat":"농가·업계·연구"},{"id":"3f63f6d3ec2f810c93abdbec10060ac5","name":"법률·정책","type":"topic","date":"2026-04-27","desc":"가축전염병 예방법과 방역 정책","deg":2,"new":false},{"id":"3f63f6d3ec2f811086fbd24ca098c0f9","name":"동물복지·원헬스","type":"topic","date":"2026-01-28","desc":"동물의 생명과 사람·동물·환경의 건강","deg":6,"new":false},{"id":"3f63f6d3ec2f8115b01cd8e378c97302","name":"미담플러스","type":"org","date":"2025-11-23","desc":"지역 매체 기고.","deg":1,"new":false,"cat":"언론"},{"id":"3f63f6d3ec2f812597cac2b6f165bca9","name":"동물자유연대","type":"org","date":"2026-07-04","desc":"동물권 단체. 7월 4일 포럼을 함께 준비했습니다.","deg":3,"new":false,"cat":"시민사회"},{"id":"3f63f6d3ec2f8126b4cded5bf1f4c505","name":"연구·국제사례","type":"topic","date":"2024-09-11","desc":"해외 백신 정책과 연구","deg":5,"new":false},{"id":"3f63f6d3ec2f812b8a09d5a71df1203d","name":"산안마을 예방적 살처분","type":"act","date":"2025-11-23","desc":"닭 네 마리의 감염 확인으로 4만 마리가 살처분되었습니다.","deg":4,"new":false},{"id":"3f63f6d3ec2f812db770eebf339fd013","name":"경기도·화성시","type":"org","date":"2025-11-23","desc":"지역 방역을 집행합니다.","deg":4,"new":false,"cat":"국회·행정"},{"id":"3f63f6d3ec2f81328505dffb2b61c4e8","name":"산란계협회","type":"org","date":"2026-02-14","desc":"산란계 농가 단체. 국회 간담회를 함께 열었습니다.","deg":3,"new":false,"cat":"농가·업계·연구"},{"id":"3f63f6d3ec2f81329770e6087410c24a","name":"불교환경연대","type":"org","date":"2025-12-19","desc":"종교계에서 살처분 반대에 함께합니다.","deg":2,"new":false,"cat":"시민사회"},{"id":"3f63f6d3ec2f8147897de41af48e554a","name":"송옥주 의원실","type":"org","date":"2026-04-27","desc":"국회 간담회를 함께 주최했습니다.","deg":4,"new":false,"cat":"국회·행정"},{"id":"3f63f6d3ec2f8156b5ffeab68fd4162f","name":"보상·재입식","type":"topic","date":"2026-10-10","desc":"살처분 보상금과 재입식 절차","deg":1,"new":true},{"id":"3f63f6d3ec2f8158b977e8763ee9a5f6","name":"매주 온라인 시민협의회 시작","type":"act","date":"2025-12-19","desc":"살처분 반대와 백신 도입을 위한 시민협의회로 출발해 매주 만나고 있습니다.","deg":2,"new":false},{"id":"3f63f6d3ec2f815e9366c1823423dc93","name":"마을·지역","type":"topic","date":"2025-11-23","desc":"화성과 경기도 지역 사회","deg":4,"new":false},{"id":"3f63f6d3ec2f8163aa07d57a4d87ff02","name":"살처분 반대 액션","type":"act","date":"2026-03-15","desc":"살처분폐지연대가 주최한 거리 액션에 함께했습니다.","deg":4,"new":false},{"id":"3f63f6d3ec2f8170876de51fa2925671","name":"대한가금수의사회","type":"org","date":"2024-09-11","desc":"현장 예찰을 맡는 수의사 단체. 백신 도입을 주장해 왔습니다.","deg":5,"new":false,"cat":"농가·업계·연구"},{"id":"3f63f6d3ec2f817d9722fcbef27820ed","name":"산란계협회·가금수의사회 간담회","type":"act","date":"2026-02-14","desc":"농가와 수의사 단체가 주최한 자리에서 현장의 목소리를 나눴습니다.","deg":5,"new":false},{"id":"3f63f6d3ec2f8184b34df0e6b2b5a59b","name":"서울환경운동연합","type":"org","date":"2025-12-19","desc":"환경 관점에서 매몰지와 철새 서식지 문제를 봅니다.","deg":1,"new":false,"cat":"시민사회"},{"id":"3f63f6d3ec2f818eaaf5d11f26c60cf8","name":"살반연","type":"hub","date":"2025-12-19","desc":"살처분을 반대하는 생명들의 연대. 농가, 동물권 활동가, 수의사, 연구자, 시민이 함께합니다.","deg":15,"new":false,"cat":"살반연"},{"id":"3f63f6d3ec2f819cadbbe33724f1ba2a","name":"살처분폐지연대","type":"org","date":"2026-03-15","desc":"살처분 폐지를 요구하는 연대체.","deg":3,"new":false,"cat":"시민사회"},{"id":"3f63f6d3ec2f81a697adc4a1c9f8add4","name":"포럼 「왜 한국은 아직도 살처분에 갇혀 있을까」","type":"act","date":"2026-07-04","desc":"HPAI 살처분의 책임 있는 대안을 두고 농가, 시민사회, 산업계가 토론했습니다.","deg":7,"new":false},{"id":"3f63f6d3ec2f81a785f3e84afa558539","name":"의견서 「한국의 HPAI 관리체계」","type":"act","date":"2025-12-15","desc":"방역체계의 문제점을 짚고 개선안을 제시해 배포했습니다.","deg":3,"new":false},{"id":"3f63f6d3ec2f81b59789cd0c3599a64e","name":"산안마을","type":"org","date":"2025-11-23","desc":"2025년 겨울 예방적 살처분을 겪은 화성의 양계 공동체. 살반연이 시작된 곳입니다.","deg":7,"new":false,"cat":"농가·업계·연구"},{"id":"3f63f6d3ec2f81b89f6aed2f0f2d47d6","name":"가금류 살처분 민간 연대 간담회","type":"act","date":"2026-05-20","desc":"숲과나눔재단과 가금류 살처분 문제 해결을 위한 민간 연대를 논의했습니다.","deg":3,"new":false},{"id":"3f63f6d3ec2f81bab6c1ebde1ebf8481","name":"농림축산검역본부","type":"org","date":"2024-09-11","desc":"AI 확진과 백신 효능 평가, 인허가를 맡습니다.","deg":5,"new":false,"cat":"국회·행정"},{"id":"3f63f6d3ec2f81be856be12b4636d29f","name":"농장·산란계","type":"topic","date":"2026-02-14","desc":"산란계 농가와 양계 산업","deg":4,"new":false},{"id":"3f63f6d3ec2f81c09714cd35634bd9f0","name":"국회·행정","type":"topic","date":"2026-04-27","desc":"국회 토론회, 국정감사, 행정 대응","deg":5,"new":false},{"id":"3f63f6d3ec2f81ce9304e105a4b6ab03","name":"백신 연구자","type":"org","date":"2024-09-11","desc":"수의학·백신을 연구하는 대학 연구자들.","deg":3,"new":false,"cat":"농가·업계·연구"},{"id":"3f63f6d3ec2f81ceb2bdcd066ce55cd1","name":"숲과나눔재단","type":"org","date":"2026-03-17","desc":"풀씨연구회로 살처분·백신 연구를 지원하고 간담회와 포럼을 함께 열었습니다.","deg":4,"new":false,"cat":"시민사회"},{"id":"3f63f6d3ec2f81d099c2cbb95c704f3d","name":"HPAI·방역","type":"topic","date":"2025-11-23","desc":"고병원성 조류인플루엔자와 방역 체계","deg":6,"new":false},{"id":"3f63f6d3ec2f81d09a64f5a10bb07fa8","name":"화성시민신문","type":"org","date":"2025-11-23","desc":"산안마을의 기고와 인터뷰를 실었습니다.","deg":1,"new":false,"cat":"언론"},{"id":"3f63f6d3ec2f81dfb8f4f4f7b1a06e14","name":"국회 간담회","type":"act","date":"2026-04-27","desc":"송옥주 의원실, 산안마을, 산란계협회가 함께 열고 농식품부, 검역본부, 경기도, 화성시 방역 담당자가 참여했습니다.","deg":9,"new":false},{"id":"3f63f6d3ec2f81e3a329e8c180d9f66c","name":"질병관리청","type":"org","date":"2026-10-07","desc":"인체감염 대응을 맡습니다. 산란계 백신 다부처 공동연구가 논의되고 있습니다.","deg":4,"new":true,"cat":"국회·행정"},{"id":"3f63f6d3ec2f81e7a42cc733a3a2b177","name":"서명운동 1,500명 참여","type":"act","date":"2025-12-29","desc":"살처분 반대와 백신 도입 요구에 1,500명이 서명했습니다.","deg":3,"new":false},{"id":"3f63f6d3ec2f81eca0fbd58906f742ad","name":"풀씨연구회 백신 연구 시작","type":"act","date":"2026-03-17","desc":"숲과나눔재단 지원으로 HPAI 백신 도입 연구를 시작했습니다.","deg":4,"new":false},{"id":"3f63f6d3ec2f81f4a185e88750946e1c","name":"농림축산식품부","type":"org","date":"2026-04-27","desc":"AI 방역 정책과 살처분 명령, 보상 기준을 정합니다.","deg":8,"new":false,"cat":"국회·행정"},{"id":"3f63f6d3ec2f81f7a955caaca1045956","name":"살처분 제도","type":"topic","date":"2025-11-23","desc":"예방적 살처분 범위와 판정 기준","deg":11,"new":false},{"id":"3f63f6d3ec2f8119a8c6f37ce31852de","name":"산란계 살처분 급증…AI 백신 도입 논의 부상","type":"article","date":"2026-10-10","desc":"산란계 살처분이 급증하면서 AI 백신 상시접종 논의가 확산되고 있습니다.","deg":6,"new":true,"outlet":"스페셜경제","link":"https://www.speconomy.com/news/articleView.html?idxno=418768"},{"id":"3f63f6d3ec2f8180a049fda7457a501d","name":"계란값 흔드는 AI 살처분…'산란계 백신 상시접종' 해답될까","type":"article","date":"2026-10-10","desc":"AI 살처분이 늘며 계란값이 오르자 산란계 백신 상시접종 도입이 논의되고 있습니다.","deg":5,"new":true,"outlet":"파이낸셜뉴스(뉴시스)","link":"https://www.fnnews.com/news/202610100701459776"},{"id":"3f63f6d3ec2f81a9afa0f4fdf922ed6b","name":"고병원성 AI 확진 농가 86곳 공식 통계서 누락","type":"article","date":"2026-10-10","desc":"지난 겨울 고병원성 AI 확진 농가가 공식 발표 62건보다 많은 148곳이었으며, 예방적 살처분으로 분류된 농장이 발생 통계에서 빠졌지만 보상금 감액에는 발생농장 기준이 적용됐다는 분석입니다.","deg":4,"new":true,"outlet":"위키트리","link":"https://wikitree.co.kr/articles/1165131"},{"id":"3f63f6d3ec2f819fafd2d9a41de59a06","name":"송옥주 \"산란계 AI 백신, 다부처 공동연구 물꼬\"","type":"article","date":"2026-10-07","desc":"산란계 AI 백신 도입을 위한 질병청·농식품부 공동연구 논의가 시작될 전망입니다.","deg":6,"new":true,"outlet":"베타뉴스","link":"https://www.betanews.net/article/view/beta202610070071"},{"id":"3f63f6d3ec2f812bbf5ad840b17b0795","name":"해외 조류인플루엔자 감염 증가…겨울 철새 도래에 방역 강화","type":"article","date":"2026-10-06","desc":"해외 AI 발생이 두 배 넘게 늘고 철새가 들어오면서 방역이 강화됩니다.","deg":2,"new":true,"outlet":"서울신문","link":"https://seoul.co.kr/news/society/2026/10/06/20261006500162"},{"id":"3f63f6d3ec2f81c8849fd0c986b4ae0f","name":"\"살처분만으론 못 막는다\"…동물단체 \"조류독감 백신 도입\" 촉구","type":"article","date":"2026-07-02","desc":"동물단체가 살처분만으로는 HPAI를 막을 수 없다며 백신 도입을 촉구했습니다.","deg":3,"new":false,"outlet":"네이트 뉴스","link":"https://m.news.nate.com/view/20260702n30424"},{"id":"3f63f6d3ec2f81e2b790d112f262f96d","name":"'독감 백신 맞는 날 올까요?'…살처분에 떠는 꼬꼬닭의 애원","type":"article","date":"2026-01-28","desc":"살처분이 반복되는 가금 농가와 백신 도입 논의를 다룬 기사입니다.","deg":2,"new":false,"outlet":"네이트 뉴스","link":"https://m.news.nate.com/view/20260128n34748"},{"id":"3f63f6d3ec2f8191b71af29f984770a2","name":"한국도 고병원성 AI 백신 만든다..HVT 벡터 백신 개발 착수","type":"article","date":"2024-09-11","desc":"전북대 조류질병연구소가 HVT 벡터 고병원성 AI 백신 개발에 나섭니다.","deg":5,"new":false,"outlet":"데일리벳","link":"https://www.dailyvet.co.kr/news/prevention-hygiene/222651"}],"links":[["3f63f6d3ec2f8103bbd2d30f277d42d9","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f8103bbd2d30f277d42d9","3f63f6d3ec2f810c93abdbec10060ac5"],["3f63f6d3ec2f810a9bbacf20f3142693","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f8115b01cd8e378c97302","3f63f6d3ec2f815e9366c1823423dc93"],["3f63f6d3ec2f812597cac2b6f165bca9","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f812597cac2b6f165bca9","3f63f6d3ec2f811086fbd24ca098c0f9"],["3f63f6d3ec2f812b8a09d5a71df1203d","3f63f6d3ec2f81b59789cd0c3599a64e"],["3f63f6d3ec2f812b8a09d5a71df1203d","3f63f6d3ec2f812db770eebf339fd013"],["3f63f6d3ec2f812b8a09d5a71df1203d","3f63f6d3ec2f81f7a955caaca1045956"],["3f63f6d3ec2f812b8a09d5a71df1203d","3f63f6d3ec2f81d099c2cbb95c704f3d"],["3f63f6d3ec2f812db770eebf339fd013","3f63f6d3ec2f815e9366c1823423dc93"],["3f63f6d3ec2f812db770eebf339fd013","3f63f6d3ec2f81d099c2cbb95c704f3d"],["3f63f6d3ec2f81328505dffb2b61c4e8","3f63f6d3ec2f81be856be12b4636d29f"],["3f63f6d3ec2f81329770e6087410c24a","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f81329770e6087410c24a","3f63f6d3ec2f811086fbd24ca098c0f9"],["3f63f6d3ec2f8147897de41af48e554a","3f63f6d3ec2f81c09714cd35634bd9f0"],["3f63f6d3ec2f8158b977e8763ee9a5f6","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f8158b977e8763ee9a5f6","3f63f6d3ec2f81b59789cd0c3599a64e"],["3f63f6d3ec2f8163aa07d57a4d87ff02","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f8163aa07d57a4d87ff02","3f63f6d3ec2f819cadbbe33724f1ba2a"],["3f63f6d3ec2f8163aa07d57a4d87ff02","3f63f6d3ec2f81f7a955caaca1045956"],["3f63f6d3ec2f8163aa07d57a4d87ff02","3f63f6d3ec2f811086fbd24ca098c0f9"],["3f63f6d3ec2f8170876de51fa2925671","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f8170876de51fa2925671","3f63f6d3ec2f810a9072f526617289b8"],["3f63f6d3ec2f817d9722fcbef27820ed","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f817d9722fcbef27820ed","3f63f6d3ec2f81328505dffb2b61c4e8"],["3f63f6d3ec2f817d9722fcbef27820ed","3f63f6d3ec2f8170876de51fa2925671"],["3f63f6d3ec2f817d9722fcbef27820ed","3f63f6d3ec2f810a9072f526617289b8"],["3f63f6d3ec2f817d9722fcbef27820ed","3f63f6d3ec2f81be856be12b4636d29f"],["3f63f6d3ec2f8184b34df0e6b2b5a59b","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f819cadbbe33724f1ba2a","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f819cadbbe33724f1ba2a","3f63f6d3ec2f81f7a955caaca1045956"],["3f63f6d3ec2f81a697adc4a1c9f8add4","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f81a697adc4a1c9f8add4","3f63f6d3ec2f812597cac2b6f165bca9"],["3f63f6d3ec2f81a697adc4a1c9f8add4","3f63f6d3ec2f81ceb2bdcd066ce55cd1"],["3f63f6d3ec2f81a697adc4a1c9f8add4","3f63f6d3ec2f81b59789cd0c3599a64e"],["3f63f6d3ec2f81a697adc4a1c9f8add4","3f63f6d3ec2f8170876de51fa2925671"],["3f63f6d3ec2f81a697adc4a1c9f8add4","3f63f6d3ec2f81f7a955caaca1045956"],["3f63f6d3ec2f81a697adc4a1c9f8add4","3f63f6d3ec2f810a9072f526617289b8"],["3f63f6d3ec2f81a785f3e84afa558539","3f63f6d3ec2f810a9bbacf20f3142693"],["3f63f6d3ec2f81a785f3e84afa558539","3f63f6d3ec2f81d099c2cbb95c704f3d"],["3f63f6d3ec2f81a785f3e84afa558539","3f63f6d3ec2f8126b4cded5bf1f4c505"],["3f63f6d3ec2f81b59789cd0c3599a64e","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f81b59789cd0c3599a64e","3f63f6d3ec2f81be856be12b4636d29f"],["3f63f6d3ec2f81b59789cd0c3599a64e","3f63f6d3ec2f815e9366c1823423dc93"],["3f63f6d3ec2f81b89f6aed2f0f2d47d6","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f81b89f6aed2f0f2d47d6","3f63f6d3ec2f81ceb2bdcd066ce55cd1"],["3f63f6d3ec2f81b89f6aed2f0f2d47d6","3f63f6d3ec2f81f7a955caaca1045956"],["3f63f6d3ec2f81bab6c1ebde1ebf8481","3f63f6d3ec2f81d099c2cbb95c704f3d"],["3f63f6d3ec2f81bab6c1ebde1ebf8481","3f63f6d3ec2f810a9072f526617289b8"],["3f63f6d3ec2f81ce9304e105a4b6ab03","3f63f6d3ec2f810a9072f526617289b8"],["3f63f6d3ec2f81ce9304e105a4b6ab03","3f63f6d3ec2f8126b4cded5bf1f4c505"],["3f63f6d3ec2f81ceb2bdcd066ce55cd1","3f63f6d3ec2f8126b4cded5bf1f4c505"],["3f63f6d3ec2f81d09a64f5a10bb07fa8","3f63f6d3ec2f815e9366c1823423dc93"],["3f63f6d3ec2f81dfb8f4f4f7b1a06e14","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f81dfb8f4f4f7b1a06e14","3f63f6d3ec2f8147897de41af48e554a"],["3f63f6d3ec2f81dfb8f4f4f7b1a06e14","3f63f6d3ec2f81b59789cd0c3599a64e"],["3f63f6d3ec2f81dfb8f4f4f7b1a06e14","3f63f6d3ec2f81328505dffb2b61c4e8"],["3f63f6d3ec2f81dfb8f4f4f7b1a06e14","3f63f6d3ec2f81f4a185e88750946e1c"],["3f63f6d3ec2f81dfb8f4f4f7b1a06e14","3f63f6d3ec2f81bab6c1ebde1ebf8481"],["3f63f6d3ec2f81dfb8f4f4f7b1a06e14","3f63f6d3ec2f812db770eebf339fd013"],["3f63f6d3ec2f81dfb8f4f4f7b1a06e14","3f63f6d3ec2f81c09714cd35634bd9f0"],["3f63f6d3ec2f81dfb8f4f4f7b1a06e14","3f63f6d3ec2f810c93abdbec10060ac5"],["3f63f6d3ec2f81e3a329e8c180d9f66c","3f63f6d3ec2f811086fbd24ca098c0f9"],["3f63f6d3ec2f81e7a42cc733a3a2b177","3f63f6d3ec2f818eaaf5d11f26c60cf8"],["3f63f6d3ec2f81e7a42cc733a3a2b177","3f63f6d3ec2f81f7a955caaca1045956"],["3f63f6d3ec2f81e7a42cc733a3a2b177","3f63f6d3ec2f810a9072f526617289b8"],["3f63f6d3ec2f81eca0fbd58906f742ad","3f63f6d3ec2f81ceb2bdcd066ce55cd1"],["3f63f6d3ec2f81eca0fbd58906f742ad","3f63f6d3ec2f810a9bbacf20f3142693"],["3f63f6d3ec2f81eca0fbd58906f742ad","3f63f6d3ec2f810a9072f526617289b8"],["3f63f6d3ec2f81eca0fbd58906f742ad","3f63f6d3ec2f8126b4cded5bf1f4c505"],["3f63f6d3ec2f81f4a185e88750946e1c","3f63f6d3ec2f81d099c2cbb95c704f3d"],["3f63f6d3ec2f81f4a185e88750946e1c","3f63f6d3ec2f81f7a955caaca1045956"],["3f63f6d3ec2f8119a8c6f37ce31852de","3f63f6d3ec2f8147897de41af48e554a"],["3f63f6d3ec2f8119a8c6f37ce31852de","3f63f6d3ec2f81f4a185e88750946e1c"],["3f63f6d3ec2f8119a8c6f37ce31852de","3f63f6d3ec2f81e3a329e8c180d9f66c"],["3f63f6d3ec2f8119a8c6f37ce31852de","3f63f6d3ec2f810a9072f526617289b8"],["3f63f6d3ec2f8119a8c6f37ce31852de","3f63f6d3ec2f81f7a955caaca1045956"],["3f63f6d3ec2f8119a8c6f37ce31852de","3f63f6d3ec2f81c09714cd35634bd9f0"],["3f63f6d3ec2f8180a049fda7457a501d","3f63f6d3ec2f81f4a185e88750946e1c"],["3f63f6d3ec2f8180a049fda7457a501d","3f63f6d3ec2f81e3a329e8c180d9f66c"],["3f63f6d3ec2f8180a049fda7457a501d","3f63f6d3ec2f810a9072f526617289b8"],["3f63f6d3ec2f8180a049fda7457a501d","3f63f6d3ec2f81f7a955caaca1045956"],["3f63f6d3ec2f8180a049fda7457a501d","3f63f6d3ec2f81be856be12b4636d29f"],["3f63f6d3ec2f81a9afa0f4fdf922ed6b","3f63f6d3ec2f81f4a185e88750946e1c"],["3f63f6d3ec2f81a9afa0f4fdf922ed6b","3f63f6d3ec2f81f7a955caaca1045956"],["3f63f6d3ec2f81a9afa0f4fdf922ed6b","3f63f6d3ec2f81c09714cd35634bd9f0"],["3f63f6d3ec2f81a9afa0f4fdf922ed6b","3f63f6d3ec2f8156b5ffeab68fd4162f"],["3f63f6d3ec2f819fafd2d9a41de59a06","3f63f6d3ec2f8147897de41af48e554a"],["3f63f6d3ec2f819fafd2d9a41de59a06","3f63f6d3ec2f81f4a185e88750946e1c"],["3f63f6d3ec2f819fafd2d9a41de59a06","3f63f6d3ec2f81bab6c1ebde1ebf8481"],["3f63f6d3ec2f819fafd2d9a41de59a06","3f63f6d3ec2f81e3a329e8c180d9f66c"],["3f63f6d3ec2f819fafd2d9a41de59a06","3f63f6d3ec2f810a9072f526617289b8"],["3f63f6d3ec2f819fafd2d9a41de59a06","3f63f6d3ec2f81c09714cd35634bd9f0"],["3f63f6d3ec2f812bbf5ad840b17b0795","3f63f6d3ec2f81f4a185e88750946e1c"],["3f63f6d3ec2f812bbf5ad840b17b0795","3f63f6d3ec2f81d099c2cbb95c704f3d"],["3f63f6d3ec2f81c8849fd0c986b4ae0f","3f63f6d3ec2f810a9072f526617289b8"],["3f63f6d3ec2f81c8849fd0c986b4ae0f","3f63f6d3ec2f81f7a955caaca1045956"],["3f63f6d3ec2f81c8849fd0c986b4ae0f","3f63f6d3ec2f811086fbd24ca098c0f9"],["3f63f6d3ec2f81e2b790d112f262f96d","3f63f6d3ec2f810a9072f526617289b8"],["3f63f6d3ec2f81e2b790d112f262f96d","3f63f6d3ec2f811086fbd24ca098c0f9"],["3f63f6d3ec2f8191b71af29f984770a2","3f63f6d3ec2f81ce9304e105a4b6ab03"],["3f63f6d3ec2f8191b71af29f984770a2","3f63f6d3ec2f8170876de51fa2925671"],["3f63f6d3ec2f8191b71af29f984770a2","3f63f6d3ec2f81bab6c1ebde1ebf8481"],["3f63f6d3ec2f8191b71af29f984770a2","3f63f6d3ec2f810a9072f526617289b8"],["3f63f6d3ec2f8191b71af29f984770a2","3f63f6d3ec2f8126b4cded5bf1f4c505"]],"activities":[{"id":"3f63f6d3ec2f81a697adc4a1c9f8add4","name":"포럼 「왜 한국은 아직도 살처분에 갇혀 있을까」","date":"2026-07-04","desc":"HPAI 살처분의 책임 있는 대안을 두고 농가, 시민사회, 산업계가 토론했습니다.","orgs":["대한가금수의사회","동물자유연대","산안마을","숲과나눔재단"],"topics":["백신","살처분 제도"],"new":false},{"id":"3f63f6d3ec2f81b89f6aed2f0f2d47d6","name":"가금류 살처분 민간 연대 간담회","date":"2026-05-20","desc":"숲과나눔재단과 가금류 살처분 문제 해결을 위한 민간 연대를 논의했습니다.","orgs":["숲과나눔재단"],"topics":["살처분 제도"],"new":false},{"id":"3f63f6d3ec2f81dfb8f4f4f7b1a06e14","name":"국회 간담회","date":"2026-04-27","desc":"송옥주 의원실, 산안마을, 산란계협회가 함께 열고 농식품부, 검역본부, 경기도, 화성시 방역 담당자가 참여했습니다.","orgs":["경기도·화성시","농림축산검역본부","농림축산식품부","산란계협회","산안마을","송옥주 의원실"],"topics":["국회·행정","법률·정책"],"new":false},{"id":"3f63f6d3ec2f81eca0fbd58906f742ad","name":"풀씨연구회 백신 연구 시작","date":"2026-03-17","desc":"숲과나눔재단 지원으로 HPAI 백신 도입 연구를 시작했습니다.","orgs":["숲과나눔재단","작전명 수탉"],"topics":["백신","연구·국제사례"],"new":false},{"id":"3f63f6d3ec2f8163aa07d57a4d87ff02","name":"살처분 반대 액션","date":"2026-03-15","desc":"살처분폐지연대가 주최한 거리 액션에 함께했습니다.","orgs":["살처분폐지연대"],"topics":["동물복지·원헬스","살처분 제도"],"new":false},{"id":"3f63f6d3ec2f817d9722fcbef27820ed","name":"산란계협회·가금수의사회 간담회","date":"2026-02-14","desc":"농가와 수의사 단체가 주최한 자리에서 현장의 목소리를 나눴습니다.","orgs":["대한가금수의사회","산란계협회"],"topics":["농장·산란계","백신"],"new":false},{"id":"3f63f6d3ec2f81e7a42cc733a3a2b177","name":"서명운동 1,500명 참여","date":"2025-12-29","desc":"살처분 반대와 백신 도입 요구에 1,500명이 서명했습니다.","orgs":[],"topics":["백신","살처분 제도"],"new":false},{"id":"3f63f6d3ec2f8158b977e8763ee9a5f6","name":"매주 온라인 시민협의회 시작","date":"2025-12-19","desc":"살처분 반대와 백신 도입을 위한 시민협의회로 출발해 매주 만나고 있습니다.","orgs":["산안마을"],"topics":[],"new":false},{"id":"3f63f6d3ec2f81a785f3e84afa558539","name":"의견서 「한국의 HPAI 관리체계」","date":"2025-12-15","desc":"방역체계의 문제점을 짚고 개선안을 제시해 배포했습니다.","orgs":["작전명 수탉"],"topics":["HPAI·방역","연구·국제사례"],"new":false},{"id":"3f63f6d3ec2f812b8a09d5a71df1203d","name":"산안마을 예방적 살처분","date":"2025-11-23","desc":"닭 네 마리의 감염 확인으로 4만 마리가 살처분되었습니다.","orgs":["경기도·화성시","산안마을"],"topics":["HPAI·방역","살처분 제도"],"new":false}],"articles":[{"id":"3f63f6d3ec2f8119a8c6f37ce31852de","title":"산란계 살처분 급증…AI 백신 도입 논의 부상","outlet":"스페셜경제","date":"2026-10-10","link":"https://www.speconomy.com/news/articleView.html?idxno=418768","summary":"산란계 살처분이 급증하면서 AI 백신 상시접종 논의가 확산되고 있습니다.","topics":["백신","살처분 제도","국회·행정"],"sb":false,"orgs":["농림축산식품부","송옥주 의원실","질병관리청"],"new":true},{"id":"3f63f6d3ec2f81a9afa0f4fdf922ed6b","title":"고병원성 AI 확진 농가 86곳 공식 통계서 누락","outlet":"위키트리","date":"2026-10-10","link":"https://wikitree.co.kr/articles/1165131","summary":"지난 겨울 고병원성 AI 확진 농가가 공식 발표 62건보다 많은 148곳이었으며, 예방적 살처분으로 분류된 농장이 발생 통계에서 빠졌지만 보상금 감액에는 발생농장 기준이 적용됐다는 분석입니다.","topics":["살처분 제도","국회·행정","보상·재입식"],"sb":false,"orgs":["농림축산식품부"],"new":true},{"id":"3f63f6d3ec2f8180a049fda7457a501d","title":"계란값 흔드는 AI 살처분…'산란계 백신 상시접종' 해답될까","outlet":"파이낸셜뉴스(뉴시스)","date":"2026-10-10","link":"https://www.fnnews.com/news/202610100701459776","summary":"AI 살처분이 늘며 계란값이 오르자 산란계 백신 상시접종 도입이 논의되고 있습니다.","topics":["백신","살처분 제도","농장·산란계"],"sb":false,"orgs":["농림축산식품부","질병관리청"],"new":true},{"id":"3f63f6d3ec2f819fafd2d9a41de59a06","title":"송옥주 \"산란계 AI 백신, 다부처 공동연구 물꼬\"","outlet":"베타뉴스","date":"2026-10-07","link":"https://www.betanews.net/article/view/beta202610070071","summary":"산란계 AI 백신 도입을 위한 질병청·농식품부 공동연구 논의가 시작될 전망입니다.","topics":["백신","국회·행정"],"sb":false,"orgs":["농림축산검역본부","농림축산식품부","송옥주 의원실","질병관리청"],"new":true},{"id":"3f63f6d3ec2f812bbf5ad840b17b0795","title":"해외 조류인플루엔자 감염 증가…겨울 철새 도래에 방역 강화","outlet":"서울신문","date":"2026-10-06","link":"https://seoul.co.kr/news/society/2026/10/06/20261006500162","summary":"해외 AI 발생이 두 배 넘게 늘고 철새가 들어오면서 방역이 강화됩니다.","topics":["HPAI·방역"],"sb":false,"orgs":["농림축산식품부"],"new":true},{"id":"3f63f6d3ec2f81c8849fd0c986b4ae0f","title":"\"살처분만으론 못 막는다\"…동물단체 \"조류독감 백신 도입\" 촉구","outlet":"네이트 뉴스","date":"2026-07-02","link":"https://m.news.nate.com/view/20260702n30424","summary":"동물단체가 살처분만으로는 HPAI를 막을 수 없다며 백신 도입을 촉구했습니다.","topics":["백신","살처분 제도","동물복지·원헬스"],"sb":false,"orgs":[],"new":false},{"id":"3f63f6d3ec2f81e2b790d112f262f96d","title":"'독감 백신 맞는 날 올까요?'…살처분에 떠는 꼬꼬닭의 애원","outlet":"네이트 뉴스","date":"2026-01-28","link":"https://m.news.nate.com/view/20260128n34748","summary":"살처분이 반복되는 가금 농가와 백신 도입 논의를 다룬 기사입니다.","topics":["백신","동물복지·원헬스"],"sb":false,"orgs":[],"new":false},{"id":"3f63f6d3ec2f8191b71af29f984770a2","title":"한국도 고병원성 AI 백신 만든다..HVT 벡터 백신 개발 착수","outlet":"데일리벳","date":"2024-09-11","link":"https://www.dailyvet.co.kr/news/prevention-hygiene/222651","summary":"전북대 조류질병연구소가 HVT 벡터 고병원성 AI 백신 개발에 나섭니다.","topics":["백신","연구·국제사례"],"sb":false,"orgs":["농림축산검역본부","대한가금수의사회","백신 연구자"],"new":false}],"orgs":[{"name":"민변","cat":"시민사회","desc":"법률 자문을 함께합니다."},{"name":"작전명 수탉","cat":"농가·업계·연구","desc":"산안마을 안의 리서치 팀. 의견서와 기고문을 씁니다."},{"name":"미담플러스","cat":"언론","desc":"지역 매체 기고."},{"name":"동물자유연대","cat":"시민사회","desc":"동물권 단체. 7월 4일 포럼을 함께 준비했습니다."},{"name":"경기도·화성시","cat":"국회·행정","desc":"지역 방역을 집행합니다."},{"name":"산란계협회","cat":"농가·업계·연구","desc":"산란계 농가 단체. 국회 간담회를 함께 열었습니다."},{"name":"불교환경연대","cat":"시민사회","desc":"종교계에서 살처분 반대에 함께합니다."},{"name":"송옥주 의원실","cat":"국회·행정","desc":"국회 간담회를 함께 주최했습니다."},{"name":"대한가금수의사회","cat":"농가·업계·연구","desc":"현장 예찰을 맡는 수의사 단체. 백신 도입을 주장해 왔습니다."},{"name":"서울환경운동연합","cat":"시민사회","desc":"환경 관점에서 매몰지와 철새 서식지 문제를 봅니다."},{"name":"살처분폐지연대","cat":"시민사회","desc":"살처분 폐지를 요구하는 연대체."},{"name":"산안마을","cat":"농가·업계·연구","desc":"2025년 겨울 예방적 살처분을 겪은 화성의 양계 공동체. 살반연이 시작된 곳입니다."},{"name":"농림축산검역본부","cat":"국회·행정","desc":"AI 확진과 백신 효능 평가, 인허가를 맡습니다."},{"name":"백신 연구자","cat":"농가·업계·연구","desc":"수의학·백신을 연구하는 대학 연구자들."},{"name":"숲과나눔재단","cat":"시민사회","desc":"풀씨연구회로 살처분·백신 연구를 지원하고 간담회와 포럼을 함께 열었습니다."},{"name":"화성시민신문","cat":"언론","desc":"산안마을의 기고와 인터뷰를 실었습니다."},{"name":"질병관리청","cat":"국회·행정","desc":"인체감염 대응을 맡습니다. 산란계 백신 다부처 공동연구가 논의되고 있습니다."},{"name":"농림축산식품부","cat":"국회·행정","desc":"AI 방역 정책과 살처분 명령, 보상 기준을 정합니다."}],"formUrl":null,"voices":[]}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+(() => {
+const DATA = JSON.parse(document.getElementById('site-data').textContent);
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = (s, r = document) => r.querySelector(s);
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+const dot = d => (d || '').replaceAll('-', '.');
+
+$('#updated').textContent = DATA.updated;
+
+/* ---------- 4만 개의 점 ---------- */
+const COLS = 320, ROWS = 125, INFECTED = [[49, 27], [150, 89], [204, 47], [273, 104]];
+function drawFlock() {
+  const c = $('#flock'), w = c.clientWidth;
+  if (!w) return;
+  const p = w / COLS, h = Math.round(p * ROWS), dpr = Math.min(2, window.devicePixelRatio || 1);
+  c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); c.style.height = h + 'px';
+  const x = c.getContext('2d');
+  x.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const cs = getComputedStyle(document.documentElement);
+  x.fillStyle = cs.getPropertyValue('--faint').trim();
+  x.globalAlpha = .5;
+  const s = Math.max(.7, p * .5), o = (p - s) / 2;
+  for (let r = 0; r < ROWS; r++) for (let q = 0; q < COLS; q++) x.fillRect(q * p + o, r * p + o, s, s);
+  x.globalAlpha = 1;
+  x.fillStyle = cs.getPropertyValue('--accent').trim();
+  const R = Math.max(3, p * 1.5);
+  for (const [q, r] of INFECTED) { x.beginPath(); x.arc(q * p + p / 2, r * p + p / 2, R, 0, Math.PI * 2); x.fill(); }
+}
+drawFlock();
+new ResizeObserver(drawFlock).observe($('#flock').parentElement);
+const recolor = [];
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => recolor.forEach(f => f()));
+new MutationObserver(() => recolor.forEach(f => f())).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+recolor.push(drawFlock);
+
+/* ---------- 함께하는 단체 ---------- */
+const allies = $('#allies');
+const kick = el('p', 'kicker', '함께하는 단체');
+allies.append(kick);
+for (const cat of ['시민사회', '농가·업계·연구']) {
+  const names = DATA.orgs.filter(o => o.cat === cat).map(o => o.name);
+  if (!names.length) continue;
+  const box = el('div');
+  box.append(el('h3', null, cat));
+  const ul = el('ul', 'ally-list');
+  names.forEach(n => ul.append(el('li', null, n)));
+  box.append(ul);
+  allies.append(box);
+}
+
+/* ---------- chips helper ---------- */
+function chips(box, values, onPick) {
+  let current = null;
+  const all = ['전체', ...values];
+  const btns = all.map((v, i) => {
+    const b = el('button', 'chip', v);
+    b.type = 'button';
+    b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    b.addEventListener('click', () => {
+      current = i === 0 ? null : v;
+      btns.forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+      onPick(current);
+    });
+    box.append(b);
+    return b;
+  });
+}
+function byFreq(lists) {
+  const m = new Map();
+  lists.flat().forEach(t => m.set(t, (m.get(t) || 0) + 1));
+  return [...m.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ko')).map(e => e[0]);
+}
+function tagList(items) {
+  const ul = el('ul', 'tags');
+  items.forEach(t => ul.append(el('li', null, t)));
+  return ul;
+}
+
+/* ---------- 활동 ---------- */
+const acts = DATA.activities;
+if (acts.length) {
+  const months = new Set(acts.map(a => (a.date || '').slice(0, 7)).filter(Boolean)).size;
+  $('#act-title').textContent = `${acts.length}개의 활동, ${months}개월의 기록`;
+}
+function renderActs(topic) {
+  const list = $('#act-list');
+  list.replaceChildren();
+  acts.filter(a => !topic || a.topics.includes(topic)).forEach(a => {
+    const li = el('li');
+    const t = el('time', null, dot(a.date)); if (a.date) t.dateTime = a.date;
+    const body = el('div', 'body');
+    const h = el('h3', null, a.name);
+    if (a.new) h.append(el('span', 'badge', '새 소식'));
+    body.append(h);
+    if (a.desc) body.append(el('p', 'desc', a.desc));
+    if (a.orgs.length) body.append(el('p', 'meta', '함께한 곳 · ' + a.orgs.join(', ')));
+    if (a.topics.length) body.append(tagList(a.topics));
+    li.append(t, body);
+    list.append(li);
+  });
+}
+chips($('#act-chips'), byFreq(acts.map(a => a.topics)), renderActs);
+renderActs(null);
+
+/* ---------- 관련 기사 ---------- */
+const arts = DATA.articles;
+$('#press-sub').textContent = `매일 아침 새 기사를 찾아 더합니다. 지금 ${arts.length}건, 마지막 갱신 ${DATA.updated}.`;
+let pressTopic = null, pressShown = 8;
+function renderPress() {
+  const list = $('#press-list');
+  list.replaceChildren();
+  const rows = arts.filter(a => !pressTopic || a.topics.includes(pressTopic));
+  rows.slice(0, pressShown).forEach(a => {
+    const li = el('li');
+    const t = el('time', null, dot(a.date)); if (a.date) t.dateTime = a.date;
+    const body = el('div', 'body');
+    const o = el('p', 'outlet', a.outlet);
+    if (a.new) o.append(el('span', 'badge', '새 기사'));
+    const h = el('h3');
+    if (a.link) {
+      const link = el('a', null, a.title);
+      link.href = a.link; link.target = '_blank'; link.rel = 'noopener';
+      h.append(link, el('span', 'ext', '↗'));
+    } else h.textContent = a.title;
+    body.append(o, h);
+    if (a.summary) body.append(el('p', 'desc', a.summary));
+    if (a.topics.length) body.append(tagList(a.topics));
+    li.append(t, body);
+    list.append(li);
+  });
+  const more = $('#press-more');
+  more.hidden = rows.length <= pressShown;
+}
+$('#press-more').addEventListener('click', () => { pressShown += 8; renderPress(); });
+chips($('#press-chips'), byFreq(arts.map(a => a.topics)), t => { pressTopic = t; pressShown = 8; renderPress(); });
+renderPress();
+
+/* ---------- 의견 ---------- */
+if (DATA.voices && DATA.voices.length) {
+  const box = $('#voice-list');
+  box.replaceChildren();
+  DATA.voices.forEach(v => {
+    const d = el('div', 'talk-empty');
+    d.append(el('p', null, v.text), el('p', 'small', [v.who, dot(v.date)].filter(Boolean).join(' · ')));
+    box.append(d);
+  });
+  $('#voice-count').textContent = DATA.voices.length;
+}
+
+/* ---------- 관계망 ---------- */
+if (typeof d3 === 'undefined' || !DATA.nodes.length) {
+  $('#net-panel').append(el('p', null, '관계망을 불러오지 못했습니다. 페이지를 새로고침해 주세요.'));
+  return;
+}
+const TYPE_LABEL = { hub: '연대', org: '단체', act: '활동', topic: '주제', article: '기사' };
+const CAT_CLASS = { '시민사회': 'k-civil', '농가·업계·연구': 'k-farm', '국회·행정': 'k-gov', '언론': 'k-press' };
+const wrap = $('#graph-wrap'), svg = d3.select('#graph');
+let W = wrap.clientWidth, H = wrap.clientHeight;
+svg.attr('viewBox', `0 0 ${W} ${H}`);
+
+const nodes = DATA.nodes.map(n => ({ ...n }));
+const byId = new Map(nodes.map(n => [n.id, n]));
+const adj = new Map(nodes.map(n => [n.id, []]));
+const linksAll = DATA.links.filter(([s, t]) => byId.has(s) && byId.has(t)).map(([s, t]) => {
+  adj.get(s).push(t); adj.get(t).push(s);
+  const art = byId.get(s).type === 'article' || byId.get(t).type === 'article';
+  return { s, t, art };
+});
+const steps = [...new Set(nodes.map(n => n.date))].sort();
+const last = steps.length - 1;
+nodes.forEach(n => {
+  n.step = steps.indexOf(n.date);
+  n.r = n.type === 'hub' ? 13 : n.type === 'org' ? 5 + Math.min(5, Math.sqrt(n.deg) * 1.3)
+    : n.type === 'topic' ? 4.5 + Math.min(4, Math.sqrt(n.deg)) : n.type === 'act' ? 5.2 : 3.2;
+});
+const hub = nodes.find(n => n.type === 'hub');
+
+const gLinks = svg.append('g').attr('class', 'links');
+const gNodes = svg.append('g').attr('class', 'nodes');
+let linkSel = gLinks.selectAll('line'), nodeSel = gNodes.selectAll('g.node');
+let selected = null, cur = last, timer = null;
+
+const range = $('#net-range');
+range.max = last; range.value = last;
+
+const narrow = () => W < 560;
+const sim = d3.forceSimulation()
+  .force('link', d3.forceLink().id(d => d.id)
+    .distance(l => (l.art ? 42 : (l.source.type === 'topic' || l.target.type === 'topic') ? 96 : 82) * (narrow() ? .6 : 1))
+    .strength(l => l.art ? .5 : .24))
+  .force('charge', d3.forceManyBody().strength(d => (d.type === 'article' ? -60 : d.type === 'hub' ? -700 : -330) * (narrow() ? .34 : 1)).distanceMax(440))
+  .force('collide', d3.forceCollide(d => d.r + (d.type === 'article' ? 3 : 9)))
+  .force('x', d3.forceX(W / 2).strength(.035))
+  .force('y', d3.forceY(H / 2).strength(narrow() ? .09 : .055))
+  .alphaDecay(.03)
+  .on('tick', ticked)
+  .stop();
+
+function ticked() {
+  for (const n of sim.nodes()) {
+    const m = n.r + 3;
+    n.x = Math.max(m, Math.min(W - m, n.x));
+    n.y = Math.max(m, Math.min(H - m, n.y));
+  }
+  linkSel.attr('x1', d => d.source.x).attr('y1', d => d.source.y).attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+  nodeSel.attr('transform', d => `translate(${d.x},${d.y})`);
+  nodeSel.select('text.side').each(function (d) {
+    const flip = d.x > W - 120;
+    this.setAttribute('text-anchor', flip ? 'end' : 'start');
+    this.setAttribute('x', flip ? -(d.r + 5) : d.r + 5);
+  });
+}
+function settle() {
+  sim.stop(); sim.alpha(1);
+  for (let i = 0; i < 320; i++) sim.tick();
+  ticked();
+}
+
+function labelOptional(d) {
+  if (d.type === 'hub') return false;
+  if (d.type === 'act' || d.type === 'article') return true;
+  return narrow() && d.deg < 7;
+}
+
+const drag = d3.drag()
+  .on('start', (e, d) => { if (!e.active && !reduced) sim.alphaTarget(.2).restart(); d.fx = d.x; d.fy = d.y; })
+  .on('drag', (e, d) => { d.fx = e.x; d.fy = e.y; if (reduced) { d.x = e.x; d.y = e.y; ticked(); } })
+  .on('end', (e, d) => { if (!e.active) sim.alphaTarget(0); if (d !== hub) { d.fx = null; d.fy = null; } });
+
+function setStep(k, animate) {
+  cur = k; range.value = k;
+  const vis = nodes.filter(n => n.step <= k);
+  const visSet = new Set(vis.map(n => n.id));
+  for (const n of vis) {
+    if (n.x != null && !Number.isNaN(n.x)) continue;
+    const nb = adj.get(n.id).map(id => byId.get(id)).find(m => visSet.has(m.id) && m.x != null && !Number.isNaN(m.x));
+    const a = Math.random() * Math.PI * 2, r0 = nb ? 16 : 30;
+    n.x = (nb ? nb.x : W / 2) + Math.cos(a) * r0;
+    n.y = (nb ? nb.y : H / 2) + Math.sin(a) * r0;
+  }
+  if (hub && visSet.has(hub.id) && hub.fx == null) { hub.fx = W / 2; hub.fy = H / 2; }
+  const vlinks = linksAll.filter(l => visSet.has(l.s) && visSet.has(l.t)).map(l => ({ source: l.s, target: l.t, art: l.art, key: l.s + '|' + l.t }));
+
+  linkSel = gLinks.selectAll('line').data(vlinks, d => d.key).join(
+    enter => enter.append('line').attr('class', d => d.art ? 'l-art' : null)
+      .call(s => { if (animate && !reduced) s.attr('opacity', 0).transition().duration(700).attr('opacity', 1); })
+  );
+  nodeSel = gNodes.selectAll('g.node').data(vis, d => d.id).join(enter => {
+    const g = enter.append('g')
+      .attr('class', d => `node t-${d.type} ${CAT_CLASS[d.cat] || ''}${d.new ? ' is-new' : ''}`)
+      .attr('tabindex', 0).attr('role', 'button')
+      .attr('aria-label', d => `${TYPE_LABEL[d.type]}: ${d.name}`)
+      .on('click', (e, d) => { e.stopPropagation(); select(selected === d ? null : d); })
+      .on('keydown', (e, d) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(d); } })
+      .call(drag);
+    g.filter(d => d.new).append('circle').attr('class', 'halo').attr('r', d => d.r + 4);
+    g.filter(d => d.type === 'act').append('rect').attr('class', 'shape')
+      .attr('x', d => -d.r * .8).attr('y', d => -d.r * .8).attr('width', d => d.r * 1.6).attr('height', d => d.r * 1.6)
+      .attr('transform', 'rotate(45)');
+    g.filter(d => d.type !== 'act').append('circle').attr('class', 'shape').attr('r', d => d.r);
+    g.append('text').attr('class', d => 'lbl' + (d.type === 'hub' ? '' : ' side') + (labelOptional(d) ? ' opt' : ''))
+      .attr('text-anchor', d => d.type === 'hub' ? 'middle' : 'start')
+      .attr('x', d => d.type === 'hub' ? 0 : d.r + 5)
+      .attr('y', d => d.type === 'hub' ? d.r + 17 : 4)
+      .text(d => d.type === 'article' && d.name.length > 26 ? d.name.slice(0, 25) + '…' : d.name);
+    if (animate && !reduced) {
+      g.attr('opacity', 0).transition().duration(650).attr('opacity', 1);
+      g.append('circle').attr('class', 'ripple').attr('r', d => d.r)
+        .transition().duration(1100).ease(d3.easeCubicOut).attr('r', d => d.r + 22).style('opacity', 0).remove();
+    }
+    return g;
+  });
+  linkSel.lower();
+
+  sim.nodes(vis);
+  sim.force('link').links(vlinks);
+  if (animate && !reduced) sim.alpha(Math.max(sim.alpha(), .55)).restart();
+  else settle();
+
+  const counts = { org: 0, act: 0, topic: 0, article: 0 };
+  vis.forEach(n => { if (n.type === 'hub') counts.org++; else counts[n.type]++; });
+  $('#net-count').textContent = `단체 ${counts.org} · 활동 ${counts.act} · 주제 ${counts.topic} · 기사 ${counts.article}`;
+  $('#stamp-date').textContent = dot(steps[k]);
+  const here = nodes.filter(n => n.step === k);
+  const main = here.filter(n => n.type === 'act' || n.type === 'article');
+  const pick = (main.length ? main : here).map(n => n.name);
+  $('#stamp-items').textContent = pick.slice(0, 2).join(', ') + (pick.length > 2 ? ` 외 ${pick.length - 2}건` : '');
+
+  if (selected && !visSet.has(selected.id)) select(null); else paintSelection();
+}
+
+function isNb(a, b) { return a && adj.get(a.id).includes(b.id); }
+function paintSelection() {
+  const s = selected;
+  nodeSel.classed('sel', d => d === s).classed('nb', d => isNb(s, d)).classed('dim', d => !!s && d !== s && !isNb(s, d));
+  linkSel.classed('hi', l => !!s && (l.source === s || l.target === s)).classed('dim', l => !!s && l.source !== s && l.target !== s);
+}
+function select(d) {
+  if (d && d.step > cur) { stopPlay(); setStep(last, false); }
+  selected = d;
+  paintSelection();
+  renderPanel(d);
+}
+svg.on('click', () => select(null));
+
+function nbButton(n) {
+  const li = el('li'), b = el('button');
+  b.type = 'button';
+  b.append(document.createTextNode(n.name), el('small', null, TYPE_LABEL[n.type]));
+  b.addEventListener('click', () => select(n));
+  li.append(b);
+  return li;
+}
+function renderPanel(d) {
+  const p = $('#net-panel');
+  p.replaceChildren();
+  if (!d) {
+    p.append(el('p', 'kicker', '살펴보기'), el('h3', null, '점을 눌러 보세요'),
+      el('p', null, '단체, 활동, 주제, 기사가 어떻게 이어져 있는지 볼 수 있습니다. 점을 끌어 옮길 수도 있습니다.'));
+    const fresh = nodes.filter(n => n.new).sort((a, b) => b.date.localeCompare(a.date));
+    p.append(el('h4', null, '최근 2주 새 소식'));
+    if (fresh.length) {
+      const ul = el('ul', 'nb-list');
+      fresh.slice(0, 8).forEach(n => ul.append(nbButton(n)));
+      p.append(ul);
+    } else p.append(el('p', null, '최근 2주 동안 새로 이어진 것이 없습니다.'));
+    return;
+  }
+  p.append(el('p', 'kicker', TYPE_LABEL[d.type] + (d.cat && d.type !== 'hub' ? ' · ' + d.cat : '')));
+  p.append(el('h3', null, d.name));
+  if (d.type === 'act' || d.type === 'article') p.append(el('p', 'small', [d.outlet, dot(d.date)].filter(Boolean).join(' · ')));
+  if (d.desc) p.append(el('p', null, d.desc));
+  if (d.type === 'article' && d.link) {
+    const a = el('a', null, '기사 읽기 ↗'); a.href = d.link; a.target = '_blank'; a.rel = 'noopener';
+    const wrapP = el('p'); wrapP.append(a); p.append(wrapP);
+  }
+  const nbs = adj.get(d.id).map(id => byId.get(id))
+    .sort((a, b) => ['hub', 'org', 'act', 'topic', 'article'].indexOf(a.type) - ['hub', 'org', 'act', 'topic', 'article'].indexOf(b.type) || a.name.localeCompare(b.name, 'ko'));
+  p.append(el('h4', null, `이어진 것 ${nbs.length}`));
+  const ul = el('ul', 'nb-list');
+  nbs.forEach(n => ul.append(nbButton(n)));
+  p.append(ul);
+  const back = el('button', 'btn ghost', '선택 풀기'); back.type = 'button'; back.style.justifySelf = 'start';
+  back.addEventListener('click', () => select(null));
+  p.append(back);
+}
+
+const playBtn = $('#net-play');
+function stopPlay() {
+  if (timer) { timer.stop(); timer = null; }
+  playBtn.textContent = cur === last ? '처음부터 보기' : '이어서 보기';
+}
+function play(from) {
+  stopPlay();
+  if (reduced) { setStep(last, false); return; }
+  if (from === 0) nodes.forEach(n => { n.x = n.y = undefined; n.vx = n.vy = 0; n.fx = n.fy = null; });
+  let k = from;
+  setStep(k, true);
+  playBtn.textContent = '멈춤';
+  const ms = Math.max(420, Math.min(900, 10000 / steps.length));
+  timer = d3.interval(() => {
+    k++;
+    if (k > last) { stopPlay(); return; }
+    setStep(k, true);
+    if (k === last) stopPlay();
+  }, ms);
+}
+playBtn.addEventListener('click', () => {
+  if (timer) { stopPlay(); return; }
+  play(cur >= last ? 0 : cur + 1);
+});
+range.addEventListener('input', () => { stopPlay(); setStep(+range.value, false); stopPlay(); });
+
+new ResizeObserver(() => {
+  const w = wrap.clientWidth, h = wrap.clientHeight;
+  if (!w || !h || (w === W && h === H)) return;
+  W = w; H = h;
+  svg.attr('viewBox', `0 0 ${W} ${H}`);
+  sim.force('x').x(W / 2); sim.force('y').y(H / 2);
+  if (hub) { hub.fx = W / 2; hub.fy = H / 2; }
+  if (timer) sim.alpha(.3).restart(); else settle();
+}).observe(wrap);
+
+setStep(last, false);
+renderPanel(null);
+
+if (!reduced && 'IntersectionObserver' in window) {
+  const io = new IntersectionObserver(es => {
+    if (es.some(e => e.isIntersecting)) { io.disconnect(); play(0); }
+  }, { threshold: .35 });
+  io.observe(wrap);
+}
+/* 끼워 넣기 모드: 바깥 페이지에 높이를 알려 iframe이 내용에 맞게 늘어나게 함 */
+if (document.documentElement.dataset.only && window.parent !== window) {
+  const post = () => window.parent.postMessage({ opRooster: document.documentElement.dataset.only, h: Math.ceil(document.documentElement.scrollHeight) }, '*');
+  new ResizeObserver(post).observe(document.body);
+  post();
+}
+})();
+</script>
+
+</body>
+</html>
