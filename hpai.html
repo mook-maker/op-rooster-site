@@ -96,6 +96,7 @@ th,td{padding:4px 8px;border-bottom:1px solid var(--line);text-align:right;white
 th:first-child,td:first-child{text-align:left}
 th{color:var(--muted);font-weight:500}
 .callout{border-left:3px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--panel));padding:12px 14px;border-radius:0 4px 4px 0;display:flex;flex-direction:column;gap:10px}
+.callout[hidden]{display:none}
 .callout p{color:var(--fg)}
 .callout strong{color:var(--accent);font-weight:600}
 .stbar{display:flex;height:22px;border-radius:2px;overflow:hidden;font-size:12px}
@@ -112,6 +113,7 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
 html[data-only] header, html[data-only] footer, html[data-only] main > section{display:none}
 html.only-season #season, html.only-species #species, html.only-map #provinces, html.only-month #month,
 html.only-cost #cost, html.only-rate #rate, html.only-sigun #sigun{display:flex}
+html[data-only] .sec-head{display:none}
 html[data-only] body{padding:4px 2px 8px;background:transparent}
 html[data-only] main{max-width:none;gap:36px}
 </style>
