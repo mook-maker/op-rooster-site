@@ -103,6 +103,10 @@ th{color:var(--muted);font-weight:500}
 .stbar span{display:flex;align-items:center;justify-content:center;color:#fff;white-space:nowrap;overflow:hidden;min-width:0}
 .stlegend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:var(--fg2)}
 .stlegend i{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:-1px}
+.totrow{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:12px}
+.totrow .lab{font-size:13px;color:var(--fg2)}
+.totrow .lab{font-weight:600}
+@media (max-width:560px){.totrow .stbar span{font-size:0}}
 .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media (max-width:560px){.two{grid-template-columns:1fr}}
 .stat{display:flex;flex-direction:column;gap:2px}
@@ -227,6 +231,7 @@ html[data-only] main{max-width:none;gap:36px}
       <div class="two" id="cost-total"></div>
       <div class="legend"><span><i style="background:var(--cost)"></i>살처분·매몰 처리 비용</span><span><i style="background:var(--inf)"></i>보상금 · 감염 농장 (발생·예방적 양성)</span><span><i style="background:var(--neg)"></i>보상금 · 검사 음성 농장</span></div>
       <svg id="cost-trend" viewBox="0 0 680 300" role="img" aria-label="시즌별 처리 비용과 보상금"></svg>
+      <div class="totrow" id="cost-totrow"></div>
       <div class="callout" id="pending-box"></div>
     </div>
   </section>
@@ -418,6 +423,14 @@ function pendingHTML(withText){
 }
 $('#pending-box').innerHTML = pendingHTML(true);
 $('#pending-box2').innerHTML = pendingHTML(true);
+function drawTotalRow(){
+  const cost = sumC('cost'), neg = CS.reduce((a, s) => a + compNeg(s), 0), inf = sumC('comp') - neg, all = cost + inf + neg;
+  const seg = (v, c, n) => `<span style="flex:${v};background:var(${c})" title="${n} ${eok(v)}">${v / all > .18 ? n + ' ' + eok(v) : ''}</span>`;
+  $('#cost-totrow').innerHTML = `<div class="lab">여섯 시즌(20/21~25/26) 합계 ${eok(all)}</div>
+    <div class="stbar" role="img" aria-label="여섯 시즌 합계: 처리 비용 ${eok(cost)}, 감염 농장 보상금 ${eok(inf)}, 음성 농장 보상금 ${eok(neg)}">${seg(cost, '--cost', '처리 비용')}${seg(inf, '--inf', '감염 농장 보상')}${seg(neg, '--neg', '음성 농장 보상')}</div>
+    <div class="stlegend"><span><i style="background:var(--cost)"></i>처리 비용 ${eok(cost)}</span><span><i style="background:var(--inf)"></i>감염 농장 보상금 ${eok(inf)}</span><span><i style="background:var(--neg)"></i>음성 농장 보상금 ${eok(neg)} (보상금의 ${Math.round(100 * neg / (inf + neg))}%)</span></div>`;
+}
+drawTotalRow();
 function drawTrend(){
   const svg = $('#cost-trend'); svg.innerHTML = '';
   const H = 300, W = sz(svg, H), L = W < 520 ? 44 : 56, R = 8, T = 44, B = 34;
@@ -441,8 +454,16 @@ function drawTrend(){
     el('text', {x:cx - 1 - bw / 2, y:y(c.cost) - 5, 'text-anchor':'middle', class:'val'}, svg, fmt(c.cost));
   });
 }
-let costSeason = '20/21';
-(function(){ const g = $('#cost-seasons'); CS.forEach(s => { const b = document.createElement('button'); b.className = 'chip'; b.dataset.s = s; b.textContent = s; b.setAttribute('aria-pressed', s === costSeason); g.appendChild(b); }); chips(g, b => { costSeason = b.dataset.s; drawCost(); }); })();
+let costSeason = '전체';
+(function(){ const g = $('#cost-seasons'); ['전체', ...CS].forEach(s => { const b = document.createElement('button'); b.className = 'chip'; b.dataset.s = s; b.textContent = s === '전체' ? '여섯 시즌 합계' : s; b.setAttribute('aria-pressed', s === costSeason); g.appendChild(b); }); chips(g, b => { costSeason = b.dataset.s; drawCost(); }); })();
+function costAll(){
+  const add = (o, k, v) => { o[k] = o[k] || {farms:0, cost:0, comp:0, heads:0}; for (const f in v) o[k][f] = (o[k][f] || 0) + v[f]; };
+  const out = {farms:0, cost:0, comp:0, workers:0, byCat:{}, byProv:{}, method:{}, src:'all'};
+  CS.forEach(s => { const c = DATA.cost[s]; ['farms','cost','comp','workers'].forEach(k => out[k] += c[k]);
+    for (const k in c.byCat) add(out.byCat, k, c.byCat[k]); for (const k in c.byProv) add(out.byProv, k, c.byProv[k]);
+    for (const k in c.method) out.method[k] = (out.method[k] || 0) + c.method[k]; });
+  return out;
+}
 function hbars(svg, rows, H){
   svg.innerHTML = ''; const W = sz(svg, H), L = W < 520 ? 100 : 132, R = W < 520 ? 56 : 70, rowH = (H - 8) / rows.length, bh = Math.min(11, rowH / 2 - 2);
   const max = Math.max(...rows.flatMap(r => [r.cost, r.comp]));
@@ -457,9 +478,9 @@ function hbars(svg, rows, H){
 }
 function drawCost(){
   drawTrend();
-  const c = DATA.cost[costSeason];
+  const c = costSeason === '전체' ? costAll() : DATA.cost[costSeason];
   $('#cost-stats').innerHTML = `
-    <div class="stat"><b>${eok(c.cost + c.comp)}</b><span>${costSeason} 시즌 처리 비용 ${eok(c.cost)} + 보상금 ${eok(c.comp)}</span></div>
+    <div class="stat"><b>${eok(c.cost + c.comp)}</b><span>${costSeason === '전체' ? '여섯 시즌 합계' : costSeason + ' 시즌'} 처리 비용 ${eok(c.cost)} + 보상금 ${eok(c.comp)}</span></div>
     <div class="stat"><b>${fmt(c.workers)}명</b><span>동원된 인력 (연인원, ${fmt(c.farms)}개 농가)</span></div>`;
   $('#pending-box2').hidden = c.src !== 'assembly';
   const names = {inf:'감염 확인', pos:'예방적 · 양성', neg:'예방적 · 음성'};
