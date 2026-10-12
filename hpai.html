@@ -112,7 +112,9 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);paddin
 /* 끼워 넣기 모드 */
 html[data-only] header, html[data-only] footer, html[data-only] main > section{display:none}
 html.only-season #season, html.only-species #species, html.only-map #provinces, html.only-month #month,
-html.only-cost #cost, html.only-rate #rate, html.only-sigun #sigun{display:flex}
+html.only-cost #cost, html.only-rate #rate, html.only-sigun #sigun, html.only-pending #pending, html.only-costdetail #costdetail{display:flex}
+html[data-only] .pending-text{display:none}
+html[data-only] .callout{border-left:0;background:transparent;padding:0}
 html[data-only] .sec-head{display:none}
 html[data-only] body{padding:4px 2px 8px;background:transparent}
 html[data-only] main{max-width:none;gap:36px}
@@ -224,8 +226,14 @@ html[data-only] main{max-width:none;gap:36px}
       <div class="two" id="cost-total"></div>
       <div class="legend"><span><i style="background:var(--cost)"></i>살처분·매몰 처리 비용</span><span><i style="background:var(--inf)"></i>보상금 · 감염 농장 (발생·예방적 양성)</span><span><i style="background:var(--neg)"></i>보상금 · 검사 음성 농장</span></div>
       <svg id="cost-trend" viewBox="0 0 680 300" role="img" aria-label="시즌별 처리 비용과 보상금"></svg>
-      <div class="callout" id="pending-box"></div>
     </div>
+  </section>
+
+  <section id="pending">
+    <div class="callout" id="pending-box"></div>
+  </section>
+
+  <section id="costdetail">
     <div class="panel">
       <div class="controls" role="group" aria-label="시즌 선택" id="cost-seasons"></div>
       <div class="two" id="cost-stats"></div>
@@ -402,15 +410,15 @@ const compNeg = s => (DATA.cost[s].byCat.neg || {comp:0}).comp;
     <div class="stat"><b>${eok(cost + comp)}</b><span>여섯 시즌 처리 비용 ${eok(cost)} + 보상금 ${eok(comp)}</span></div>
     <div class="stat"><b>${fmt(sumC('workers'))}명</b><span>살처분에 동원된 인력 (연인원)</span></div>`;
 })();
-function pendingHTML(){
+function pendingHTML(withText){
   const c = DATA.cost['25/26'], st = c.status, tot = c.farms, open = st.partial[0] + st.none[0];
   const seg = (k, color, label) => `<span style="flex:${st[k][0]};background:var(${color})" title="${label} ${st[k][0]}곳">${st[k][0] / tot > .2 ? label + ' ' + st[k][0] + '곳' : st[k][0]}</span>`;
-  return `<p><strong>25/26 시즌 보상은 아직 끝나지 않았습니다.</strong> 살처분된 ${tot}개 농가 가운데 <strong>${st.none[0]}곳은 보상금을 아직 한 푼도 받지 못했고</strong>, ${st.partial[0]}곳은 일부만 받았습니다. 전체 농가의 ${Math.round(100 * open / tot)}%(${man(st.partial[1] + st.none[1])}마리)입니다. 여기 적힌 보상금 ${eok(c.comp)}은 지금까지 지급된 금액일 뿐, 최종 금액이 아닙니다.</p>
-  <div class="stbar" role="img" aria-label="25/26 보상 진행 상태: 지급 끝 ${st.done[0]}곳, 일부 지급 ${st.partial[0]}곳, 지급 없음 ${st.none[0]}곳">${seg('done', '--neg', '지급 끝')}${seg('partial', '--pos', '일부만')}${seg('none', '--accent', '아직 없음')}</div>
+  return (withText ? `<p class="pending-text"><strong>25/26 시즌 보상은 아직 끝나지 않았습니다.</strong> 살처분된 ${tot}개 농가 가운데 <strong>${st.none[0]}곳은 보상금을 아직 한 푼도 받지 못했고</strong>, ${st.partial[0]}곳은 일부만 받았습니다. 전체 농가의 ${Math.round(100 * open / tot)}%(${man(st.partial[1] + st.none[1])}마리)입니다. 여기 적힌 보상금 ${eok(c.comp)}은 지금까지 지급된 금액일 뿐, 최종 금액이 아닙니다.</p>
+` : '') + `  <div class="stbar" role="img" aria-label="25/26 보상 진행 상태: 지급 끝 ${st.done[0]}곳, 일부 지급 ${st.partial[0]}곳, 지급 없음 ${st.none[0]}곳">${seg('done', '--neg', '지급 끝')}${seg('partial', '--pos', '일부만')}${seg('none', '--accent', '아직 없음')}</div>
   <div class="stlegend"><span><i style="background:var(--neg)"></i>보상 지급 끝 ${st.done[0]}곳</span><span><i style="background:var(--pos)"></i>산정 중, 일부만 지급 ${st.partial[0]}곳</span><span><i style="background:var(--accent)"></i>산정 중, 지급 없음 ${st.none[0]}곳</span></div>`;
 }
-$('#pending-box').innerHTML = pendingHTML();
-$('#pending-box2').innerHTML = pendingHTML();
+$('#pending-box').innerHTML = pendingHTML(true);
+$('#pending-box2').innerHTML = pendingHTML(true);
 function drawTrend(){
   const svg = $('#cost-trend'); svg.innerHTML = '';
   const H = 300, W = sz(svg, H), L = W < 520 ? 44 : 56, R = 8, T = 44, B = 34;
