@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>작전명 수탉 공유하기</title>
+<script>
+(function(){ var d = document.documentElement; if (window.self !== window.top || new URLSearchParams(location.search).has('embed')) { d.dataset.theme = 'light'; d.dataset.embed = '1'; } })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=Nanum+Myeongjo:wght@700;800&display=swap">
+<style>
+/* 홈 화면 공유 버튼 띠: 링크 복사, 카카오톡, 페이스북, X (+ 휴대폰이면 다른 앱) */
+:root{
+  --bg:#f5f6f7; --panel:#ffffff; --fg:#16181b; --fg2:#3b4047; --muted:#5b6169; --line:#dde0e4;
+  --accent:#7b302d; --accent-soft:#f4ebe9;
+  --display:"Nanum Myeongjo","Noto Serif KR","AppleMyungjo","Batang",serif;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141619; --panel:#1c1f23; --fg:#eceef0; --fg2:#c9cdd2; --muted:#a6acb3; --line:#2e3238;
+  --accent:#d08a82; --accent-soft:#2e2220; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141619; --panel:#1c1f23; --fg:#eceef0; --fg2:#c9cdd2; --muted:#a6acb3; --line:#2e3238;
+  --accent:#d08a82; --accent-soft:#2e2220; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.6;padding:24px 16px 32px}
+html[data-embed] body{background:transparent;padding:4px 2px 8px}
+main{max-width:52rem;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;padding:16px 18px}
+h2{font-family:var(--display);font-weight:800;font-size:18px;line-height:1.4;margin:0 0 4px;word-break:keep-all}
+p.lead{margin:0 0 12px;font-size:13.5px;color:var(--fg2);word-break:keep-all}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:8px 14px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--fg);font:inherit;font-size:14px;font-weight:500;text-decoration:none;cursor:pointer}
+.btn:hover{border-color:var(--fg2)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.main{background:var(--accent);border-color:var(--accent);color:#fff}
+html:not([data-theme="light"]) .btn.main{color:#141619}
+.btn svg{width:16px;height:16px;flex:none}
+.msg{margin:10px 0 0;font-size:13px;color:var(--accent);font-weight:500;min-height:1.6em;word-break:keep-all}
+.fallback{display:flex;gap:6px;margin-top:8px}
+.fallback input{flex:1;min-width:0;font:inherit;font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <h2>작전명 수탉을 알려 주세요</h2>
+  <p class="lead">살처분 없는 방역을 함께 바라는 사람이 늘어나도록, 이 사이트를 주변에 나눠 주세요.</p>
+  <div class="row">
+    <button class="btn main" id="copy" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+      링크 복사</button>
+    <button class="btn" id="kakao" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.7 6.7l-1 3.6c-.1.3.3.6.6.4l4.3-2.8c.5.1.9.1 1.4.1 5.5 0 10-3.6 10-8S17.5 3 12 3z"/></svg>
+      카카오톡</button>
+    <a class="btn" id="fb" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 8h3V4h-3c-2.8 0-4.5 1.9-4.5 4.6V11H7v4h2.5v8h4v-8h3l.5-4h-3.5V8.8c0-.5.3-.8.5-.8z"/></svg>
+      페이스북</a>
+    <a class="btn" id="x" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.8L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.3-8.3L2 3h6.4l4.4 5.8L17.8 3zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5z"/></svg>
+      X</a>
+    <button class="btn" id="more" type="button" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+      다른 앱</button>
+  </div>
+  <p class="msg" id="msg" role="status" aria-live="polite"></p>
+  <div class="fallback" id="fallback" hidden><input id="url" readonly aria-label="사이트 주소"></div>
+</main>
+<script>
+(function(){
+  const URL_ = 'https://www.op-rooster.com';
+  const TEXT = '작전명 수탉: 살처분 대신 백신과 대안을';
+  const $ = id => document.getElementById(id);
+  const say = t => { $('msg').textContent = t; };
+  $('fb').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(URL_);
+  $('x').href = 'https://x.com/intent/post?text=' + encodeURIComponent(TEXT) + '&url=' + encodeURIComponent(URL_);
+
+  function oldCopy(){
+    const ta = document.createElement('textarea');
+    ta.value = URL_; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.append(ta); ta.select();
+    let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+    ta.remove(); return ok;
+  }
+  async function copy(){
+    try { await navigator.clipboard.writeText(URL_); return true; } catch (e) { return oldCopy(); }
+  }
+  function showFallback(){
+    $('url').value = URL_; $('fallback').hidden = false; $('url').focus(); $('url').select();
+    say('자동 복사가 막혀 있어요. 아래 주소를 길게 눌러(또는 Ctrl+C) 복사해 주세요.');
+  }
+  const canShare = !!navigator.share && (!navigator.canShare || navigator.canShare({ url: URL_ }));
+  async function nativeShare(){
+    try { await navigator.share({ title: '작전명 수탉', text: TEXT, url: URL_ }); return true; }
+    catch (e) { return e && e.name === 'AbortError'; }
+  }
+
+  $('copy').addEventListener('click', async () => {
+    if (await copy()) say('주소를 복사했어요. 원하는 곳에 붙여 넣어 주세요.'); else showFallback();
+  });
+  // 카카오톡: 휴대폰은 공유 창(카카오톡 선택), 아니면 주소를 복사해 대화창에 붙여 넣게 안내
+  $('kakao').addEventListener('click', async () => {
+    if (canShare && await nativeShare()) return;
+    if (await copy()) say('주소를 복사했어요. 카카오톡 대화창에 붙여 넣어 보내 주세요.'); else showFallback();
+  });
+  if (canShare){
+    $('more').hidden = false;
+    $('more').addEventListener('click', async () => { if (!await nativeShare()) { if (await copy()) say('주소를 복사했어요. 원하는 곳에 붙여 넣어 주세요.'); else showFallback(); } });
+  }
+
+  if (window.parent !== window){
+    const post = () => window.parent.postMessage({ opRooster: 'share', h: Math.ceil(document.querySelector('main').getBoundingClientRect().bottom + window.scrollY + 8) }, '*');
+    new ResizeObserver(post).observe(document.body); post();
+  }
+})();
+</script>
+</body>
+</html>
