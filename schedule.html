@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>작전명 수탉 일정</title>
+<script>
+(function(){ var d = document.documentElement; if (window.self !== window.top || new URLSearchParams(location.search).has('embed')) { d.dataset.theme = 'light'; d.dataset.embed = '1'; } })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=Nanum+Myeongjo:wght@700;800&display=swap">
+<style>
+/* 다가오는 일정(크게) + 지난 일정(작게, 접힘). ?only=next 는 다가오는 일정 3개만 (홈 띠용) */
+:root{
+  --bg:#f5f6f7; --panel:#ffffff; --fg:#16181b; --fg2:#3b4047; --muted:#5b6169; --line:#dde0e4;
+  --accent:#7b302d; --accent-soft:#f4ebe9;
+  --display:"Nanum Myeongjo","Noto Serif KR","AppleMyungjo","Batang",serif;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141619; --panel:#1c1f23; --fg:#eceef0; --fg2:#c9cdd2; --muted:#a6acb3; --line:#2e3238;
+  --accent:#d08a82; --accent-soft:#2e2220; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141619; --panel:#1c1f23; --fg:#eceef0; --fg2:#c9cdd2; --muted:#a6acb3; --line:#2e3238;
+  --accent:#d08a82; --accent-soft:#2e2220; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.65;padding:24px 16px 32px}
+html[data-embed] body{background:transparent;padding:4px 2px 8px}
+main{max-width:52rem;margin:0 auto;display:flex;flex-direction:column;gap:32px}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(20px,4vw,24px);line-height:1.35;margin:0 0 14px;padding-bottom:8px;border-bottom:2px solid var(--fg)}
+.list{display:flex;flex-direction:column;gap:12px}
+.ev{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:baseline;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;padding:14px 18px;color:inherit;text-decoration:none}
+a.ev:hover{border-color:var(--fg2);border-left-color:var(--accent)}
+.ev:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.date{font-weight:600;color:var(--accent);font-size:14px}
+.kind{justify-self:end;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:3px;padding:1px 7px}
+.ev h3{grid-column:1/-1;font-family:var(--display);font-weight:800;font-size:18px;line-height:1.45;margin:2px 0 0;word-break:keep-all}
+.ev p{grid-column:1/-1;margin:0;font-size:13.5px;color:var(--fg2);word-break:keep-all}
+.ev .place{color:var(--muted)}
+.ev .place::before{content:"장소 · "}
+.ev b{grid-column:1/-1;justify-self:end;font-size:12.5px;font-weight:600;color:var(--accent)}
+#past .ev{border-left-color:var(--line);opacity:.85}
+#past .date,#past .kind{color:var(--muted)}
+#past .kind{background:var(--bg)}
+#past .ev h3{font-size:16px}
+details summary{cursor:pointer;font-family:var(--display);font-weight:800;font-size:18px;list-style:none;padding:6px 0;border-bottom:1px solid var(--line);margin-bottom:12px}
+details summary::after{content:" ＋";color:var(--muted);font-family:var(--sans)}
+details[open] summary::after{content:" －"}
+.empty{color:var(--muted);margin:0;background:var(--panel);border:1px dashed var(--line);border-radius:6px;padding:16px 18px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+  <section id="next"><h2>다가오는 일정</h2><div class="list"></div>
+    <p class="empty" hidden>지금 잡힌 일정이 없어요. 새 일정이 생기면 이곳에 알릴게요.</p></section>
+  <details id="past" hidden><summary>지난 일정</summary><div class="list"></div></details>
+</main>
+<div id="src" hidden></div>
+<script>
+(function(){
+  const q = new URLSearchParams(location.search);
+  const today = new Date(); const t = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+  const all = [...document.querySelectorAll('#src .ev')];
+  const next = all.filter(e => e.dataset.d >= t), past = all.filter(e => e.dataset.d < t).reverse();
+  const only = q.get('only');
+  (only === 'next' ? next.slice(0, 3) : next).forEach(e => document.querySelector('#next .list').append(e));
+  document.querySelector('#next .empty').hidden = next.length > 0;
+  if (only !== 'next' && past.length){ past.forEach(e => document.querySelector('#past .list').append(e)); document.getElementById('past').hidden = false; }
+  if (only === 'next') document.querySelector('#next h2').hidden = true;
+  if (window.parent !== window){
+    const post = () => window.parent.postMessage({ opRooster: 'schedule', h: Math.ceil(document.querySelector('main').getBoundingClientRect().bottom + window.scrollY + 8) }, '*');
+    new ResizeObserver(post).observe(document.body); post();
+  }
+})();
+</script>
+</body>
+</html>
