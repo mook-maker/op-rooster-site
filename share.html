@@ -72,6 +72,9 @@ html:not([data-theme="light"]) .btn.main{color:#141619}
 <script>
 (function(){
   const URL_ = 'https://www.op-rooster.com';
+  // 카카오 개발자 앱의 JavaScript 키 (비어 있으면 카드 대신 공유 창/주소 복사)
+  const KAKAO_KEY = '';
+  const CARD_IMG = 'https://mook-maker.github.io/op-rooster-site/share-card.png';
   const TEXT = '작전명 수탉: 살처분 대신 백신과 대안을';
   const $ = id => document.getElementById(id);
   const say = t => { $('msg').textContent = t; };
@@ -102,7 +105,20 @@ html:not([data-theme="light"]) .btn.main{color:#141619}
     if (await copy()) say('주소를 복사했어요. 원하는 곳에 붙여 넣어 주세요.'); else showFallback();
   });
   // 카카오톡: 휴대폰은 공유 창(카카오톡 선택), 아니면 주소를 복사해 대화창에 붙여 넣게 안내
+  function kakaoCard(){
+    try {
+      if (!KAKAO_KEY || !window.Kakao) return false;
+      if (!Kakao.isInitialized()) Kakao.init(KAKAO_KEY);
+      Kakao.Share.sendDefault({ objectType: 'feed',
+        content: { title: '작전명 수탉 Operation Rooster', description: '살처분 중심의 방역체계를 바꾸는 작전',
+          imageUrl: CARD_IMG, imageWidth: 800, imageHeight: 400, link: { mobileWebUrl: URL_, webUrl: URL_ } },
+        buttons: [{ title: '사이트 보기', link: { mobileWebUrl: URL_, webUrl: URL_ } }] });
+      return true;
+    } catch (e) { return false; }
+  }
+  if (KAKAO_KEY){ const sc = document.createElement('script'); sc.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js'; sc.crossOrigin = 'anonymous'; document.head.append(sc); }
   $('kakao').addEventListener('click', async () => {
+    if (kakaoCard()) return;
     if (canShare && await nativeShare()) return;
     if (await copy()) say('주소를 복사했어요. 카카오톡 대화창에 붙여 넣어 보내 주세요.'); else showFallback();
   });
