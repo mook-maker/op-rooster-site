@@ -71,11 +71,13 @@ section{display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
 .sp-controls{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
 .sp-controls .controls + .controls{border-left:1px solid var(--line);padding-left:18px}
 .sp-legend button{font:inherit;font-size:13px;display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid transparent;border-radius:999px;padding:2px 9px 2px 7px;color:var(--fg2);cursor:pointer;opacity:.55}
+.sp-legend button.all{opacity:1}
+.sp-legend span{opacity:.8}
 .sp-legend button[aria-pressed="true"]{opacity:1;color:var(--fg);border-color:var(--line);font-weight:600}
 .sp-legend button:hover{opacity:1}
 .sp-legend button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-#species-chart .lbl{font-weight:600;paint-order:stroke;stroke:var(--panel);stroke-width:3px;stroke-linejoin:round}
-#species-chart .col:hover .hit{fill:var(--fg);fill-opacity:.05}
+#season-chart .lbl, #species-chart .lbl{font-weight:600;paint-order:stroke;stroke:var(--panel);stroke-width:3px;stroke-linejoin:round}
+#season-chart .col:hover .hit, #species-chart .col:hover .hit{fill:var(--fg);fill-opacity:.05}
 svg{display:block;width:100%;height:auto;overflow:visible}
 svg text{font-family:var(--sans);fill:var(--muted);font-size:12px}
 svg .val{font-size:11.5px}
@@ -163,18 +165,19 @@ html[data-only] main{max-width:none;gap:36px}
       <p class="sub">감염이 확인된 농장보다, 근처에 있다는 이유로 예방적으로 살처분된 농장이 더 많은 해가 많았습니다. 18/19, 19/20 두 겨울은 농장 발생이 없었습니다.</p>
     </div>
     <div class="panel">
-      <div class="controls" role="group" aria-label="지표 선택">
-        <button class="chip" data-m="heads" aria-pressed="true">마리 수</button>
-        <button class="chip" data-m="farms" aria-pressed="false">농가 수</button>
+      <div class="sp-controls">
+        <div class="controls" role="group" aria-label="비율 또는 개수" id="ss-scale">
+          <button class="chip" data-v="share" aria-pressed="false">비율 (%)</button>
+          <button class="chip" data-v="count" aria-pressed="true">개수</button>
+        </div>
+        <div class="controls" role="group" aria-label="마리 또는 농가" id="ss-basis">
+          <button class="chip" data-v="heads" aria-pressed="true">마리</button>
+          <button class="chip" data-v="farms" aria-pressed="false">농가</button>
+        </div>
       </div>
-      <div class="legend">
-        <span><i style="background:var(--inf)"></i>감염 확인 (발생 농장)</span>
-        <span><i style="background:var(--pos)"></i>예방적 살처분 · 검사 양성</span>
-        <span><i style="background:var(--neg)"></i>예방적 살처분 · 검사 음성</span>
-        <span><i style="background:var(--unk)"></i>예방적 살처분 · 검사 결과 없음</span>
-        <span><i style="background:var(--gap)"></i>세부 목록 없음</span>
-      </div>
+      <div class="legend sp-legend" id="ss-legend" role="group" aria-label="강조할 분류"></div>
       <svg id="season-chart" viewBox="0 0 680 320" role="img" aria-label="시즌별 살처분 막대그래프"></svg>
+      <p class="note" id="season-hint"></p>
       <p class="note" id="season-note"></p>
       <details><summary>표로 보기</summary><div class="tbl-wrap"><table id="season-table"></table></div></details>
     </div>
@@ -340,31 +343,68 @@ $('#k-farms').textContent = fmt(S.reduce((a, r) => a + r.farms, 0)) + ' 곳';
 const recent = S.slice(4);
 $('#k-neg').textContent = Math.round(100 * recent.reduce((a, r) => a + r.neg.heads, 0) / recent.reduce((a, r) => a + r.heads, 0)) + '%';
 
-/* 1. 시즌별 */
-let seasonMetric = 'heads';
+/* 1. 시즌별 — 비율/개수 × 마리/농가, 범례를 누르면 그 분류를 강조 (다시 누르면 해제) */
+let ssScale = 'count', ssBasis = 'heads', ssFocus = null;
+const SS_FOCUS = [['inf','감염 확인','var(--inf)'], ['prev','예방적 전체','linear-gradient(90deg,var(--pos) 0 33%,var(--neg) 33% 66%,var(--unk) 66%)'],
+  ['pos','예방적 · 검사 양성','var(--pos)'], ['neg','예방적 · 검사 음성','var(--neg)']];
+const SS_KEYS = {inf:['inf'], prev:['pos','neg','unk'], pos:['pos'], neg:['neg']};
+chips($('#ss-scale'), b => { ssScale = b.dataset.v; drawSeason(); });
+chips($('#ss-basis'), b => { ssBasis = b.dataset.v; drawSeason(); });
+// 16/17 은 예방적 농가 목록이 없고, 17/18 은 검사 결과가 없어 일부 비율을 셀 수 없음
+const ssValid = (r, f) => !r.none && r.s !== '16/17' && !(r.s === '17/18' && (f === 'pos' || f === 'neg'));
 function drawSeason(){
+  const lg = $('#ss-legend');
+  lg.innerHTML = SS_FOCUS.map(([k, n, bg]) => `<button type="button" data-k="${k}" aria-pressed="${k === ssFocus}"${!ssFocus ? ' class="all"' : ''}><i style="background:${bg}"></i>${n}</button>`).join('')
+    + `<span><i style="background:var(--unk)"></i>예방적 · 결과 없음</span>` + (ssBasis === 'heads' ? `<span><i style="background:var(--gap)"></i>세부 목록 없음</span>` : '');
+  lg.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { ssFocus = ssFocus === b.dataset.k ? null : b.dataset.k; drawSeason(); }));
   const svg = $('#season-chart'); svg.innerHTML = '';
-  const H = 320, W = sz(svg, H), L = W < 520 ? 40 : 52, R = 8, T = 22, B = 34, m = seasonMetric;
-  const val = r => m === 'heads' ? r.heads + (r.gap || 0) : r.farms;
-  const max = niceMax(Math.max(...S.map(val)));
-  const step = (W - L - R) / S.length, bw = Math.min(42, step * .62);
+  const H = 320, W = sz(svg, H), narrow = W < 520, L = narrow ? 40 : 52, R = 8, T = 26, B = 34;
+  const share = ssScale === 'share', m = ssBasis, unit = m === 'heads' ? '마리' : '곳';
+  const parts = r => { const p = CATS.map(([k, n, c]) => ({k, n, c, v:r[k][m]})); if (m === 'heads' && r.gap) p.push({k:'gap', n:'세부 목록 없음', c:'--gap', v:r.gap}); return p; };
+  const tot = r => parts(r).reduce((a, p) => a + p.v, 0);
+  const max = share ? 100 : niceMax(Math.max(...S.map(tot)));
   const y = v => T + (H - T - B) * (1 - v / max);
-  for (let i = 0; i <= 4; i++){ const v = max * i / 4; el('line', {x1:L, x2:W-R, y1:y(v), y2:y(v), class:'axis'}, svg); el('text', {x:L-6, y:y(v)+4, 'text-anchor':'end'}, svg, m === 'heads' ? man(v) : fmt(v)); }
+  const num = v => m === 'heads' ? man(v) : fmt(v);
+  for (let i = 0; i <= 4; i++){ const v = max * i / 4; el('line', {x1:L, x2:W-R, y1:y(v), y2:y(v), class:'axis'}, svg); el('text', {x:L-6, y:y(v)+4, 'text-anchor':'end'}, svg, share ? v + '%' : num(v)); }
+  if (share) el('line', {x1:L, x2:W-R, y1:y(50), y2:y(50), stroke:css('--muted'), 'stroke-dasharray':'3 3', 'stroke-width':1}, svg);
+  if (!share && m === 'farms') el('text', {x:L-6, y:T-12, 'text-anchor':'end'}, svg, '(곳)');
+  const step = (W - L - R) / S.length, bw = Math.min(42, step * .62), fk = ssFocus ? SS_KEYS[ssFocus] : [];
+  const pts = [];
   S.forEach((r, i) => {
-    const x = L + step * i + (step - bw) / 2; let acc = 0;
-    seasonLabel(svg, x + bw/2, H - B, r.s, W < 520);
-    if (r.none){ el('text', {x:x + bw/2, y:y(0) - 8, 'text-anchor':'middle'}, svg, W < 520 ? '–' : '발생 없음'); return; }
-    const parts = CATS.map(([k, n, c]) => [r[k][m], n, c]);
-    if (m === 'heads' && r.gap) parts.push([r.gap, '세부 목록 없음', '--gap']);
-    parts.forEach(([v, n, c]) => { if (!v) return; const rect = el('rect', {x, width:bw, y:y(acc + v), height:Math.max(.5, y(acc) - y(acc + v)), fill:css(c)}, svg); acc += v;
-      hover(rect, `<b>${r.s} 시즌</b><br>${n}: ${m === 'heads' ? fmt(v) + '마리' : fmt(v) + '곳'}`); });
-    el('text', {x:x + bw/2, y:y(acc) - 6, 'text-anchor':'middle', class:'val'}, svg, m === 'heads' ? man(acc) : fmt(acc));
+    const x = L + step * i + (step - bw) / 2, cx = x + bw / 2;
+    const g = el('g', {class:'col'}, svg);
+    el('rect', {x:L + step * i, y:T - 20, width:step, height:H - T - B + 20, fill:'transparent', class:'hit'}, g);
+    seasonLabel(g, cx, H - B, r.s, narrow);
+    if (r.none){ el('text', {x:cx, y:y(0) - 8, 'text-anchor':'middle'}, g, narrow ? '–' : '발생 없음'); hover(g, `<b>${r.s} 시즌</b><br>농장 발생 없음`); if (ssFocus) pts.push({cx, v:0, ok:false, raw:0}); return; }
+    const T0 = tot(r), ps = parts(r);
+    const ordered = ssFocus ? [...ps.filter(p => fk.includes(p.k)), ...ps.filter(p => !fk.includes(p.k))] : ps;
+    let acc = 0;
+    ordered.forEach(p => { if (!p.v) return; const v = share ? 100 * p.v / T0 : p.v;
+      el('rect', {x, width:bw, y:y(acc + v), height:Math.max(.5, y(acc) - y(acc + v)), fill:css(p.c), 'fill-opacity':!ssFocus || fk.includes(p.k) ? 1 : .3}, g); acc += v; });
+    const fv = ps.filter(p => fk.includes(p.k)).reduce((a, p) => a + p.v, 0);
+    if (ssFocus) pts.push({cx, v:share ? 100 * fv / T0 : fv, ok:ssValid(r, ssFocus) || !share, raw:fv});
+    else if (!share) el('text', {x:cx, y:y(acc) - 6, 'text-anchor':'middle', class:'val'}, g, num(acc));
+    const lines = ps.filter(p => p.v).map(p => `${fk.includes(p.k) ? '<b>' : ''}${p.n} ${Math.round(100 * p.v / T0)}% · ${fmt(p.v)}${unit}${fk.includes(p.k) ? '</b>' : ''}`).join('<br>');
+    const caveat = r.s === '16/17' ? (m === 'heads' ? '<br><br>1,152만 마리는 감염·예방 구분을 알 수 없음' : '<br><br>예방적 살처분 농가는 목록에 없음') : r.s === '17/18' ? '<br><br>예방적 살처분은 검사 결과 기록 없음' : '';
+    hover(g, `<b>${r.s} 시즌 · ${fmt(T0)}${unit}</b><br>${lines}${caveat}`);
   });
+  if (ssFocus && share){
+    let seg = [];
+    const flush = () => { if (seg.length > 1) el('polyline', {points:seg.map(p => p.cx + ',' + y(p.v).toFixed(1)).join(' '), fill:'none', stroke:css('--fg'), 'stroke-width':1.5, 'stroke-linejoin':'round', 'pointer-events':'none'}, svg); seg = []; };
+    pts.forEach(p => { if (p.ok) seg.push(p); else flush(); }); flush();
+    pts.forEach(p => { if (!p.ok) return; el('circle', {cx:p.cx, cy:y(p.v), r:4, fill:css('--fg'), stroke:css('--panel'), 'stroke-width':2, 'pointer-events':'none'}, svg); });
+  }
+  if (ssFocus) pts.forEach(p => { if (share && !p.ok) return; if (!p.raw && !share) return;
+    el('text', {x:p.cx, y:y(p.v) - 8, 'text-anchor':'middle', class:'val lbl', 'pointer-events':'none'}, svg, share ? Math.round(p.v) + '%' : num(p.v) + (m === 'farms' ? '곳' : '')); });
+  const fname = ssFocus ? SS_FOCUS.find(f => f[0] === ssFocus)[1] : '';
+  $('#season-hint').textContent = !ssFocus
+    ? '분류 이름을 누르면 그 분류만 강조해서 볼 수 있습니다. 막대에 손을 올리면 분류별 숫자가 나옵니다.'
+    : share ? `선은 시즌마다 살처분된 ${m === 'heads' ? '가금' : '농가'} 가운데 「${fname}」의 비율입니다. 점선은 50%. 16/17${ssFocus === 'pos' || ssFocus === 'neg' ? '·17/18' : ''} 시즌은 구분 자료가 없어 선에서 뺐고, 발생이 없던 두 겨울에서 선이 끊깁니다. 같은 이름을 다시 누르면 강조가 풀립니다.`
+    : `진한 막대가 「${fname}」입니다. 같은 이름을 다시 누르면 강조가 풀립니다.`;
   $('#season-note').textContent = m === 'heads'
     ? '16/17 시즌은 의원실 총계가 3,808만 마리지만, 농장 목록에는 발생 농장 421곳 2,656만 마리만 있어 나머지 1,152만 마리는 감염·예방적 구분을 알 수 없습니다. 17/18 시즌 예방적 살처분은 검사 결과가 기록되지 않았습니다.'
     : '농장 목록에 오른 농가 수입니다. 16/17 시즌은 발생 농장 421곳만 목록에 있고 예방적 살처분 농가는 빠져 있습니다.';
 }
-chips($('#season .controls'), b => { seasonMetric = b.dataset.m; drawSeason(); });
 (function(){
   const t = $('#season-table');
   t.innerHTML = '<tr><th>시즌</th><th>감염 확인</th><th>예방 · 양성</th><th>예방 · 음성</th><th>예방 · 결과 없음</th><th>목록 없음</th><th>합계(마리)</th><th>농가</th></tr>' +
