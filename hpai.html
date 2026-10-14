@@ -68,6 +68,8 @@ section{display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--fg2)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:11px;height:11px;border-radius:2px;display:inline-block}
+.sp-controls{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.sp-controls .controls + .controls{border-left:1px solid var(--line);padding-left:18px}
 .sp-legend button{font:inherit;font-size:13px;display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid transparent;border-radius:999px;padding:2px 9px 2px 7px;color:var(--fg2);cursor:pointer;opacity:.55}
 .sp-legend button[aria-pressed="true"]{opacity:1;color:var(--fg);border-color:var(--line);font-weight:600}
 .sp-legend button:hover{opacity:1}
@@ -184,15 +186,20 @@ html[data-only] main{max-width:none;gap:36px}
       <p class="sub">22/23 시즌 43%까지 내려갔던 산란계 비중이 최근 세 시즌 연속 72~74%로 다시 올라섰습니다. 살처분된 가금 네 마리 중 세 마리가 달걀을 낳는 닭입니다.</p>
     </div>
     <div class="panel">
-      <div class="controls" role="group" aria-label="보기 선택" id="sp-mode">
-        <button class="chip" data-m="share" aria-pressed="true">비율 (%)</button>
-        <button class="chip" data-m="heads" aria-pressed="false">마리 수</button>
-        <button class="chip" data-m="farms" aria-pressed="false">농가 수</button>
+      <div class="sp-controls">
+        <div class="controls" role="group" aria-label="비율 또는 개수" id="sp-scale">
+          <button class="chip" data-v="share" aria-pressed="true">비율 (%)</button>
+          <button class="chip" data-v="count" aria-pressed="false">개수</button>
+        </div>
+        <div class="controls" role="group" aria-label="마리 또는 농가" id="sp-basis">
+          <button class="chip" data-v="heads" aria-pressed="true">마리</button>
+          <button class="chip" data-v="farms" aria-pressed="false">농가</button>
+        </div>
       </div>
       <div class="legend sp-legend" id="sp-legend" role="group" aria-label="강조할 축종"></div>
       <svg id="species-chart" viewBox="0 0 680 300" role="img" aria-label="시즌별 축종 구성 막대그래프"></svg>
       <p class="note" id="sp-hint"></p>
-      <p class="note">농장 목록 합계. 비율(%)은 마리 수 기준입니다. 종계에는 육용종계·산란종계·원종계, 기타에는 메추리·꿩·기러기·관상조 등이 들어갑니다.</p>
+      <p class="note">농장 목록 합계. 종계에는 육용종계·산란종계·원종계, 기타에는 메추리·꿩·기러기·관상조 등이 들어갑니다.</p>
     </div>
   </section>
 
@@ -366,15 +373,17 @@ chips($('#season .controls'), b => { seasonMetric = b.dataset.m; drawSeason(); }
 
 /* 2. 축종 — 기본은 비율(%)로 산란계를 강조. 범례를 누르면 그 축종을 강조 */
 const SP = [['산란계','--sp1'],['육계','--sp2'],['토종닭','--sp3'],['종계','--sp4'],['오리','--sp5'],['기타','--sp6']];
-let spMode = 'share', spFocus = '산란계';
-chips($('#sp-mode'), b => { spMode = b.dataset.m; drawSpecies(); });
+// 두 갈래 선택: 비율/개수 × 마리/농가
+let spScale = 'share', spBasis = 'heads', spFocus = '산란계';
+chips($('#sp-scale'), b => { spScale = b.dataset.v; drawSpecies(); });
+chips($('#sp-basis'), b => { spBasis = b.dataset.v; drawSpecies(); });
 function drawSpecies(){
   const lg = $('#sp-legend');
   lg.innerHTML = SP.map(([n, c]) => `<button type="button" data-n="${n}" aria-pressed="${n === spFocus}"><i style="background:var(${c})"></i>${n}</button>`).join('');
   lg.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { spFocus = b.dataset.n; drawSpecies(); }));
   const svg = $('#species-chart'); svg.innerHTML = '';
   const H = 300, W = sz(svg, H), narrow = W < 520, L = narrow ? 40 : 52, R = 8, T = 26, B = 34;
-  const rows = S.filter(r => !r.none), share = spMode === 'share', farms = spMode === 'farms';
+  const rows = S.filter(r => !r.none), share = spScale === 'share', farms = spBasis === 'farms';
   const raw = (r, n) => ((farms ? r.spf : r.sp) || {})[n] || 0;
   const tot = r => SP.reduce((a, [n]) => a + raw(r, n), 0);
   const max = share ? 100 : niceMax(Math.max(...rows.map(tot)));
@@ -384,7 +393,7 @@ function drawSpecies(){
   for (let i = 0; i <= 4; i++){ const v = max * i / 4; el('line', {x1:L, x2:W-R, y1:y(v), y2:y(v), class:'axis'}, svg); el('text', {x:L-6, y:y(v)+4, 'text-anchor':'end'}, svg, share ? v + '%' : num(v)); }
   if (share){ el('line', {x1:L, x2:W-R, y1:y(50), y2:y(50), stroke:css('--muted'), 'stroke-dasharray':'3 3', 'stroke-width':1}, svg); }
   const step = (W - L - R) / rows.length, bw = Math.min(46, step * .62);
-  if (farms) el('text', {x:L-6, y:T-12, 'text-anchor':'end'}, svg, '(곳)');
+  if (farms && !share) el('text', {x:L-6, y:T-12, 'text-anchor':'end'}, svg, '(곳)');
   const order = [SP.find(s => s[0] === spFocus), ...SP.filter(s => s[0] !== spFocus)];
   const pts = [];
   rows.forEach((r, i) => {
@@ -408,7 +417,7 @@ function drawSpecies(){
   });
   const last = rows[rows.length - 1], lastV = Math.round(val(last, spFocus));
   $('#sp-hint').textContent = share
-    ? `선은 시즌마다 살처분된 가금 가운데 ${spFocus}의 비율입니다. 점선은 50%. 막대에 손을 올리면 농장 수와 농장당 평균 마리 수가 나옵니다.`
+    ? (farms ? `선은 시즌마다 살처분된 농가 가운데 ${spFocus} 농가의 비율입니다.` : `선은 시즌마다 살처분된 가금 가운데 ${spFocus}의 비율입니다.`) + ' 점선은 50%. 막대에 손을 올리면 농장 수와 농장당 평균 마리 수가 나옵니다.'
     : farms ? `진한 막대가 ${spFocus} 농가 수입니다. 막대에 손을 올리면 축종별 농가 수가 나옵니다.`
     : `진한 막대가 ${spFocus}입니다. 막대에 손을 올리면 축종별 마리 수가 나옵니다.`;
 }
