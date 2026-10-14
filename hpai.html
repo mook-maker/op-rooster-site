@@ -187,11 +187,12 @@ html[data-only] main{max-width:none;gap:36px}
       <div class="controls" role="group" aria-label="보기 선택" id="sp-mode">
         <button class="chip" data-m="share" aria-pressed="true">비율 (%)</button>
         <button class="chip" data-m="heads" aria-pressed="false">마리 수</button>
+        <button class="chip" data-m="farms" aria-pressed="false">농가 수</button>
       </div>
       <div class="legend sp-legend" id="sp-legend" role="group" aria-label="강조할 축종"></div>
       <svg id="species-chart" viewBox="0 0 680 300" role="img" aria-label="시즌별 축종 구성 막대그래프"></svg>
       <p class="note" id="sp-hint"></p>
-      <p class="note">마리 수 기준, 농장 목록 합계. 종계에는 육용종계·산란종계·원종계, 기타에는 메추리·꿩·기러기·관상조 등이 들어갑니다.</p>
+      <p class="note">농장 목록 합계. 비율(%)은 마리 수 기준입니다. 종계에는 육용종계·산란종계·원종계, 기타에는 메추리·꿩·기러기·관상조 등이 들어갑니다.</p>
     </div>
   </section>
 
@@ -373,14 +374,17 @@ function drawSpecies(){
   lg.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { spFocus = b.dataset.n; drawSpecies(); }));
   const svg = $('#species-chart'); svg.innerHTML = '';
   const H = 300, W = sz(svg, H), narrow = W < 520, L = narrow ? 40 : 52, R = 8, T = 26, B = 34;
-  const rows = S.filter(r => !r.none), share = spMode === 'share';
-  const tot = r => SP.reduce((a, [n]) => a + (r.sp[n] || 0), 0);
+  const rows = S.filter(r => !r.none), share = spMode === 'share', farms = spMode === 'farms';
+  const raw = (r, n) => ((farms ? r.spf : r.sp) || {})[n] || 0;
+  const tot = r => SP.reduce((a, [n]) => a + raw(r, n), 0);
   const max = share ? 100 : niceMax(Math.max(...rows.map(tot)));
-  const val = (r, n) => share ? 100 * (r.sp[n] || 0) / tot(r) : (r.sp[n] || 0);
+  const val = (r, n) => share ? 100 * raw(r, n) / tot(r) : raw(r, n);
+  const num = v => farms ? fmt(v) : man(v);
   const y = v => T + (H - T - B) * (1 - v / max);
-  for (let i = 0; i <= 4; i++){ const v = max * i / 4; el('line', {x1:L, x2:W-R, y1:y(v), y2:y(v), class:'axis'}, svg); el('text', {x:L-6, y:y(v)+4, 'text-anchor':'end'}, svg, share ? v + '%' : man(v)); }
+  for (let i = 0; i <= 4; i++){ const v = max * i / 4; el('line', {x1:L, x2:W-R, y1:y(v), y2:y(v), class:'axis'}, svg); el('text', {x:L-6, y:y(v)+4, 'text-anchor':'end'}, svg, share ? v + '%' : num(v)); }
   if (share){ el('line', {x1:L, x2:W-R, y1:y(50), y2:y(50), stroke:css('--muted'), 'stroke-dasharray':'3 3', 'stroke-width':1}, svg); }
   const step = (W - L - R) / rows.length, bw = Math.min(46, step * .62);
+  if (farms) el('text', {x:L-6, y:T-12, 'text-anchor':'end'}, svg, '(곳)');
   const order = [SP.find(s => s[0] === spFocus), ...SP.filter(s => s[0] !== spFocus)];
   const pts = [];
   rows.forEach((r, i) => {
@@ -392,18 +396,20 @@ function drawSpecies(){
       el('rect', {x, width:bw, y:y(acc + v), height:Math.max(.5, y(acc) - y(acc + v) - 0), fill:css(c), 'fill-opacity':n === spFocus ? 1 : .35}, g); acc += v; });
     const fv = val(r, spFocus); pts.push([cx, y(fv), fv, r]);
     const fh = r.sp[spFocus] || 0, ff = (r.spf || {})[spFocus] || 0, allF = Object.values(r.spf || {}).reduce((a, b) => a + b, 0);
-    const lines = SP.map(([n]) => [n, r.sp[n] || 0]).filter(e => e[1]).sort((p, q) => q[1] - p[1])
-      .map(([n, v]) => `${n === spFocus ? '<b>' : ''}${n} ${Math.round(100 * v / T0)}% · ${man(v)}마리${n === spFocus ? '</b>' : ''}`).join('<br>');
-    hover(g, `<b>${r.s} 시즌 · ${man(T0)}마리</b><br>${lines}` + (ff ? `<br><br>${spFocus} 농장 ${ff}곳 (전체 ${allF}곳의 ${Math.round(100 * ff / allF)}%)<br>농장당 평균 ${man(Math.round(fh / ff))}마리` : ''));
+    const hT = SP.reduce((a, [n]) => a + (r.sp[n] || 0), 0);
+    const lines = SP.map(([n]) => [n, raw(r, n)]).filter(e => e[1]).sort((p, q) => q[1] - p[1])
+      .map(([n, v]) => `${n === spFocus ? '<b>' : ''}${n} ${Math.round(100 * v / T0)}% · ${farms ? fmt(v) + '곳' : man(v) + '마리'}${n === spFocus ? '</b>' : ''}`).join('<br>');
+    hover(g, `<b>${r.s} 시즌 · ${man(hT)}마리 · ${fmt(allF)}곳</b><br>${lines}` + (ff ? `<br><br>${spFocus} 농장 ${ff}곳 (전체 ${allF}곳의 ${Math.round(100 * ff / allF)}%)<br>농장당 평균 ${man(Math.round(fh / ff))}마리` : ''));
   });
   if (share) el('polyline', {points:pts.map(p => p[0] + ',' + p[1].toFixed(1)).join(' '), fill:'none', stroke:css('--fg'), 'stroke-width':1.5, 'stroke-linejoin':'round', 'pointer-events':'none'}, svg);
   pts.forEach(([cx, py, v]) => {
     if (share) el('circle', {cx, cy:py, r:4, fill:css('--fg'), stroke:css('--panel'), 'stroke-width':2, 'pointer-events':'none'}, svg);
-    el('text', {x:cx, y:py - 8, 'text-anchor':'middle', class:'val lbl', 'pointer-events':'none'}, svg, share ? Math.round(v) + '%' : (v ? man(v) : ''));
+    el('text', {x:cx, y:py - 8, 'text-anchor':'middle', class:'val lbl', 'pointer-events':'none'}, svg, share ? Math.round(v) + '%' : (v ? (farms ? fmt(v) + '곳' : man(v)) : ''));
   });
   const last = rows[rows.length - 1], lastV = Math.round(val(last, spFocus));
   $('#sp-hint').textContent = share
     ? `선은 시즌마다 살처분된 가금 가운데 ${spFocus}의 비율입니다. 점선은 50%. 막대에 손을 올리면 농장 수와 농장당 평균 마리 수가 나옵니다.`
+    : farms ? `진한 막대가 ${spFocus} 농가 수입니다. 막대에 손을 올리면 축종별 농가 수가 나옵니다.`
     : `진한 막대가 ${spFocus}입니다. 막대에 손을 올리면 축종별 마리 수가 나옵니다.`;
 }
 
