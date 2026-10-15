@@ -35,10 +35,10 @@
     '.or-link:hover,.or-link.or-here{color:var(--or-accent)!important}',
     '.or-link:hover::after,.or-link.or-here::after{transform:scaleX(1)}',
     /* 공유 단추 */
-    '.or-share{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 13px;margin:0 6px;border:1px solid var(--or-accent);border-radius:8px;background:var(--or-accent);color:#fff;font:600 14px/1 "IBM Plex Sans KR",sans-serif;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}',
-    '.or-share:hover{filter:brightness(1.12)}',
+    '.or-share{display:inline-flex;align-items:center;justify-content:center;flex:none;width:38px;height:38px;padding:0;margin:0 4px;border:0;border-radius:8px;background:transparent;color:var(--or-fg2);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .15s,background .15s}',
+    '.or-share:hover,.or-share[aria-expanded="true"]{color:var(--or-accent);background:var(--or-accent-soft)}',
     '.or-share:focus-visible,.or-menu:focus-visible{outline:2px solid var(--or-accent);outline-offset:2px}',
-    '.or-share svg{width:16px;height:16px}',
+    '.or-share svg{width:20px;height:20px}',
     /* 공유 창 */
     '.or-pop{position:fixed;z-index:2147483000;width:min(280px,calc(100vw - 24px));background:var(--or-panel);border:1px solid var(--or-line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.14);padding:10px;font-family:"IBM Plex Sans KR",sans-serif;opacity:0;transform:translateY(-6px);transition:opacity .15s,transform .15s;pointer-events:none}',
     '.or-pop.on{opacity:1;transform:none;pointer-events:auto}',
@@ -60,9 +60,10 @@
     '  .or-brand{font-size:19px!important}',
     '  .or-show .or-mark{width:30px;margin-right:8px}',
     '  .or-mark{height:33px}',
-    '  .or-share{height:40px;padding:0 12px;margin:0 8px 0 4px;font-size:15px}',
+    '  .or-share{width:42px;height:42px;margin:0 2px}',
+    '  .or-share svg{width:22px;height:22px}',
     '}',
-    '@media (max-width:360px){.or-share .or-share-t{display:none}.or-share{padding:0 10px}.or-menu::after{content:none}}',
+    '@media (max-width:360px){.or-menu::after{content:none}}',
     '@media (min-width:761px){.or-brand{font-size:18px!important}}',
     DEBUG ? '.or-head{outline:2px dashed #0a7!important}.or-brand{outline:2px dashed #07a!important}.or-link{outline:1px dotted #a70}.or-menu{outline:2px dashed #a07!important}.or-hide{display:inline-flex!important;outline:2px solid red!important;opacity:.35}' : ''
   ].join('\n');
@@ -138,6 +139,10 @@
         var box = el.closest('button,a,[role="button"]') || el;
         /* 입력칸이면 감싸는 상자 */
         if (el.tagName === 'INPUT') { var p = el.parentElement; if (p && p !== head && p.getBoundingClientRect().width < 420) box = p; }
+        /* 검색이 아닌 단추(메뉴 등)를 품은 큰 상자는 숨기지 않기 */
+        var others = box.querySelectorAll('button,a,[role="button"]'), mixed = false;
+        for (var j = 0; j < others.length; j++) { var o = others[j]; if (o !== box && !isSearch(o) && !(o.closest('[aria-label*="search" i],[aria-label*="검색"]'))) { mixed = true; break; } }
+        if (mixed || box === head || box.contains(head)) continue;
         if (out.indexOf(box) < 0 && !out.some(function (o) { return o.contains(box); })) out.push(box);
       }
     }
@@ -269,7 +274,8 @@
   function makeShare() {
     var b = document.createElement('button');
     b.type = 'button'; b.className = 'or-share'; b.setAttribute('aria-haspopup', 'dialog'); b.setAttribute('aria-expanded', 'false');
-    b.innerHTML = ICON_SHARE + '<span class="or-share-t">공유</span>';
+    b.setAttribute('aria-label', '공유하기'); b.title = '공유하기';
+    b.innerHTML = ICON_SHARE;
     b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); if (pop && pop.classList.contains('on')) closePop(); else openPop(b); });
     return b;
   }
@@ -325,11 +331,21 @@
     var searches = findSearch(head);
     searches.forEach(function (s) { s.classList.add('or-hide'); });
     var menu = findMenuButton(head, searches);
+    /* 안전장치: 폰에서 숨긴 것 때문에 메뉴 단추가 안 보이면 숨김을 되돌림 */
+    if (window.innerWidth <= 760 && !(menu && visible(menu)) && !head.querySelector('a.or-link:not(.or-hide)') ) {
+      searches.forEach(function (x) { x.classList.remove('or-hide'); });
+      menu = findMenuButton(head, []);
+      log('menu hidden by search hide; restored');
+    } else if (window.innerWidth <= 760 && !(menu && visible(menu))) {
+      var anyVis = [].some.call(head.querySelectorAll('a.or-link'), visible);
+      if (!anyVis) { searches.forEach(function (x) { x.classList.remove('or-hide'); }); menu = findMenuButton(head, []); }
+    }
     if (menu) menu.classList.add('or-menu');
     if (!document.querySelector('.or-share')) {
       var b = makeShare();
       var anchor = searches.filter(function (s) { return s.parentElement; })[0];
-      if (anchor) anchor.parentElement.insertBefore(b, anchor);
+      if (menu && menu.parentElement && visible(menu)) menu.parentElement.insertBefore(b, menu);
+      else if (anchor) anchor.parentElement.insertBefore(b, anchor);
       else if (menu && menu.parentElement) menu.parentElement.insertBefore(b, menu);
       else head.appendChild(b);
     }
