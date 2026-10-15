@@ -1,7 +1,8 @@
 /* 작전명 수탉: 사이트 맨 위 메뉴 줄(헤더) 꾸미기
    Bullet Code Editor 의 Head 칸에 아래 한 줄만 넣으면 된다.
    <script src="https://mook-maker.github.io/op-rooster-site/header.js" defer></script>
-   하는 일: 검색 단추 숨기고 그 자리에 「공유」, 메뉴 강조, 폰에서 헤더 키우기,
+   하는 일: 검색 단추 숨기기, 작은 「공유」 아이콘, PC 메뉴 글씨 강조,
+   폰에서 헤더 키우기 + 헤더 아래에 여섯 꼭지로 바로 가는 줄,
    큰 수탉 그림이 화면 밖으로 나가면 「작전명 수탉」 앞에 작은 수탉이 나타남.
    주소 뒤에 ?orhdr=off 를 붙이면 꺼지고, ?orhdr=debug 면 찾은 부분에 테두리가 생긴다. */
 (function () {
@@ -15,10 +16,13 @@
   var CARD_IMG = BASE + 'share-card.png';
   var KAKAO_KEY = '3c59af173d83b1a374f190c64135a641';
   var SITE = 'https://www.op-rooster.com';
+  var PHONE = 760;
+  /* 여섯 꼭지 (줄에 보일 순서) */
+  var SECTIONS = ['소개', '활동과 관계망', '관련 기사', '의견 나누기', '자료실', '일정', '영상'];
   var log = function () { if (DEBUG) console.log.apply(console, ['[orhdr]'].concat([].slice.call(arguments))); };
 
   var css = [
-    ':root{--or-accent:#7b302d;--or-accent-soft:#f4ebe9;--or-fg:#16181b;--or-fg2:#3b4047;--or-line:#dfe2e6;--or-panel:#fff}',
+    ':root{--or-accent:#7b302d;--or-accent-soft:#f4ebe9;--or-fg:#16181b;--or-fg2:#3b4047;--or-line:#dfe2e6;--or-panel:#fff;--or-bg:var(--sb-bg,#f5f6f7)}',
     /* 검색 숨김 */
     '.or-hide{display:none!important}',
     /* 「작전명 수탉」 글씨 */
@@ -34,10 +38,10 @@
     '.or-link::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;background:var(--or-accent);transform:scaleX(0);transform-origin:left;transition:transform .2s ease}',
     '.or-link:hover,.or-link.or-here{color:var(--or-accent)!important}',
     '.or-link:hover::after,.or-link.or-here::after{transform:scaleX(1)}',
-    /* 공유 단추 */
+    /* 공유 단추 (아이콘만) */
     '.or-share{display:inline-flex;align-items:center;justify-content:center;flex:none;width:38px;height:38px;padding:0;margin:0 4px;border:0;border-radius:8px;background:transparent;color:var(--or-fg2);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .15s,background .15s}',
     '.or-share:hover,.or-share[aria-expanded="true"]{color:var(--or-accent);background:var(--or-accent-soft)}',
-    '.or-share:focus-visible,.or-menu:focus-visible{outline:2px solid var(--or-accent);outline-offset:2px}',
+    '.or-share:focus-visible{outline:2px solid var(--or-accent);outline-offset:2px}',
     '.or-share svg{width:20px;height:20px}',
     /* 공유 창 */
     '.or-pop{position:fixed;z-index:2147483000;width:min(280px,calc(100vw - 24px));background:var(--or-panel);border:1px solid var(--or-line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.14);padding:10px;font-family:"IBM Plex Sans KR",sans-serif;opacity:0;transform:translateY(-6px);transition:opacity .15s,transform .15s;pointer-events:none}',
@@ -47,14 +51,16 @@
     '.or-pop button:hover,.or-pop a:hover{border-color:var(--or-accent);color:var(--or-accent)}',
     '.or-pop svg{width:18px;height:18px;flex:none}',
     '.or-pop .or-msg{margin:6px 4px 0;font-size:13px;color:var(--or-accent);min-height:1em}',
-    /* 폰 메뉴 단추 강조 (폰 폭에서만, 보이기·숨기기는 Bullet 에 맡김) */
-    '@media (max-width:760px){',
-    '  .or-menu{align-items:center!important;justify-content:center!important;gap:5px;min-width:44px!important;height:40px!important;padding:0 10px!important;border:1.5px solid var(--or-accent)!important;border-radius:8px!important;background:var(--or-accent-soft)!important;color:var(--or-accent)!important}',
-    '  .or-menu svg{color:var(--or-accent)!important}',
-    '  .or-menu::after{content:"메뉴";font:600 14px/1 "IBM Plex Sans KR",sans-serif;color:var(--or-accent)}',
-    '}',
+    /* 폰: 헤더 아래 여섯 꼭지 줄 (옆으로 밀어서 봄) */
+    '.or-strip{display:none}',
+    '@media (max-width:' + PHONE + 'px){',
+    '  .or-strip{display:block;position:sticky;z-index:2147482000;background:var(--or-bg);border-bottom:1px solid var(--or-line);font-family:"IBM Plex Sans KR",sans-serif;margin:0;padding:0;width:100%;box-sizing:border-box}',
+    '  .or-strip-in{display:flex;gap:2px;overflow-x:auto;padding:0 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-padding:0 10px}',
+    '  .or-strip-in::-webkit-scrollbar{display:none}',
+    '  .or-strip a{flex:none;display:inline-block;padding:11px 9px 9px;font-size:15px;line-height:1.2;font-weight:500;color:var(--or-fg2);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;-webkit-tap-highlight-color:transparent}',
+    '  .or-strip a.or-here{color:var(--or-accent);border-bottom-color:var(--or-accent);font-weight:600}',
+    '  .or-strip::after{content:"";position:absolute;top:0;right:0;bottom:1px;width:26px;background:linear-gradient(90deg,rgba(245,246,247,0),var(--or-bg));pointer-events:none}',
     /* 폰: 헤더를 크게 */
-    '@media (max-width:760px){',
     '  .or-head{min-height:64px!important}',
     '  .or-row{min-height:64px!important;align-items:center!important}',
     '  .or-brand{font-size:19px!important}',
@@ -63,9 +69,8 @@
     '  .or-share{width:42px;height:42px;margin:0 2px}',
     '  .or-share svg{width:22px;height:22px}',
     '}',
-    '@media (max-width:360px){.or-menu::after{content:none}}',
-    '@media (min-width:761px){.or-brand{font-size:18px!important}}',
-    DEBUG ? '.or-head{outline:2px dashed #0a7!important}.or-brand{outline:2px dashed #07a!important}.or-link{outline:1px dotted #a70}.or-menu{outline:2px dashed #a07!important}.or-hide{display:inline-flex!important;outline:2px solid red!important;opacity:.35}' : ''
+    '@media (min-width:' + (PHONE + 1) + 'px){.or-brand{font-size:18px!important}}',
+    DEBUG ? '.or-head{outline:2px dashed #0a7!important}.or-brand{outline:2px dashed #07a!important}.or-link{outline:1px dotted #a70}.or-menu{outline:2px dashed #a07!important}.or-hide{display:inline-flex!important;outline:2px solid red!important;opacity:.35}.or-strip{outline:2px dashed #70a!important}' : ''
   ].join('\n');
 
   var ICON_SHARE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>';
@@ -89,9 +94,11 @@
     return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none';
   }
   function txt(el) { return (el.textContent || '').replace(/\s+/g, ' ').trim(); }
+  function isPhone() { return window.innerWidth <= PHONE; }
   function isRoot(a) {
     try { var u = new URL(a.getAttribute('href'), location.href); return (u.pathname === '/' || u.pathname === '') && !u.search && !u.hash; } catch (e) { return false; }
   }
+  function ours(el) { return !!el.closest('.or-share,.or-pop,.or-strip'); }
 
   /* 맨 위 메뉴 줄 찾기: 화면 맨 위에 붙어 있고 폭이 거의 화면 전체인 요소 */
   function findHeader() {
@@ -99,7 +106,7 @@
     var cands = document.querySelectorAll('header,nav,[class*="navbar" i],[class*="nav-bar" i],[class*="header" i],[id*="nav" i],[id*="header" i]');
     for (var i = 0; i < cands.length; i++) {
       var el = cands[i];
-      if (el.closest('.notion-page-content,.notion-page,main article')) continue;
+      if (el.closest('.notion-page-content,.notion-page,main article') || el.classList.contains('or-strip')) continue;
       var r = el.getBoundingClientRect();
       if (r.width < W * 0.85 || r.height < 28 || r.height > 160) continue;
       var top = r.top + (getComputedStyle(el).position === 'fixed' || getComputedStyle(el).position === 'sticky' ? 0 : window.scrollY);
@@ -129,33 +136,67 @@
     var t = txt(el).toLowerCase();
     return t.length < 24 && (/^search|검색/.test(t) || /(⌘|ctrl)\s*\+?\s*k$/.test(t));
   }
+  /* el 또는 box 아래쪽 조상 가운데 검색 표시가 있는지 */
+  function searchish(el, box) { for (var e = el; e && e !== box; e = e.parentElement) if (isSearch(e)) return true; return false; }
 
-  function findSearch(head) {
-    var out = [], all = head.querySelectorAll('button,a,input,[role="button"],[class*="search" i],[aria-label*="search" i],[aria-label*="검색"]');
+  var MENUISH = '[aria-label*="menu" i],[aria-label*="메뉴"],[class*="hamburger" i],[class*="menu-toggle" i],[class*="burger" i],[class*="drawer" i],[class*="toggle" i]';
+  /* 이 상자 안에 메뉴 단추(또는 메뉴처럼 보이는 것)가 있는가 */
+  function hasMenuish(el, menu) {
+    if (menu && (el === menu || el.contains(menu))) return true;
+    if (el.matches(MENUISH) && !isSearch(el)) return true;
+    var l = el.querySelectorAll(MENUISH);
+    for (var i = 0; i < l.length; i++) if (!isSearch(l[i]) && !searchish(l[i], el)) return true;
+    return false;
+  }
+  function hasTextLink(el) {
+    if (el.tagName === 'A' && txt(el)) return true;
+    var l = el.querySelectorAll('a');
+    for (var i = 0; i < l.length; i++) if (txt(l[i])) return true;
+    return false;
+  }
+
+  /* 검색 단추 찾기. 메뉴 단추나 사이트 이름을 같이 품은 상자는 통째로 숨기지 않고 한 단계씩 내려간다. */
+  function isMenuEl(el, menu) { return el === menu || (el.matches(MENUISH) && !isSearch(el)); }
+  function collectSearch(box, menu, brand, out) {
+    if (!box || box === head || box.contains(head) || ours(box) || box === brand || isMenuEl(box, menu)) return;
+    var leaf = box.matches('button,a,[role="button"],input');
+    var holdsOther = hasMenuish(box, menu) || (brand && box.contains(brand));
+    if (!holdsOther && (leaf || !hasTextLink(box))) {
+      if (out.indexOf(box) < 0 && !out.some(function (o) { return o.contains(box); })) out.push(box);
+      return;
+    }
+    if (leaf) return;
+    var kids = box.children;
+    for (var i = 0; i < kids.length; i++) {
+      var k = kids[i];
+      if (ours(k) || k === brand || isMenuEl(k, menu) || k.tagName === 'STYLE' || k.tagName === 'SCRIPT') continue;
+      if (hasMenuish(k, menu) || (brand && k.contains(brand))) { if (!k.matches('button,a,[role="button"],input')) collectSearch(k, menu, brand, out); continue; }
+      var iconish = k.matches('svg,img,input') || k.querySelector('svg,img,input');
+      if (isSearch(k) || (iconish && !hasTextLink(k) && !txt(k))) collectSearch(k, menu, brand, out);
+    }
+  }
+  function findSearch(head, menu, brand) {
+    var out = [], all = head.querySelectorAll('button,a,input,[role="button"],[class*="search" i],[aria-label*="search" i],[aria-label*="검색"],[placeholder*="search" i],[placeholder*="검색"]');
     for (var i = 0; i < all.length; i++) {
       var el = all[i];
-      if (el.closest('.or-share,.or-pop')) continue;
-      if (isSearch(el)) {
-        var box = el.closest('button,a,[role="button"]') || el;
-        /* 입력칸이면 감싸는 상자 */
-        if (el.tagName === 'INPUT') { var p = el.parentElement; if (p && p !== head && p.getBoundingClientRect().width < 420) box = p; }
-        /* 검색이 아닌 단추(메뉴 등)를 품은 큰 상자는 숨기지 않기 */
-        var others = box.querySelectorAll('button,a,[role="button"]'), mixed = false;
-        for (var j = 0; j < others.length; j++) { var o = others[j]; if (o !== box && !isSearch(o) && !(o.closest('[aria-label*="search" i],[aria-label*="검색"]'))) { mixed = true; break; } }
-        if (mixed || box === head || box.contains(head)) continue;
-        if (out.indexOf(box) < 0 && !out.some(function (o) { return o.contains(box); })) out.push(box);
-      }
+      if (ours(el) || !isSearch(el)) continue;
+      var box = el.closest('button,a,[role="button"]') || el;
+      /* 입력칸이면 감싸는 상자 */
+      if (el.tagName === 'INPUT') { var p = el.parentElement; if (p && p !== head && p.getBoundingClientRect().width < 420) box = p; }
+      collectSearch(box, menu, brand, out);
     }
     return out;
   }
 
   /* 폰 메뉴 단추: 글씨 없이 그림만 있는 단추 (검색 아님) */
-  function findMenuButton(head, skip) {
-    var all = head.querySelectorAll('button,[role="button"],[aria-label*="menu" i],[aria-label*="메뉴"],[class*="hamburger" i],[class*="menu-toggle" i],[class*="burger" i]');
+  function findMenuButton(head) {
+    var all = head.querySelectorAll('button,[role="button"],' + MENUISH);
     var cands = [];
     for (var i = 0; i < all.length; i++) {
       var el = all[i].closest('button,[role="button"]') || all[i];
-      if (el.classList.contains('or-share') || el.closest('.or-pop') || isSearch(el) || skip.indexOf(el) >= 0) continue;
+      /* 검색 단추 자체이거나 검색 단추 안에 든 것은 제외 (검색이라는 이름의 상자 안에 든 메뉴 단추는 제외하지 않음) */
+      var up = el.parentElement ? el.parentElement.closest('button,a,[role="button"]') : null;
+      if (ours(el) || isSearch(el) || (up && head.contains(up) && searchish(up, head.parentElement)) || cands.indexOf(el) >= 0) continue;
       var label = ((el.getAttribute('aria-label') || '') + (typeof el.className === 'string' ? el.className : '')).toLowerCase();
       var named = /menu|burger|메뉴|toggle|drawer/.test(label);
       if (named || (!txt(el) && el.querySelector('svg,img,span,div'))) cands.push(el);
@@ -166,26 +207,81 @@
 
   function findBrand(head) {
     var as = head.querySelectorAll('a');
-    for (var i = 0; i < as.length; i++) if (/작전명|수탉|rooster/i.test(txt(as[i]))) return as[i];
-    for (i = 0; i < as.length; i++) if (isRoot(as[i])) return as[i];
+    for (var i = 0; i < as.length; i++) if (!ours(as[i]) && /작전명|수탉|rooster/i.test(txt(as[i]))) return as[i];
+    for (i = 0; i < as.length; i++) if (!ours(as[i]) && isRoot(as[i])) return as[i];
     var all = head.querySelectorAll('*');
     for (i = 0; i < all.length; i++) if (all[i].children.length === 0 && /작전명\s*수탉/.test(txt(all[i]))) return all[i];
     return null;
   }
 
+  function samePath(href) {
+    try { var p = new URL(href, location.href).pathname.replace(/\/+$/, ''); return !!p && p === location.pathname.replace(/\/+$/, ''); } catch (e) { return false; }
+  }
   function markLinks(head, brand) {
     var as = head.querySelectorAll('a');
-    var here = location.pathname.replace(/\/+$/, '');
     for (var i = 0; i < as.length; i++) {
       var a = as[i];
-      if (a === brand || a.contains(brand) || brand && brand.contains(a) || a.closest('.or-pop') || isSearch(a)) continue;
+      if (a === brand || a.contains(brand) || brand && brand.contains(a) || ours(a) || isSearch(a)) continue;
       if (!txt(a)) continue;
       a.classList.add('or-link');
-      try {
-        var p = new URL(a.href, location.href).pathname.replace(/\/+$/, '');
-        a.classList.toggle('or-here', !!p && p === here);
-      } catch (e) {}
+      a.classList.toggle('or-here', samePath(a.href));
     }
+  }
+
+  /* ---------- 폰: 여섯 꼭지로 바로 가는 줄 ---------- */
+  function sectionIndex(label) {
+    var t = label.replace(/[^가-힣A-Za-z ]/g, '').trim();
+    for (var i = 0; i < SECTIONS.length; i++) if (t === SECTIONS[i] || t.indexOf(SECTIONS[i]) >= 0) return i;
+    return -1;
+  }
+  function harvestLinks(head, brand) {
+    var seen = {}, out = [];
+    function take(list, strict) {
+      for (var i = 0; i < list.length; i++) {
+        var a = list[i];
+        if (ours(a) || a === brand || isSearch(a)) continue;
+        var t = txt(a); if (!t || t.length > 20) continue;
+        var href = a.getAttribute('href'); if (!href || /^(#|javascript:|mailto:|tel:)/i.test(href)) continue;
+        var u; try { u = new URL(href, location.href); } catch (e) { continue; }
+        if (u.pathname === '/' || u.pathname === '') continue;
+        var idx = sectionIndex(t);
+        if (strict && idx < 0) continue;
+        if (idx < 0 && u.host !== location.host && !/op-rooster\.com$/.test(u.host)) continue;
+        var key = u.pathname;
+        if (seen[key]) continue; seen[key] = 1;
+        out.push({ t: t, u: u.href, i: idx < 0 ? 99 : idx });
+      }
+    }
+    take(head.querySelectorAll('a'), false);
+    if (out.length < 3) take(document.querySelectorAll('a'), true);
+    if (out.length < 3) take(document.querySelectorAll('.notion-page-link a,a.notion-page-link,.notion-page-link'), true);
+    if (out.length >= 3) { try { localStorage.setItem('or-nav', JSON.stringify(out)); } catch (e) {} }
+    else { try { var c = JSON.parse(localStorage.getItem('or-nav') || '[]'); if (c.length >= 3) out = c; } catch (e) {} }
+    out.sort(function (a, b) { return a.i - b.i; });
+    return out;
+  }
+  var strip;
+  function buildStrip(head, brand) {
+    var links = harvestLinks(head, brand);
+    if (links.length < 2) { log('strip: links not found'); return null; }
+    if (!strip) {
+      strip = document.createElement('nav'); strip.className = 'or-strip'; strip.setAttribute('aria-label', '바로 가기');
+      strip.innerHTML = '<div class="or-strip-in"></div>';
+    }
+    var inner = strip.firstChild, html = '';
+    links.forEach(function (l) { html += '<a href="' + l.u.replace(/"/g, '&quot;') + '"' + (samePath(l.u) ? ' class="or-here"' : '') + '>' + l.t.replace(/[<>&]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]; }) + '</a>'; });
+    if (inner.innerHTML !== html) inner.innerHTML = html;
+    if (!strip.parentElement) {
+      var par = head.parentElement, pcs = par ? getComputedStyle(par) : null;
+      if (pcs && /flex/.test(pcs.display) && /row/.test(pcs.flexDirection)) { head.appendChild(strip); head.style.flexWrap = 'wrap'; strip.style.flexBasis = '100%'; strip.style.position = 'static'; }
+      else head.insertAdjacentElement('afterend', strip);
+    }
+    var hcs = getComputedStyle(head), r = head.getBoundingClientRect();
+    strip.style.top = (hcs.position === 'fixed' || hcs.position === 'sticky') ? Math.round(r.height + Math.max(0, r.top)) + 'px' : '0px';
+    /* 지금 보는 꼭지를 가운데쯤으로 */
+    var here = inner.querySelector('.or-here');
+    if (here && !strip.__scrolled) { strip.__scrolled = true; inner.scrollLeft = Math.max(0, here.offsetLeft - (inner.clientWidth - here.offsetWidth) / 2); }
+    return strip;
   }
 
   /* ---------- 공유 ---------- */
@@ -288,7 +384,7 @@
     for (var i = 0; i < list.length; i++) if (head && head.contains(list[i])) continue; else if (visible(list[i]) || list[i].getBoundingClientRect().height > 0) return list[i];
     var imgs = document.images;
     for (i = 0; i < imgs.length; i++) {
-      var im = imgs[i]; if (head && head.contains(im) || im.closest('.or-pop')) continue;
+      var im = imgs[i]; if (head && head.contains(im) || ours(im)) continue;
       var r = im.getBoundingClientRect();
       if (r.width >= 56 && r.height >= 56 && r.top + window.scrollY < window.innerHeight * 0.9) return im;
       if (r.top + window.scrollY > window.innerHeight) break;
@@ -328,19 +424,17 @@
       var row = brand.parentElement; if (row && row !== head) row.classList.add('or-row');
     }
     markLinks(head, brand);
-    var searches = findSearch(head);
-    searches.forEach(function (s) { s.classList.add('or-hide'); });
-    var menu = findMenuButton(head, searches);
-    /* 안전장치: 폰에서 숨긴 것 때문에 메뉴 단추가 안 보이면 숨김을 되돌림 */
-    if (window.innerWidth <= 760 && !(menu && visible(menu)) && !head.querySelector('a.or-link:not(.or-hide)') ) {
-      searches.forEach(function (x) { x.classList.remove('or-hide'); });
-      menu = findMenuButton(head, []);
-      log('menu hidden by search hide; restored');
-    } else if (window.innerWidth <= 760 && !(menu && visible(menu))) {
-      var anyVis = [].some.call(head.querySelectorAll('a.or-link'), visible);
-      if (!anyVis) { searches.forEach(function (x) { x.classList.remove('or-hide'); }); menu = findMenuButton(head, []); }
-    }
+    var menu = findMenuButton(head);
+    var menuWasVisible = !!(menu && visible(menu));
     if (menu) menu.classList.add('or-menu');
+    var searches = findSearch(head, menu, brand);
+    searches.forEach(function (s) { s.classList.add('or-hide'); });
+    var st = isPhone() ? buildStrip(head, brand) : null;
+    /* 안전장치: 숨기다가 메뉴 단추까지 사라졌는데 바로 가기 줄도 못 만들었으면 숨김을 되돌림 */
+    if (isPhone() && menuWasVisible && !visible(menu) && !st) {
+      searches.forEach(function (x) { x.classList.remove('or-hide'); });
+      log('menu vanished; search hide undone');
+    }
     if (!document.querySelector('.or-share')) {
       var b = makeShare();
       var anchor = searches.filter(function (s) { return s.parentElement; })[0];
@@ -349,7 +443,7 @@
       else if (menu && menu.parentElement) menu.parentElement.insertBefore(b, menu);
       else head.appendChild(b);
     }
-    log('head', head, 'brand', brand, 'search', searches, 'menu', menu);
+    log('head', head, 'brand', brand, 'search', searches, 'menu', menu, 'strip', st);
     watchHero();
   }
 
@@ -358,4 +452,5 @@
   var mo = new MutationObserver(soon);
   function start() { setup(); mo.observe(document.body, { childList: true, subtree: true }); setTimeout(loadKakao, 1500); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  window.addEventListener('resize', soon);
 })();
