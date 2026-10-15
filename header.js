@@ -1,0 +1,345 @@
+/* 작전명 수탉: 사이트 맨 위 메뉴 줄(헤더) 꾸미기
+   Bullet Code Editor 의 Head 칸에 아래 한 줄만 넣으면 된다.
+   <script src="https://mook-maker.github.io/op-rooster-site/header.js" defer></script>
+   하는 일: 검색 단추 숨기고 그 자리에 「공유」, 메뉴 강조, 폰에서 헤더 키우기,
+   큰 수탉 그림이 화면 밖으로 나가면 「작전명 수탉」 앞에 작은 수탉이 나타남.
+   주소 뒤에 ?orhdr=off 를 붙이면 꺼지고, ?orhdr=debug 면 찾은 부분에 테두리가 생긴다. */
+(function () {
+  'use strict';
+  var Q = new URLSearchParams(location.search).get('orhdr');
+  if (Q === 'off' || window.__orHeader) return;
+  window.__orHeader = true;
+  var DEBUG = Q === 'debug';
+  var BASE = 'https://mook-maker.github.io/op-rooster-site/';
+  var MARK = BASE + 'rooster-mark.png';
+  var CARD_IMG = BASE + 'share-card.png';
+  var KAKAO_KEY = '3c59af173d83b1a374f190c64135a641';
+  var SITE = 'https://www.op-rooster.com';
+  var log = function () { if (DEBUG) console.log.apply(console, ['[orhdr]'].concat([].slice.call(arguments))); };
+
+  var css = [
+    ':root{--or-accent:#7b302d;--or-accent-soft:#f4ebe9;--or-fg:#16181b;--or-fg2:#3b4047;--or-line:#dfe2e6;--or-panel:#fff}',
+    /* 검색 숨김 */
+    '.or-hide{display:none!important}',
+    /* 「작전명 수탉」 글씨 */
+    '.or-brand{display:inline-flex!important;align-items:center!important;font-family:"Nanum Myeongjo",serif!important;font-weight:800!important;letter-spacing:-0.01em;color:var(--or-fg)!important;text-decoration:none!important}',
+    '.or-brand *{font-family:"Nanum Myeongjo",serif!important;font-weight:800!important}',
+    /* 작은 수탉: 처음엔 폭 0, 큰 그림이 사라지면 펼쳐지며 살짝 튀어 오름 */
+    '.or-mark{display:inline-block!important;flex:none;height:30px;width:0;margin-right:0;opacity:0;transform:translateY(6px) scale(.6) rotate(-12deg);transform-origin:50% 90%;object-fit:contain;vertical-align:middle;',
+    'transition:width .35s ease,margin-right .35s ease,opacity .25s ease,transform .45s cubic-bezier(.34,1.56,.64,1)}',
+    '.or-show .or-mark{width:27px;margin-right:8px;opacity:1;transform:none}',
+    '@media (prefers-reduced-motion:reduce){.or-mark{transition:opacity .2s}}',
+    /* 메뉴 글씨 강조 (PC) */
+    '.or-link{font-weight:600!important;color:var(--or-fg2)!important;text-decoration:none!important;position:relative;transition:color .15s}',
+    '.or-link::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;background:var(--or-accent);transform:scaleX(0);transform-origin:left;transition:transform .2s ease}',
+    '.or-link:hover,.or-link.or-here{color:var(--or-accent)!important}',
+    '.or-link:hover::after,.or-link.or-here::after{transform:scaleX(1)}',
+    /* 공유 단추 */
+    '.or-share{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 13px;margin:0 6px;border:1px solid var(--or-accent);border-radius:8px;background:var(--or-accent);color:#fff;font:600 14px/1 "IBM Plex Sans KR",sans-serif;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}',
+    '.or-share:hover{filter:brightness(1.12)}',
+    '.or-share:focus-visible,.or-menu:focus-visible{outline:2px solid var(--or-accent);outline-offset:2px}',
+    '.or-share svg{width:16px;height:16px}',
+    /* 공유 창 */
+    '.or-pop{position:fixed;z-index:2147483000;width:min(280px,calc(100vw - 24px));background:var(--or-panel);border:1px solid var(--or-line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.14);padding:10px;font-family:"IBM Plex Sans KR",sans-serif;opacity:0;transform:translateY(-6px);transition:opacity .15s,transform .15s;pointer-events:none}',
+    '.or-pop.on{opacity:1;transform:none;pointer-events:auto}',
+    '.or-pop p{margin:2px 4px 8px;font-size:13px;color:#5b6168;word-break:keep-all}',
+    '.or-pop button,.or-pop a{display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;min-height:44px;padding:0 12px;margin:0 0 4px;border:1px solid var(--or-line);border-radius:8px;background:#fff;color:var(--or-fg);font:500 15px/1 "IBM Plex Sans KR",sans-serif;text-decoration:none;cursor:pointer;text-align:left}',
+    '.or-pop button:hover,.or-pop a:hover{border-color:var(--or-accent);color:var(--or-accent)}',
+    '.or-pop svg{width:18px;height:18px;flex:none}',
+    '.or-pop .or-msg{margin:6px 4px 0;font-size:13px;color:var(--or-accent);min-height:1em}',
+    /* 폰 메뉴 단추 강조 (폰 폭에서만, 보이기·숨기기는 Bullet 에 맡김) */
+    '@media (max-width:760px){',
+    '  .or-menu{align-items:center!important;justify-content:center!important;gap:5px;min-width:44px!important;height:40px!important;padding:0 10px!important;border:1.5px solid var(--or-accent)!important;border-radius:8px!important;background:var(--or-accent-soft)!important;color:var(--or-accent)!important}',
+    '  .or-menu svg{color:var(--or-accent)!important}',
+    '  .or-menu::after{content:"메뉴";font:600 14px/1 "IBM Plex Sans KR",sans-serif;color:var(--or-accent)}',
+    '}',
+    /* 폰: 헤더를 크게 */
+    '@media (max-width:760px){',
+    '  .or-head{min-height:64px!important}',
+    '  .or-row{min-height:64px!important;align-items:center!important}',
+    '  .or-brand{font-size:19px!important}',
+    '  .or-show .or-mark{width:30px;margin-right:8px}',
+    '  .or-mark{height:33px}',
+    '  .or-share{height:40px;padding:0 12px;margin:0 8px 0 4px;font-size:15px}',
+    '}',
+    '@media (max-width:360px){.or-share .or-share-t{display:none}.or-share{padding:0 10px}.or-menu::after{content:none}}',
+    '@media (min-width:761px){.or-brand{font-size:18px!important}}',
+    DEBUG ? '.or-head{outline:2px dashed #0a7!important}.or-brand{outline:2px dashed #07a!important}.or-link{outline:1px dotted #a70}.or-menu{outline:2px dashed #a07!important}.or-hide{display:inline-flex!important;outline:2px solid red!important;opacity:.35}' : ''
+  ].join('\n');
+
+  var ICON_SHARE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>';
+  var ICON = {
+    kakao: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.7 6.7l-1 3.6c-.1.3.3.6.6.4l4.3-2.8c.5.1.9.1 1.4.1 5.5 0 10-3.6 10-8S17.5 3 12 3z"/></svg>',
+    copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>',
+    fb: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 8h3V4h-3c-2.8 0-4.5 1.9-4.5 4.6V11H7v4h2.5v8h4v-8h3l.5-4h-3.5V8.8c0-.5.3-.8.5-.8z"/></svg>',
+    x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.8 3h3.1l-6.8 7.8L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.3-8.3L2 3h6.4l4.4 5.8L17.8 3zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5z"/></svg>',
+    more: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>'
+  };
+
+  function addStyle() {
+    if (document.getElementById('or-hdr-style')) return;
+    var s = document.createElement('style'); s.id = 'or-hdr-style'; s.textContent = css;
+    document.head.appendChild(s);
+  }
+
+  function visible(el) {
+    if (!el || !el.getBoundingClientRect) return false;
+    var r = el.getBoundingClientRect(); var cs = getComputedStyle(el);
+    return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && cs.display !== 'none';
+  }
+  function txt(el) { return (el.textContent || '').replace(/\s+/g, ' ').trim(); }
+  function isRoot(a) {
+    try { var u = new URL(a.getAttribute('href'), location.href); return (u.pathname === '/' || u.pathname === '') && !u.search && !u.hash; } catch (e) { return false; }
+  }
+
+  /* 맨 위 메뉴 줄 찾기: 화면 맨 위에 붙어 있고 폭이 거의 화면 전체인 요소 */
+  function findHeader() {
+    var W = window.innerWidth, best = null, bestScore = -1;
+    var cands = document.querySelectorAll('header,nav,[class*="navbar" i],[class*="nav-bar" i],[class*="header" i],[id*="nav" i],[id*="header" i]');
+    for (var i = 0; i < cands.length; i++) {
+      var el = cands[i];
+      if (el.closest('.notion-page-content,.notion-page,main article')) continue;
+      var r = el.getBoundingClientRect();
+      if (r.width < W * 0.85 || r.height < 28 || r.height > 160) continue;
+      var top = r.top + (getComputedStyle(el).position === 'fixed' || getComputedStyle(el).position === 'sticky' ? 0 : window.scrollY);
+      if (top > 12 && r.top > 12) continue;
+      var score = r.width + (el.tagName === 'HEADER' || el.tagName === 'NAV' ? 50 : 0) + (el.querySelector('a') ? 100 : 0);
+      if (score > bestScore) { best = el; bestScore = score; }
+    }
+    if (!best) {
+      var p = document.elementFromPoint(W / 2, 4);
+      while (p && p !== document.body) {
+        var rr = p.getBoundingClientRect();
+        if (rr.width >= W * 0.85 && rr.height >= 28 && rr.height <= 160 && p.querySelector('a')) { best = p; break; }
+        p = p.parentElement;
+      }
+    }
+    /* 겉 껍데기까지 올라가기 (같은 크기면 바깥 것) */
+    while (best && best.parentElement && best.parentElement !== document.body) {
+      var a = best.getBoundingClientRect(), b = best.parentElement.getBoundingClientRect();
+      if (Math.abs(a.height - b.height) < 2 && Math.abs(a.width - b.width) < 2) best = best.parentElement; else break;
+    }
+    return best;
+  }
+
+  function isSearch(el) {
+    var s = ((el.getAttribute('aria-label') || '') + ' ' + (el.getAttribute('placeholder') || '') + ' ' + (el.getAttribute('title') || '') + ' ' + (typeof el.className === 'string' ? el.className : '') + ' ' + (el.id || '')).toLowerCase();
+    if (/search|검색/.test(s)) return true;
+    var t = txt(el).toLowerCase();
+    return t.length < 24 && (/^search|검색/.test(t) || /(⌘|ctrl)\s*\+?\s*k$/.test(t));
+  }
+
+  function findSearch(head) {
+    var out = [], all = head.querySelectorAll('button,a,input,[role="button"],[class*="search" i],[aria-label*="search" i],[aria-label*="검색"]');
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (el.closest('.or-share,.or-pop')) continue;
+      if (isSearch(el)) {
+        var box = el.closest('button,a,[role="button"]') || el;
+        /* 입력칸이면 감싸는 상자 */
+        if (el.tagName === 'INPUT') { var p = el.parentElement; if (p && p !== head && p.getBoundingClientRect().width < 420) box = p; }
+        if (out.indexOf(box) < 0 && !out.some(function (o) { return o.contains(box); })) out.push(box);
+      }
+    }
+    return out;
+  }
+
+  /* 폰 메뉴 단추: 글씨 없이 그림만 있는 단추 (검색 아님) */
+  function findMenuButton(head, skip) {
+    var all = head.querySelectorAll('button,[role="button"],[aria-label*="menu" i],[aria-label*="메뉴"],[class*="hamburger" i],[class*="menu-toggle" i],[class*="burger" i]');
+    var cands = [];
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i].closest('button,[role="button"]') || all[i];
+      if (el.classList.contains('or-share') || el.closest('.or-pop') || isSearch(el) || skip.indexOf(el) >= 0) continue;
+      var label = ((el.getAttribute('aria-label') || '') + (typeof el.className === 'string' ? el.className : '')).toLowerCase();
+      var named = /menu|burger|메뉴|toggle|drawer/.test(label);
+      if (named || (!txt(el) && el.querySelector('svg,img,span,div'))) cands.push(el);
+    }
+    var vis = cands.filter(visible);
+    return vis.length ? vis[vis.length - 1] : (cands[cands.length - 1] || null);
+  }
+
+  function findBrand(head) {
+    var as = head.querySelectorAll('a');
+    for (var i = 0; i < as.length; i++) if (/작전명|수탉|rooster/i.test(txt(as[i]))) return as[i];
+    for (i = 0; i < as.length; i++) if (isRoot(as[i])) return as[i];
+    var all = head.querySelectorAll('*');
+    for (i = 0; i < all.length; i++) if (all[i].children.length === 0 && /작전명\s*수탉/.test(txt(all[i]))) return all[i];
+    return null;
+  }
+
+  function markLinks(head, brand) {
+    var as = head.querySelectorAll('a');
+    var here = location.pathname.replace(/\/+$/, '');
+    for (var i = 0; i < as.length; i++) {
+      var a = as[i];
+      if (a === brand || a.contains(brand) || brand && brand.contains(a) || a.closest('.or-pop') || isSearch(a)) continue;
+      if (!txt(a)) continue;
+      a.classList.add('or-link');
+      try {
+        var p = new URL(a.href, location.href).pathname.replace(/\/+$/, '');
+        a.classList.toggle('or-here', !!p && p === here);
+      } catch (e) {}
+    }
+  }
+
+  /* ---------- 공유 ---------- */
+  var pop, popMsg;
+  function shareUrl() { var u = location.href.split('#')[0].replace(/[?&]orhdr=[^&]*/, '').replace(/\?$/, ''); return /bullet\.site|pages\.dev/.test(location.host) ? SITE + location.pathname : u; }
+  function shareTitle() { var t = (document.title || '').trim(); return t && !/^작전명 수탉/.test(t) ? t + ' | 작전명 수탉' : '작전명 수탉 Operation Rooster'; }
+  function say(t) { if (popMsg) popMsg.textContent = t; }
+  function oldCopy(v) {
+    var ta = document.createElement('textarea'); ta.value = v; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); var ok = false; try { ok = document.execCommand('copy'); } catch (e) {} ta.remove(); return ok;
+  }
+  function copy(v) {
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(v).then(function () { return true; }, function () { return oldCopy(v); });
+    return Promise.resolve(oldCopy(v));
+  }
+  function loadKakao() {
+    if (!KAKAO_KEY || window.Kakao || document.getElementById('or-kakao-sdk')) return;
+    var sc = document.createElement('script'); sc.id = 'or-kakao-sdk'; sc.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js'; sc.crossOrigin = 'anonymous'; sc.async = true;
+    document.head.appendChild(sc);
+  }
+  function kakaoCard() {
+    try {
+      if (!window.Kakao || !Kakao.Share) return false;
+      if (!Kakao.isInitialized()) Kakao.init(KAKAO_KEY);
+      var u = shareUrl();
+      Kakao.Share.sendDefault({ objectType: 'feed',
+        content: { title: shareTitle(), description: '살처분 중심의 방역체계를 바꾸는 작전', imageUrl: CARD_IMG, imageWidth: 800, imageHeight: 400, link: { mobileWebUrl: u, webUrl: u } },
+        buttons: [{ title: '사이트 보기', link: { mobileWebUrl: u, webUrl: u } }] });
+      return true;
+    } catch (e) { log('kakao', e); return false; }
+  }
+  var canNative = !!navigator.share;
+  function nativeShare() {
+    return navigator.share({ title: shareTitle(), text: '작전명 수탉: 살처분 대신 백신과 대안을', url: shareUrl() })
+      .then(function () { return true; }, function (e) { return e && e.name === 'AbortError'; });
+  }
+  function buildPop() {
+    if (pop) return pop;
+    pop = document.createElement('div'); pop.className = 'or-pop'; pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-label', '이 페이지 공유하기');
+    pop.innerHTML = '<p>이 페이지를 주변에 알려 주세요.</p>' +
+      '<button type="button" data-k="kakao">' + ICON.kakao + '카카오톡</button>' +
+      '<button type="button" data-k="copy">' + ICON.copy + '링크 복사</button>' +
+      '<a data-k="fb" target="_blank" rel="noopener">' + ICON.fb + '페이스북</a>' +
+      '<a data-k="x" target="_blank" rel="noopener">' + ICON.x + 'X</a>' +
+      (canNative ? '<button type="button" data-k="more">' + ICON.more + '다른 앱</button>' : '') +
+      '<div class="or-msg" role="status" aria-live="polite"></div>';
+    document.body.appendChild(pop);
+    popMsg = pop.querySelector('.or-msg');
+    pop.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-k]'); if (!b) return;
+      var k = b.getAttribute('data-k'), u = shareUrl();
+      if (k === 'fb' || k === 'x') { setTimeout(closePop, 300); return; }
+      if (k === 'kakao') {
+        if (kakaoCard()) { closePop(); return; }
+        (canNative ? nativeShare() : Promise.resolve(false)).then(function (ok) {
+          if (ok) { closePop(); return; }
+          copy(u).then(function (c) { say(c ? '주소를 복사했어요. 카카오톡 대화창에 붙여 넣어 주세요.' : u); });
+        });
+      } else if (k === 'copy') {
+        copy(u).then(function (c) { say(c ? '주소를 복사했어요.' : '복사가 막혀 있어요: ' + u); });
+      } else if (k === 'more') {
+        nativeShare().then(function (ok) { if (ok) closePop(); });
+      }
+    });
+    document.addEventListener('click', function (e) { if (pop.classList.contains('on') && !pop.contains(e.target) && !e.target.closest('.or-share')) closePop(); }, true);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closePop(); });
+    window.addEventListener('resize', closePop);
+    return pop;
+  }
+  function openPop(btn) {
+    buildPop(); loadKakao();
+    var u = shareUrl();
+    pop.querySelector('[data-k="fb"]').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(u);
+    pop.querySelector('[data-k="x"]').href = 'https://x.com/intent/post?text=' + encodeURIComponent(shareTitle()) + '&url=' + encodeURIComponent(u);
+    say('');
+    var r = btn.getBoundingClientRect(), w = Math.min(280, window.innerWidth - 24);
+    pop.style.top = Math.round(r.bottom + 8) + 'px';
+    pop.style.left = Math.round(Math.max(12, Math.min(r.right - w, window.innerWidth - w - 12))) + 'px';
+    pop.classList.add('on'); btn.setAttribute('aria-expanded', 'true');
+    var first = pop.querySelector('button'); if (first) first.focus({ preventScroll: true });
+  }
+  function closePop() {
+    if (!pop) return; pop.classList.remove('on');
+    var b = document.querySelector('.or-share'); if (b) b.setAttribute('aria-expanded', 'false');
+  }
+  function makeShare() {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'or-share'; b.setAttribute('aria-haspopup', 'dialog'); b.setAttribute('aria-expanded', 'false');
+    b.innerHTML = ICON_SHARE + '<span class="or-share-t">공유</span>';
+    b.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); if (pop && pop.classList.contains('on')) closePop(); else openPop(b); });
+    return b;
+  }
+
+  /* ---------- 큰 그림이 사라지면 작은 수탉 ---------- */
+  var io, watched, head;
+  function findHero() {
+    var sel = '.notion-page-icon-hero,.notion-page-cover,.notion-page-cover-wrapper,[class*="page-icon" i] img,[class*="cover" i] img';
+    var list = document.querySelectorAll(sel);
+    for (var i = 0; i < list.length; i++) if (head && head.contains(list[i])) continue; else if (visible(list[i]) || list[i].getBoundingClientRect().height > 0) return list[i];
+    var imgs = document.images;
+    for (i = 0; i < imgs.length; i++) {
+      var im = imgs[i]; if (head && head.contains(im) || im.closest('.or-pop')) continue;
+      var r = im.getBoundingClientRect();
+      if (r.width >= 56 && r.height >= 56 && r.top + window.scrollY < window.innerHeight * 0.9) return im;
+      if (r.top + window.scrollY > window.innerHeight) break;
+    }
+    return document.querySelector('.notion-title,main h1,h1');
+  }
+  function watchHero() {
+    var hero = findHero();
+    if (hero === watched) return;
+    if (io) io.disconnect();
+    watched = hero;
+    log('hero', hero);
+    if (!hero) { head && head.classList.add('or-show'); return; }
+    var h = head ? head.getBoundingClientRect().bottom : 60;
+    io = new IntersectionObserver(function (ents) {
+      var e = ents[ents.length - 1];
+      if (head) head.classList.toggle('or-show', !e.isIntersecting);
+    }, { rootMargin: '-' + Math.max(0, Math.round(h)) + 'px 0px 0px 0px', threshold: 0 });
+    io.observe(hero);
+  }
+
+  /* ---------- 붙이기 ---------- */
+  function setup() {
+    addStyle();
+    var h = findHeader();
+    if (!h) { log('header not found'); return; }
+    if (head && head !== h) head.classList.remove('or-head', 'or-show');
+    head = h; head.classList.add('or-head');
+    var brand = findBrand(head);
+    if (brand) {
+      brand.classList.add('or-brand');
+      if (!brand.querySelector('.or-mark')) {
+        var img = document.createElement('img'); img.className = 'or-mark'; img.src = MARK; img.alt = ''; img.setAttribute('aria-hidden', 'true');
+        brand.insertBefore(img, brand.firstChild);
+      }
+      /* 브랜드가 든 줄도 높이 맞추기 */
+      var row = brand.parentElement; if (row && row !== head) row.classList.add('or-row');
+    }
+    markLinks(head, brand);
+    var searches = findSearch(head);
+    searches.forEach(function (s) { s.classList.add('or-hide'); });
+    var menu = findMenuButton(head, searches);
+    if (menu) menu.classList.add('or-menu');
+    if (!document.querySelector('.or-share')) {
+      var b = makeShare();
+      var anchor = searches.filter(function (s) { return s.parentElement; })[0];
+      if (anchor) anchor.parentElement.insertBefore(b, anchor);
+      else if (menu && menu.parentElement) menu.parentElement.insertBefore(b, menu);
+      else head.appendChild(b);
+    }
+    log('head', head, 'brand', brand, 'search', searches, 'menu', menu);
+    watchHero();
+  }
+
+  var t;
+  function soon() { clearTimeout(t); t = setTimeout(function () { mo.disconnect(); try { setup(); } finally { mo.observe(document.body, { childList: true, subtree: true }); } }, 120); }
+  var mo = new MutationObserver(soon);
+  function start() { setup(); mo.observe(document.body, { childList: true, subtree: true }); setTimeout(loadKakao, 1500); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
