@@ -2,8 +2,9 @@
    Bullet Code Editor 의 Head 칸에 아래 한 줄만 넣으면 된다.
    <script src="https://mook-maker.github.io/op-rooster-site/header.js" defer></script>
    하는 일: 검색 단추 숨기기, 작은 「공유」 아이콘, PC 메뉴 글씨 강조,
-   폰에서 헤더 키우기 + 헤더 아래에 여섯 꼭지로 바로 가는 줄,
-   큰 수탉 그림이 화면 밖으로 나가면 「작전명 수탉」 앞에 작은 수탉이 나타남.
+   폰에서 헤더 키우기 + 헤더 아래에 여섯 꼭지로 바로 가는 줄(그때 ≡ 메뉴 단추는 숨김),
+   큰 수탉 그림이 화면 밖으로 나가면 「작전명 수탉」 앞에 작은 수탉이 나타남,
+   페이지 맨 아래에 설문 참여 요청 띠.
    주소 뒤에 ?orhdr=off 를 붙이면 꺼지고, ?orhdr=debug 면 찾은 부분에 테두리가 생긴다. */
 (function () {
   'use strict';
@@ -16,6 +17,7 @@
   var CARD_IMG = BASE + 'share-card.png';
   var KAKAO_KEY = '3c59af173d83b1a374f190c64135a641';
   var SITE = 'https://www.op-rooster.com';
+  var FORM_URL = 'https://forms.gle/cXJSLN9TAD8eHrJU9';
   var PHONE = 760;
   /* 꼭지 (줄에 보일 순서). 한 꼭지에 이름이 여럿이면 같은 자리로 본다 */
   var SECTIONS = [['소개'], ['관계망', '활동과 관계망'], ['관련 기사'], ['의견 나누기'], ['자료실'], ['일정'], ['영상']];
@@ -51,16 +53,26 @@
     '.or-pop button:hover,.or-pop a:hover{border-color:var(--or-accent);color:var(--or-accent)}',
     '.or-pop svg{width:18px;height:18px;flex:none}',
     '.or-pop .or-msg{margin:6px 4px 0;font-size:13px;color:var(--or-accent);min-height:1em}',
-    /* 폰: 헤더 아래 여섯 꼭지 줄 (옆으로 밀어서 봄) */
+    /* 꼭지 줄: 메뉴가 ≡ 단추 뒤로 접힌 화면(폰·태블릿)에서만 보이고, 그때 ≡ 단추는 숨긴다 */
     '.or-strip{display:none}',
-    '@media (max-width:' + PHONE + 'px){',
-    '  .or-strip{display:block;position:sticky;z-index:2147482000;background:var(--or-bg);border-bottom:1px solid var(--or-line);font-family:"IBM Plex Sans KR",sans-serif;margin:0;padding:0;width:100%;box-sizing:border-box}',
-    '  .or-strip-in{display:flex;gap:2px;overflow-x:auto;padding:0 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-padding:0 10px}',
-    '  .or-strip-in::-webkit-scrollbar{display:none}',
-    '  .or-strip a{flex:none;display:inline-block;padding:11px 9px 9px;font-size:15px;line-height:1.2;font-weight:500;color:var(--or-fg2);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;-webkit-tap-highlight-color:transparent}',
-    '  .or-strip a.or-here{color:var(--or-accent);border-bottom-color:var(--or-accent);font-weight:600}',
-    '  .or-strip::after{content:"";position:absolute;top:0;right:0;bottom:1px;width:26px;background:linear-gradient(90deg,rgba(245,246,247,0),var(--or-bg));pointer-events:none}',
+    'html.or-collapsed .or-strip{display:block;position:sticky;z-index:2147482000;background:var(--or-bg);border-bottom:1px solid var(--or-line);font-family:"IBM Plex Sans KR",sans-serif;margin:0;padding:0;width:100%;box-sizing:border-box}',
+    'html.or-collapsed .or-menu{display:none!important}',
+    '.or-strip-in{display:flex;gap:2px;overflow-x:auto;padding:0 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-padding:0 10px}',
+    '.or-strip-in::-webkit-scrollbar{display:none}',
+    '.or-strip a{flex:none;display:inline-block;padding:11px 9px 9px;font-size:15px;line-height:1.2;font-weight:500;color:var(--or-fg2);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;-webkit-tap-highlight-color:transparent}',
+    '.or-strip a.or-here{color:var(--or-accent);border-bottom-color:var(--or-accent);font-weight:600}',
+    '.or-strip::after{content:"";position:absolute;top:0;right:0;bottom:1px;width:26px;background:linear-gradient(90deg,rgba(245,246,247,0),var(--or-bg));pointer-events:none}',
+    /* 맨 아래 설문 참여 띠 */
+    '.or-foot{margin:48px 0 0;padding:36px 16px 44px;background:var(--or-panel);border-top:1px solid var(--or-line);font-family:"IBM Plex Sans KR",sans-serif;text-align:center;box-sizing:border-box;width:100%}',
+    '.or-foot-in{max-width:560px;margin:0 auto}',
+    '.or-foot-t{margin:0 0 8px;font-family:"Nanum Myeongjo",serif!important;font-weight:800;font-size:21px;line-height:1.35;color:var(--or-fg);word-break:keep-all}',
+    '.or-foot-d{margin:0 0 18px;font-size:15px;line-height:1.65;color:var(--or-fg2);word-break:keep-all}',
+    '.or-foot-btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 22px;border-radius:8px;background:var(--or-accent);color:#fff!important;font-size:15px;font-weight:600;text-decoration:none!important;-webkit-tap-highlight-color:transparent}',
+    '.or-foot-btn:hover{filter:brightness(1.1)}',
+    '.or-foot-btn:focus-visible{outline:2px solid var(--or-accent);outline-offset:3px}',
+    '.or-foot-btn svg{width:15px;height:15px}',
     /* 폰: 헤더를 크게 */
+    '@media (max-width:' + PHONE + 'px){',
     '  .or-head{min-height:64px!important}',
     '  .or-row{min-height:64px!important;align-items:center!important}',
     '  .or-brand{font-size:19px!important}',
@@ -70,7 +82,7 @@
     '  .or-share svg{width:22px;height:22px}',
     '}',
     '@media (min-width:' + (PHONE + 1) + 'px){.or-brand{font-size:18px!important}}',
-    DEBUG ? '.or-head{outline:2px dashed #0a7!important}.or-brand{outline:2px dashed #07a!important}.or-link{outline:1px dotted #a70}.or-menu{outline:2px dashed #a07!important}.or-hide{display:inline-flex!important;outline:2px solid red!important;opacity:.35}.or-strip{outline:2px dashed #70a!important}' : ''
+    DEBUG ? '.or-head{outline:2px dashed #0a7!important}.or-brand{outline:2px dashed #07a!important}.or-link{outline:1px dotted #a70}.or-menu{display:inline-flex!important;outline:2px dashed #a07!important;opacity:.35}.or-hide{display:inline-flex!important;outline:2px solid red!important;opacity:.35}.or-strip{outline:2px dashed #70a!important}.or-foot{outline:2px dashed #0a7!important}' : ''
   ].join('\n');
 
   var ICON_SHARE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>';
@@ -286,6 +298,35 @@
     return strip;
   }
 
+  /* ---------- 맨 아래 설문 참여 띠 ---------- */
+  var ICON_OUT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>';
+  var foot;
+  function buildFoot() {
+    if (foot && document.body.contains(foot)) return foot;
+    if (!foot) {
+      foot = document.createElement('section'); foot.className = 'or-foot'; foot.setAttribute('aria-label', '설문 참여 요청');
+      foot.innerHTML = '<div class="or-foot-in"><p class="or-foot-t">설문에 참여해 주세요</p>' +
+        '<p class="or-foot-d">작전명 수탉이 여러분의 생각을 묻는 설문을 진행하고 있어요. 잠시 시간을 내어 답해 주시면 큰 힘이 돼요.</p>' +
+        '<a class="or-foot-btn" href="' + FORM_URL + '" target="_blank" rel="noopener">설문 참여하기' + ICON_OUT + '</a></div>';
+    }
+    /* 본문이 든 가장 바깥 상자의 부모 끝에 붙인다 (스크롤 상자 안이면 그 안의 끝) */
+    var host = document.body;
+    var content = document.querySelector('.notion-page-content,.notion-page,main,article,[class*="notion-page" i]');
+    if (content && !head.contains(content)) {
+      var e = content;
+      while (e.parentElement && e.parentElement !== document.body) {
+        var pcs = getComputedStyle(e.parentElement);
+        if (/(auto|scroll)/.test(pcs.overflowY) && e.parentElement.scrollHeight > e.parentElement.clientHeight + 2) break;
+        e = e.parentElement;
+      }
+      host = e.parentElement || document.body;
+      var hcs = getComputedStyle(host);
+      if (/flex/.test(hcs.display) && /row/.test(hcs.flexDirection)) host = document.body;
+    }
+    host.appendChild(foot);
+    return foot;
+  }
+
   /* ---------- 공유 ---------- */
   var pop, popMsg;
   function shareUrl() { var u = location.href.split('#')[0].replace(/[?&]orhdr=[^&]*/, '').replace(/\?$/, ''); return /bullet\.site|pages\.dev/.test(location.host) ? SITE + location.pathname : u; }
@@ -426,26 +467,35 @@
       var row = brand.parentElement; if (row && row !== head) row.classList.add('or-row');
     }
     markLinks(head, brand);
+    /* 전에 숨긴 ≡ 단추를 잠시 되살려 놓고 재야 접힘 여부를 제대로 안다 */
+    var root = document.documentElement, wasCollapsed = root.classList.contains('or-collapsed');
+    root.classList.remove('or-collapsed');
     var menu = findMenuButton(head);
     var menuWasVisible = !!(menu && visible(menu));
     if (menu) menu.classList.add('or-menu');
     var searches = findSearch(head, menu, brand);
     searches.forEach(function (s) { s.classList.add('or-hide'); });
-    var st = isPhone() ? buildStrip(head, brand) : null;
+    /* 메뉴가 ≡ 단추 뒤로 접힌 화면인가: 폰 폭이거나, 메뉴 링크는 안 보이는데 ≡ 단추가 보일 때 */
+    var anyLink = [].some.call(head.querySelectorAll('a.or-link'), visible);
+    var collapsed = isPhone() || (menuWasVisible && !anyLink);
+    var st = collapsed ? buildStrip(head, brand) : null;
+    root.classList.toggle('or-collapsed', !!st);
+    if (wasCollapsed !== !!st) log('collapsed ->', !!st);
     /* 안전장치: 숨기다가 메뉴 단추까지 사라졌는데 바로 가기 줄도 못 만들었으면 숨김을 되돌림 */
-    if (isPhone() && menuWasVisible && !visible(menu) && !st) {
+    if (collapsed && menuWasVisible && !visible(menu) && !st) {
       searches.forEach(function (x) { x.classList.remove('or-hide'); });
       log('menu vanished; search hide undone');
     }
     if (!document.querySelector('.or-share')) {
       var b = makeShare();
       var anchor = searches.filter(function (s) { return s.parentElement; })[0];
-      if (menu && menu.parentElement && visible(menu)) menu.parentElement.insertBefore(b, menu);
+      if (menu && menu.parentElement && (menuWasVisible || visible(menu))) menu.parentElement.insertBefore(b, menu);
       else if (anchor) anchor.parentElement.insertBefore(b, anchor);
       else if (menu && menu.parentElement) menu.parentElement.insertBefore(b, menu);
       else head.appendChild(b);
     }
-    log('head', head, 'brand', brand, 'search', searches, 'menu', menu, 'strip', st);
+    var ft = buildFoot();
+    log('head', head, 'brand', brand, 'search', searches, 'menu', menu, 'strip', st, 'foot', ft && ft.parentElement);
     watchHero();
   }
 
