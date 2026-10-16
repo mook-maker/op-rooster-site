@@ -63,7 +63,7 @@
     '.or-strip a.or-here{color:var(--or-accent);border-bottom-color:var(--or-accent);font-weight:600}',
     '.or-strip::after{content:"";position:absolute;top:0;right:0;bottom:1px;width:26px;background:linear-gradient(90deg,rgba(245,246,247,0),var(--or-bg));pointer-events:none}',
     /* 설문 참여 상자: 공유 상자(share.html)와 같은 생김새로, 그 바로 아래 */
-    '.or-foot{display:block;box-sizing:border-box;max-width:52rem;margin:14px auto 0;padding:16px 18px;background:var(--or-panel);border:1px solid var(--or-line);border-radius:6px;font-family:"IBM Plex Sans KR",sans-serif;font-size:15px;line-height:1.6;color:var(--or-fg);text-align:left}',
+    '.or-foot{display:block;box-sizing:border-box;margin:14px 0 0;padding:16px 18px;background:var(--or-panel);border:1px solid var(--or-line);border-radius:6px;font-family:"IBM Plex Sans KR",sans-serif;font-size:15px;line-height:1.6;color:var(--or-fg);text-align:left}',
     '.or-foot-t{margin:0 0 4px;font-family:"Nanum Myeongjo",serif!important;font-weight:800;font-size:18px;line-height:1.4;color:var(--or-fg);word-break:keep-all}',
     '.or-foot-d{margin:0 0 12px;font-size:13.5px;line-height:1.6;color:var(--or-fg2);word-break:keep-all}',
     '.or-foot-btn{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:8px 14px;border:1px solid var(--or-accent);border-radius:6px;background:var(--or-accent);color:#fff!important;font-size:14px;font-weight:500;text-decoration:none!important;-webkit-tap-highlight-color:transparent}',
@@ -325,10 +325,14 @@
         '<a class="or-foot-btn" href="' + FORM_URL + '" target="_blank" rel="noopener">설문 참여하기' + ICON_OUT + '</a>';
     }
     if (foot.previousElementSibling !== block) block.insertAdjacentElement('afterend', foot);
-    /* 공유 상자가 칸보다 좁게 놓여 있으면 그 폭과 자리를 따라간다 */
-    var br = block.getBoundingClientRect(), pr = block.parentElement.getBoundingClientRect();
-    if (br.width > 0 && pr.width - br.width > 4) { foot.style.width = Math.round(br.width) + 'px'; foot.style.marginLeft = Math.round(br.left - pr.left) + 'px'; }
-    else { foot.style.width = ''; foot.style.marginLeft = ''; }
+    /* 공유 상자(iframe)와 왼쪽 끝·폭을 똑같이 맞춘다 */
+    var ifr = block.querySelector('iframe') || block;
+    foot.style.width = ''; foot.style.marginLeft = '';
+    var ir = ifr.getBoundingClientRect(), fr = foot.getBoundingClientRect();
+    if (ir.width > 0 && (Math.abs(ir.width - fr.width) > 1 || Math.abs(ir.left - fr.left) > 1)) {
+      foot.style.width = Math.round(ir.width) + 'px';
+      foot.style.marginLeft = Math.round(ir.left - fr.left) + 'px';
+    }
     return foot;
   }
 
