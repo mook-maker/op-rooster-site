@@ -4,7 +4,7 @@
    하는 일: 검색 단추 숨기기, 작은 「공유」 아이콘, PC 메뉴 글씨 강조,
    폰에서 헤더 키우기 + 헤더 아래에 여섯 꼭지로 바로 가는 줄(그때 ≡ 메뉴 단추는 숨김),
    큰 수탉 그림이 화면 밖으로 나가면 「작전명 수탉」 앞에 작은 수탉이 나타남,
-   페이지 맨 아래에 설문 참여 요청 띠.
+   홈의 「작전명 수탉을 알려 주세요」 상자 바로 아래에 설문 참여 상자.
    주소 뒤에 ?orhdr=off 를 붙이면 꺼지고, ?orhdr=debug 면 찾은 부분에 테두리가 생긴다. */
 (function () {
   'use strict';
@@ -62,15 +62,14 @@
     '.or-strip a{flex:none;display:inline-block;padding:11px 9px 9px;font-size:15px;line-height:1.2;font-weight:500;color:var(--or-fg2);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;-webkit-tap-highlight-color:transparent}',
     '.or-strip a.or-here{color:var(--or-accent);border-bottom-color:var(--or-accent);font-weight:600}',
     '.or-strip::after{content:"";position:absolute;top:0;right:0;bottom:1px;width:26px;background:linear-gradient(90deg,rgba(245,246,247,0),var(--or-bg));pointer-events:none}',
-    /* 맨 아래 설문 참여 띠 */
-    '.or-foot{margin:48px 0 0;padding:36px 16px 44px;background:var(--or-panel);border-top:1px solid var(--or-line);font-family:"IBM Plex Sans KR",sans-serif;text-align:center;box-sizing:border-box;width:100%}',
-    '.or-foot-in{max-width:560px;margin:0 auto}',
-    '.or-foot-t{margin:0 0 8px;font-family:"Nanum Myeongjo",serif!important;font-weight:800;font-size:21px;line-height:1.35;color:var(--or-fg);word-break:keep-all}',
-    '.or-foot-d{margin:0 0 18px;font-size:15px;line-height:1.65;color:var(--or-fg2);word-break:keep-all}',
-    '.or-foot-btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 22px;border-radius:8px;background:var(--or-accent);color:#fff!important;font-size:15px;font-weight:600;text-decoration:none!important;-webkit-tap-highlight-color:transparent}',
+    /* 설문 참여 상자: 공유 상자(share.html)와 같은 생김새로, 그 바로 아래 */
+    '.or-foot{display:block;box-sizing:border-box;max-width:52rem;margin:14px auto 0;padding:16px 18px;background:var(--or-panel);border:1px solid var(--or-line);border-radius:6px;font-family:"IBM Plex Sans KR",sans-serif;font-size:15px;line-height:1.6;color:var(--or-fg);text-align:left}',
+    '.or-foot-t{margin:0 0 4px;font-family:"Nanum Myeongjo",serif!important;font-weight:800;font-size:18px;line-height:1.4;color:var(--or-fg);word-break:keep-all}',
+    '.or-foot-d{margin:0 0 12px;font-size:13.5px;line-height:1.6;color:var(--or-fg2);word-break:keep-all}',
+    '.or-foot-btn{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:8px 14px;border:1px solid var(--or-accent);border-radius:6px;background:var(--or-accent);color:#fff!important;font-size:14px;font-weight:500;text-decoration:none!important;-webkit-tap-highlight-color:transparent}',
     '.or-foot-btn:hover{filter:brightness(1.1)}',
-    '.or-foot-btn:focus-visible{outline:2px solid var(--or-accent);outline-offset:3px}',
-    '.or-foot-btn svg{width:15px;height:15px}',
+    '.or-foot-btn:focus-visible{outline:2px solid var(--or-accent);outline-offset:2px}',
+    '.or-foot-btn svg{width:16px;height:16px;flex:none}',
     /* 폰: 헤더를 크게 */
     '@media (max-width:' + PHONE + 'px){',
     '  .or-head{min-height:64px!important}',
@@ -298,32 +297,38 @@
     return strip;
   }
 
-  /* ---------- 맨 아래 설문 참여 띠 ---------- */
+  /* ---------- 설문 참여 상자 (공유 상자 바로 아래) ---------- */
   var ICON_OUT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>';
   var foot;
+  /* 공유 상자(share.html 을 끼운 iframe)가 든 노션 블록 찾기 */
+  function findShareBlock() {
+    var ifr = document.querySelector('iframe[src*="share.html"],iframe[src*="share%2Ehtml" i]');
+    if (!ifr) return null;
+    var w = ifr.closest('.notion-asset-wrapper,[class*="asset-wrapper" i],.notion-embed,[class*="notion-embed" i]');
+    var e = ifr, p = ifr.parentElement;
+    while (p && p !== document.body) {
+      if (p.matches('.notion-page-content-inner,.notion-page-content,.notion-page,main,article')) break;
+      if (p.querySelector(':scope > .notion-page-link,:scope > .notion-text,:scope > .notion-h1,:scope > .notion-h2,:scope > .notion-h3,:scope > .notion-blank,:scope > .notion-hr')) break;
+      e = p; p = p.parentElement;
+    }
+    /* 둘 다 찾았으면 더 바깥쪽(블록) 것을 쓴다 */
+    if (w && e && w !== e) return w.contains(e) ? w : (e.contains(w) ? e : w);
+    return w || (p && p !== document.body ? e : null);
+  }
   function buildFoot() {
-    if (foot && document.body.contains(foot)) return foot;
+    var block = findShareBlock();
+    if (!block) { if (foot && foot.parentElement) foot.remove(); return null; }
     if (!foot) {
       foot = document.createElement('section'); foot.className = 'or-foot'; foot.setAttribute('aria-label', '설문 참여 요청');
-      foot.innerHTML = '<div class="or-foot-in"><p class="or-foot-t">설문에 참여해 주세요</p>' +
-        '<p class="or-foot-d">작전명 수탉이 여러분의 생각을 묻는 설문을 진행하고 있어요. 잠시 시간을 내어 답해 주시면 큰 힘이 돼요.</p>' +
-        '<a class="or-foot-btn" href="' + FORM_URL + '" target="_blank" rel="noopener">설문 참여하기' + ICON_OUT + '</a></div>';
+      foot.innerHTML = '<div class="or-foot-t">설문에 참여해 주세요</div>' +
+        '<div class="or-foot-d">작전명 수탉이 여러분의 생각을 묻는 설문을 진행하고 있어요. 잠시 시간을 내어 답해 주시면 큰 힘이 돼요.</div>' +
+        '<a class="or-foot-btn" href="' + FORM_URL + '" target="_blank" rel="noopener">설문 참여하기' + ICON_OUT + '</a>';
     }
-    /* 본문이 든 가장 바깥 상자의 부모 끝에 붙인다 (스크롤 상자 안이면 그 안의 끝) */
-    var host = document.body;
-    var content = document.querySelector('.notion-page-content,.notion-page,main,article,[class*="notion-page" i]');
-    if (content && !head.contains(content)) {
-      var e = content;
-      while (e.parentElement && e.parentElement !== document.body) {
-        var pcs = getComputedStyle(e.parentElement);
-        if (/(auto|scroll)/.test(pcs.overflowY) && e.parentElement.scrollHeight > e.parentElement.clientHeight + 2) break;
-        e = e.parentElement;
-      }
-      host = e.parentElement || document.body;
-      var hcs = getComputedStyle(host);
-      if (/flex/.test(hcs.display) && /row/.test(hcs.flexDirection)) host = document.body;
-    }
-    host.appendChild(foot);
+    if (foot.previousElementSibling !== block) block.insertAdjacentElement('afterend', foot);
+    /* 공유 상자가 칸보다 좁게 놓여 있으면 그 폭과 자리를 따라간다 */
+    var br = block.getBoundingClientRect(), pr = block.parentElement.getBoundingClientRect();
+    if (br.width > 0 && pr.width - br.width > 4) { foot.style.width = Math.round(br.width) + 'px'; foot.style.marginLeft = Math.round(br.left - pr.left) + 'px'; }
+    else { foot.style.width = ''; foot.style.marginLeft = ''; }
     return foot;
   }
 
