@@ -18,6 +18,8 @@
   var KAKAO_KEY = '3c59af173d83b1a374f190c64135a641';
   var SITE = 'https://www.op-rooster.com';
   var FORM_URL = 'https://forms.gle/cXJSLN9TAD8eHrJU9';
+  var CHAT_URL = 'https://open.kakao.com/o/paheuTbi';
+  var CHAT_NAME = '살처분을 반대하는 생명들의 연대';
   var PHONE = 760;
   /* 꼭지 (줄에 보일 순서). 한 꼭지에 이름이 여럿이면 같은 자리로 본다 */
   var SECTIONS = [['소개'], ['관계망', '활동과 관계망'], ['관련 기사'], ['의견 나누기'], ['자료실'], ['일정'], ['영상']];
@@ -299,7 +301,6 @@
 
   /* ---------- 설문 참여 상자 (공유 상자 바로 아래) ---------- */
   var ICON_OUT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>';
-  var foot;
   /* 공유 상자(share.html 을 끼운 iframe)가 든 노션 블록 찾기 */
   function findShareBlock() {
     var ifr = document.querySelector('iframe[src*="share.html"],iframe[src*="share%2Ehtml" i]');
@@ -315,25 +316,36 @@
     if (w && e && w !== e) return w.contains(e) ? w : (e.contains(w) ? e : w);
     return w || (p && p !== document.body ? e : null);
   }
+  var ICON_CHAT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.7 6.7l-1 3.6c-.1.3.3.6.6.4l4.3-2.8c.5.1.9.1 1.4.1 5.5 0 10-3.6 10-8S17.5 3 12 3z"/></svg>';
+  var cards = {};
+  function makeCard(key, title, desc, btnText, url, icon) {
+    var c = cards[key];
+    if (!c) {
+      c = cards[key] = document.createElement('section'); c.className = 'or-foot or-foot-' + key; c.setAttribute('aria-label', title);
+      c.innerHTML = '<div class="or-foot-t">' + title + '</div><div class="or-foot-d">' + desc + '</div>' +
+        '<a class="or-foot-btn" href="' + url + '" target="_blank" rel="noopener">' + icon + btnText + '</a>';
+    }
+    return c;
+  }
+  /* 공유 상자 아래에 오픈 채팅 상자, 그 아래에 설문 상자를 붙이고 폭·왼쪽 끝을 공유 상자(iframe)에 맞춘다 */
   function buildFoot() {
     var block = findShareBlock();
-    if (!block) { if (foot && foot.parentElement) foot.remove(); return null; }
-    if (!foot) {
-      foot = document.createElement('section'); foot.className = 'or-foot'; foot.setAttribute('aria-label', '설문 참여 요청');
-      foot.innerHTML = '<div class="or-foot-t">설문에 참여해 주세요</div>' +
-        '<div class="or-foot-d">작전명 수탉이 여러분의 생각을 묻는 설문을 진행하고 있어요. 잠시 시간을 내어 답해 주시면 큰 힘이 돼요.</div>' +
-        '<a class="or-foot-btn" href="' + FORM_URL + '" target="_blank" rel="noopener">설문 참여하기' + ICON_OUT + '</a>';
-    }
-    if (foot.previousElementSibling !== block) block.insertAdjacentElement('afterend', foot);
-    /* 공유 상자(iframe)와 왼쪽 끝·폭을 똑같이 맞춘다 */
-    var ifr = block.querySelector('iframe') || block;
-    foot.style.width = ''; foot.style.marginLeft = '';
-    var ir = ifr.getBoundingClientRect(), fr = foot.getBoundingClientRect();
-    if (ir.width > 0 && (Math.abs(ir.width - fr.width) > 1 || Math.abs(ir.left - fr.left) > 1)) {
-      foot.style.width = Math.round(ir.width) + 'px';
-      foot.style.marginLeft = Math.round(ir.left - fr.left) + 'px';
-    }
-    return foot;
+    var list = [
+      makeCard('chat', '오픈 채팅방에 참여해 주세요', '카카오톡 오픈채팅 「' + CHAT_NAME + '」에서 소식을 나누고 함께 이야기해요.', '오픈 채팅방 들어가기', CHAT_URL, ICON_CHAT),
+      makeCard('form', '설문에 참여해 주세요', '작전명 수탉이 여러분의 생각을 묻는 설문을 진행하고 있어요. 잠시 시간을 내어 답해 주시면 큰 힘이 돼요.', '설문 참여하기', FORM_URL, ICON_OUT)
+    ];
+    if (!block) { list.forEach(function (c) { if (c.parentElement) c.remove(); }); return null; }
+    var prev = block;
+    list.forEach(function (c) { if (c.previousElementSibling !== prev || c.parentElement !== block.parentElement) prev.insertAdjacentElement('afterend', c); prev = c; });
+    var ifr = block.querySelector('iframe') || block, ir = ifr.getBoundingClientRect();
+    list.forEach(function (c) {
+      c.style.width = ''; c.style.marginLeft = '';
+      var fr = c.getBoundingClientRect();
+      if (ir.width > 0 && (Math.abs(ir.width - fr.width) > 1 || Math.abs(ir.left - fr.left) > 1)) {
+        c.style.width = Math.round(ir.width) + 'px'; c.style.marginLeft = Math.round(ir.left - fr.left) + 'px';
+      }
+    });
+    return list[0];
   }
 
   /* ---------- 공유 ---------- */
@@ -504,6 +516,7 @@
       else head.appendChild(b);
     }
     var ft = buildFoot();
+    void ft;
     log('head', head, 'brand', brand, 'search', searches, 'menu', menu, 'strip', st, 'foot', ft && ft.parentElement);
     watchHero();
   }
