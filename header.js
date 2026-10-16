@@ -17,8 +17,8 @@
   var KAKAO_KEY = '3c59af173d83b1a374f190c64135a641';
   var SITE = 'https://www.op-rooster.com';
   var PHONE = 760;
-  /* 여섯 꼭지 (줄에 보일 순서) */
-  var SECTIONS = ['소개', '활동과 관계망', '관련 기사', '의견 나누기', '자료실', '일정', '영상'];
+  /* 꼭지 (줄에 보일 순서). 한 꼭지에 이름이 여럿이면 같은 자리로 본다 */
+  var SECTIONS = [['소개'], ['관계망', '활동과 관계망'], ['관련 기사'], ['의견 나누기'], ['자료실'], ['일정'], ['영상']];
   var log = function () { if (DEBUG) console.log.apply(console, ['[orhdr]'].concat([].slice.call(arguments))); };
 
   var css = [
@@ -231,7 +231,9 @@
   /* ---------- 폰: 여섯 꼭지로 바로 가는 줄 ---------- */
   function sectionIndex(label) {
     var t = label.replace(/[^가-힣A-Za-z ]/g, '').trim();
-    for (var i = 0; i < SECTIONS.length; i++) if (t === SECTIONS[i] || t.indexOf(SECTIONS[i]) >= 0) return i;
+    for (var i = 0; i < SECTIONS.length; i++) for (var j = 0; j < SECTIONS[i].length; j++) {
+      var a = SECTIONS[i][j]; if (t === a || t.indexOf(a) >= 0) return i;
+    }
     return -1;
   }
   function harvestLinks(head, brand) {
