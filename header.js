@@ -37,6 +37,8 @@
     'transition:width .35s ease,margin-right .35s ease,opacity .25s ease,transform .45s cubic-bezier(.34,1.56,.64,1)}',
     '.or-show .or-mark{width:27px;margin-right:8px;opacity:1;transform:none}',
     '@media (prefers-reduced-motion:reduce){.or-mark{transition:opacity .2s}}',
+    /* 홈의 큰 수탉 그림: Bullet이 정사각형 틀에 잘라 넣어 다리가 잘림 → 전체가 보이게 */
+    '.notion-page-icon-hero.notion-page-icon-image img,[class*="page-icon" i] img{object-fit:contain!important;object-position:center bottom!important}',
     /* 메뉴 글씨 강조 (PC) */
     '.or-link{font-weight:600!important;color:var(--or-fg2)!important;text-decoration:none!important;position:relative;transition:color .15s}',
     '.or-link::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;background:var(--or-accent);transform:scaleX(0);transform-origin:left;transition:transform .2s ease}',
