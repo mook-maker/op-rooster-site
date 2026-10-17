@@ -83,8 +83,20 @@ main>svg{width:100%;height:auto;display:block;max-width:380px;margin-inline:auto
       </main>
 <script>
 if (window.parent !== window){
-  const post = () => window.parent.postMessage({ opRooster: 'culling', h: Math.ceil(document.querySelector('main').getBoundingClientRect().bottom + window.scrollY + 8) }, '*');
-  new ResizeObserver(post).observe(document.body); post();
+  /* 불렛이 iframe 높이를 늘려 주면 그대로, 못 늘리면(칸 안 임베드 등) 그림을 iframe 높이에 맞게 줄여 스크롤이 생기지 않게 한다 */
+  const main = document.querySelector('main');
+  document.documentElement.style.overflow = 'hidden';
+  const fit = () => {
+    main.style.zoom = '';
+    const h = Math.ceil(main.getBoundingClientRect().bottom + 8);
+    window.parent.postMessage({ opRooster: 'culling', h: h }, '*');
+    const vh = window.innerHeight;
+    if (vh > 120 && h > vh) main.style.zoom = String(Math.max(0.6, (vh - 4) / h));
+  };
+  addEventListener('resize', fit);
+  addEventListener('load', fit);
+  if (document.fonts) document.fonts.ready.then(fit);
+  fit();
 }
 </script>
 </body>
