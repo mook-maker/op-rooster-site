@@ -16,7 +16,7 @@
   var MARK = BASE + 'rooster-mark.png';
   var CARD_IMG = BASE + 'share-card.png';
   var KAKAO_KEY = '3c59af173d83b1a374f190c64135a641';
-  var SITE = 'https://www.op-rooster.com';
+  var SITE = 'https://www.op-rooster.org';
   var FORM_URL = 'https://forms.gle/cXJSLN9TAD8eHrJU9';
   var CHAT_URL = 'https://open.kakao.com/o/paheuTbi';
   var CHAT_NAME = '살처분을 반대하는 생명들의 연대';

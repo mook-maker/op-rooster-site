@@ -8,10 +8,10 @@
 <body>
 <title>작전명 수탉 그림</title>
 <script>
-/* 불렛(op-rooster.com)에 끼워 넣는 모드: ?only=network 처럼 부르면 그 부분만 보여 줌. 그냥 열면 사이트로 보냄. */
+/* 불렛(op-rooster.org)에 끼워 넣는 모드: ?only=network 처럼 부르면 그 부분만 보여 줌. 그냥 열면 사이트로 보냄. */
 (function(){
   var o = new URLSearchParams(location.search).get('only');
-  if (!o) { if (/github\.io$/.test(location.hostname)) location.replace('https://www.op-rooster.com'); return; }
+  if (!o) { if (/github\.io$/.test(location.hostname)) location.replace('https://www.op-rooster.org'); return; }
   var d = document.documentElement;
   d.dataset.only = o; d.dataset.theme = 'light';
   o.split(',').forEach(function(s){ d.classList.add('only-' + s.trim()); });
