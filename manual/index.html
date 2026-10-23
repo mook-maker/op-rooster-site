@@ -274,7 +274,6 @@ table.gloss tr[hidden]{display:none}
   table.gloss td:nth-child(n+3)::before{content:attr(data-l) ": "}
 }
 html.phone .chapter.list .part{display:grid}
-html.phone.nobar .tabbar button:not([data-tab="set"]){display:none !important}
 html.phone .chapter + .chapter{margin-top:0;padding-top:0;border-top:0}
 
 /* 로그인 저장 (협회 회원제) */
@@ -317,8 +316,6 @@ table.wide td:first-child{min-width:calc(var(--u) * 6)}
 table.wide th,table.wide td{min-width:calc(var(--u) * 10)}
 table.wide td:first-child,table.wide th:first-child{min-width:calc(var(--u) * 6)}
 
-.tabbar button[hidden]{display:none}
-html.phone .tabbar button[hidden]{display:none !important}
 
 /* 설정 */
 :root[data-tone="clear"]{--fg:#0F1716;--muted:#3A4542;--line:#B4BFBC;--soft:#EEF2F1;--tint:#DCE9E6;--accent:#054640}
@@ -338,6 +335,9 @@ html.phone .tabbar button[hidden]{display:none !important}
 .seg button[aria-pressed="true"],.setin .btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on);font-weight:700}
 .setin .btn{justify-self:start}
 html.phone.preview .setpane{max-width:420px;margin:0 auto;border-inline:1px solid var(--line)}
+.tabbar button:disabled{opacity:.35}
+html.phone .tabbar button[aria-current="true"]:disabled{color:var(--muted);font-weight:400}
+html.phone .tabbar button[aria-current="true"]:disabled svg{stroke-width:1.8}
 
 </style>
 <header class="top">
@@ -803,7 +803,9 @@ html.phone.preview .setpane{max-width:420px;margin:0 auto;border-inline:1px soli
     $$('#tabbar button').forEach(function(b){ b.setAttribute('aria-current', b.dataset.tab === c.tab ? 'true' : 'false'); });
     document.documentElement.classList.toggle('nobar', ch.classList.contains('list'));
     var tp = $('.part[id$="-tips"]', ch), tl = $('#tabbar [data-tab="tips"] span');
-    if (tl) { tl.textContent = tp ? tp.dataset.title : '팁'; tl.parentNode.hidden = !tp; }   // 장 끝 팁 절이 없으면 탭도 뺀다
+    if (tl) tl.textContent = tp ? tp.dataset.title : '팁';
+    var nb = ch.classList.contains('list');   // 탭 자리는 그대로 두고, 쓸 수 없는 탭만 흐리게
+    $$('#tabbar button').forEach(function(b){ if (b.dataset.tab !== 'set') b.disabled = nb || (b.dataset.tab === 'tips' && !tp); });
     document.documentElement.style.setProperty('--dx', dir ? (dir > 0 ? '24px' : '-24px') : '0px');
     crumb(); refresh();
   }
