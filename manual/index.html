@@ -334,7 +334,7 @@ html.phone .tabbar button[hidden]{display:none !important}
 .sg h3{font-size:var(--fs-s);font-weight:700;color:var(--muted)}
 .seg{display:flex;gap:.4em;flex-wrap:wrap}
 .seg button,.setin .btn{font:inherit;font-size:var(--fs-m);min-height:2.6em;padding:.3em 1.1em;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--fg)}
-.seg button{flex:1 1 0;white-space:nowrap}
+.seg button{flex:1 1 0;white-space:nowrap;padding-inline:.3em}
 .seg button[aria-pressed="true"],.setin .btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on);font-weight:700}
 .setin .btn{justify-self:start}
 html.phone.preview .setpane{max-width:420px;margin:0 auto;border-inline:1px solid var(--line)}
@@ -362,7 +362,7 @@ html.phone.preview .setpane{max-width:420px;margin:0 auto;border-inline:1px soli
 <section class="setpane" id="setPane" hidden aria-label="설정">
   <div class="setin">
     <h2>설정</h2>
-    <div class="sg"><h3>글자 크기</h3><div class="seg" data-set="fs" role="group" aria-label="글자 크기"><button type="button" data-v="0">보통</button><button type="button" data-v="1">크게</button><button type="button" data-v="2">아주 크게</button></div></div>
+    <div class="sg"><h3>글자 크기</h3><div class="seg" data-set="fs" role="group" aria-label="글자 크기"><button type="button" data-v="-1">작게</button><button type="button" data-v="0">보통</button><button type="button" data-v="1">크게</button><button type="button" data-v="2">아주 크게</button></div></div>
     <div class="sg"><h3>바탕</h3><div class="seg" data-set="theme" role="group" aria-label="바탕"><button type="button" data-v="auto">기기에 맞춤</button><button type="button" data-v="light">밝게</button><button type="button" data-v="dark">어둡게</button></div></div>
     <div class="sg"><h3>색감</h3><div class="seg" data-set="tone" role="group" aria-label="색감"><button type="button" data-v="soft">부드럽게</button><button type="button" data-v="clear">또렷하게</button></div></div>
     <div class="sg" id="phGroup"><h3>화면</h3><button type="button" class="btn quiet" id="phBtn" aria-pressed="false">스마트폰 모양으로 보기</button></div>
@@ -692,14 +692,14 @@ html.phone.preview .setpane{max-width:420px;margin:0 auto;border-inline:1px soli
   });
 
   // 설정: 글자 크기 · 바탕 · 색감 (이 기기에만 저장)
-  var SET = { fs: '0', theme: 'auto', tone: 'soft' }, FSU = ['17px', '20px', '23px'];
+  var SET = { fs: '0', theme: 'auto', tone: 'soft' }, FSU = { '-1': '15px', '0': '17px', '1': '20px', '2': '23px' };
   try {
     SET.fs = localStorage.getItem(KEY + '-fs') || (localStorage.getItem(KEY + '-big') === '1' ? '1' : '0');
     SET.theme = localStorage.getItem(KEY + '-theme') || 'auto'; SET.tone = localStorage.getItem(KEY + '-tone') || 'soft';
   } catch (e) {}
   function applySet(){
     var r = document.documentElement;
-    r.style.setProperty('--u', FSU[+SET.fs] || FSU[0]);
+    r.style.setProperty('--u', FSU[SET.fs] || FSU['0']);
     if (SET.theme === 'auto') r.removeAttribute('data-theme'); else r.setAttribute('data-theme', SET.theme);
     if (SET.tone === 'clear') r.setAttribute('data-tone', 'clear'); else r.removeAttribute('data-tone');
     $$('#setPane .seg').forEach(function(g){ $$('button', g).forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.v === SET[g.dataset.set] ? 'true' : 'false'); }); });
