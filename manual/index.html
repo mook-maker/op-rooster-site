@@ -199,7 +199,7 @@ figure img{display:block;max-width:100%;height:auto;border:1px solid var(--line)
    단계 번호 동그라미(다 한 단계는 채움)와 ← → 줄, 옆으로 밀기로 넘긴다. 차례 단추는 탭이 대신하므로 숨긴다. */
 .tbtn svg,.tabbar svg{width:1.25em;height:1.25em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.2em}
 .tabbar,.pager{display:none}
-html.phone #tocBtn,html.phone .toc{display:none}
+html.phone #tocBtn,html.phone #setBtn,html.phone .toc{display:none}
 html.phone .tabbar{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--bg);border-top:1px solid var(--line);
   padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
 html.phone .tabbar button{border:0;background:transparent;color:var(--muted);display:grid;justify-items:center;gap:.15em;padding:.55em 0 .5em;min-height:3.6em;font-size:var(--fs-s)}
@@ -274,8 +274,7 @@ table.gloss tr[hidden]{display:none}
   table.gloss td:nth-child(n+3)::before{content:attr(data-l) ": "}
 }
 html.phone .chapter.list .part{display:grid}
-html.phone.nobar .tabbar{display:none}
-html.phone.nobar .wrap{padding-bottom:calc(2em + env(safe-area-inset-bottom,0px))}
+html.phone.nobar .tabbar button:not([data-tab="set"]){display:none !important}
 html.phone .chapter + .chapter{margin-top:0;padding-top:0;border-top:0}
 
 /* 로그인 저장 (협회 회원제) */
@@ -321,16 +320,33 @@ table.wide td:first-child,table.wide th:first-child{min-width:calc(var(--u) * 6)
 .tabbar button[hidden]{display:none}
 html.phone .tabbar button[hidden]{display:none !important}
 
+/* 설정 */
+:root[data-tone="clear"]{--fg:#0F1716;--muted:#3A4542;--line:#B4BFBC;--soft:#EEF2F1;--tint:#DCE9E6;--accent:#054640}
+@media (prefers-color-scheme: dark){ :root[data-tone="clear"]:not([data-theme="light"]){--fg:#FFFFFF;--muted:#C5D0CD;--line:#51615D;--soft:#222C2A;--tint:#233836;--accent:#8EDDD2} }
+:root[data-tone="clear"][data-theme="dark"]{--fg:#FFFFFF;--muted:#C5D0CD;--line:#51615D;--soft:#222C2A;--tint:#233836;--accent:#8EDDD2}
+.setpane{position:fixed;left:0;right:0;top:var(--toph,3.5em);bottom:0;z-index:8;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;
+  padding:1.2em max(16px,env(safe-area-inset-left,0px)) calc(6em + env(safe-area-inset-bottom,0px))}
+.setpane[hidden]{display:none}
+.setin{max-width:720px;margin:0 auto;display:grid;gap:1.6em}
+.setin h2{font-size:var(--fs-l)}
+.sg{display:grid;gap:.5em}
+.sg[hidden]{display:none}
+.sg h3{font-size:var(--fs-s);font-weight:700;color:var(--muted)}
+.seg{display:flex;gap:.4em;flex-wrap:wrap}
+.seg button,.setin .btn{font:inherit;font-size:var(--fs-m);min-height:2.6em;padding:.3em 1.1em;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--fg)}
+.seg button{flex:1 1 0;white-space:nowrap}
+.seg button[aria-pressed="true"],.setin .btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on);font-weight:700}
+.setin .btn{justify-self:start}
+html.phone.preview .setpane{max-width:420px;margin:0 auto;border-inline:1px solid var(--line)}
+
 </style>
 <header class="top">
   <div class="top-in">
     <button type="button" class="crumb" id="crumb" aria-label="장 바꾸기"><b class="cn">1. 이상 발견 ~ 가축방역관 도착</b><svg class="caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><span class="cp"></span></button>
     
     <div class="tools">
-      <button type="button" class="tbtn" id="meBtn" hidden>로그인</button>
-      <button type="button" class="tbtn" id="phBtn" aria-pressed="false" aria-label="스마트폰 보기"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18.5h2"/></svg></button>
       <button type="button" class="tbtn" id="tocBtn" aria-expanded="false" aria-controls="toc">차례</button>
-      <button type="button" class="tbtn" id="fsBtn" aria-pressed="false" aria-label="글자 크게">가<span class="plus">+</span></button>
+      <button type="button" class="tbtn" id="setBtn" aria-expanded="false" aria-controls="setPane">설정</button>
     </div>
   </div>
   <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
@@ -341,7 +357,18 @@ html.phone .tabbar button[hidden]{display:none !important}
   <button type="button" data-tab="detail"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="6" cy="18" r="2"/><path d="M11 6h9M11 12h9M11 18h9"/></svg><span>세부</span></button>
   <button type="button" data-tab="tips"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg><span>팁</span></button>
   <button type="button" data-tab="app"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 12h6M9 16h6"/></svg><span>부록</span></button>
+  <button type="button" data-tab="set"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span>설정</span></button>
 </nav>
+<section class="setpane" id="setPane" hidden aria-label="설정">
+  <div class="setin">
+    <h2>설정</h2>
+    <div class="sg"><h3>글자 크기</h3><div class="seg" data-set="fs" role="group" aria-label="글자 크기"><button type="button" data-v="0">보통</button><button type="button" data-v="1">크게</button><button type="button" data-v="2">아주 크게</button></div></div>
+    <div class="sg"><h3>바탕</h3><div class="seg" data-set="theme" role="group" aria-label="바탕"><button type="button" data-v="auto">기기에 맞춤</button><button type="button" data-v="light">밝게</button><button type="button" data-v="dark">어둡게</button></div></div>
+    <div class="sg"><h3>색감</h3><div class="seg" data-set="tone" role="group" aria-label="색감"><button type="button" data-v="soft">부드럽게</button><button type="button" data-v="clear">또렷하게</button></div></div>
+    <div class="sg" id="phGroup"><h3>화면</h3><button type="button" class="btn quiet" id="phBtn" aria-pressed="false">스마트폰 모양으로 보기</button></div>
+    <div class="sg"><h3>기록 저장</h3><p class="note" id="meOff" hidden>로그인 저장은 준비 중입니다.</p><button type="button" class="btn quiet" id="meBtn" hidden>로그인</button></div>
+  </div>
+</section>
 <div class="mepane" id="mePane" hidden role="dialog" aria-modal="true" aria-labelledby="meT">
   <div class="mebox">
     <button type="button" class="tbtn meclose" id="meClose" aria-label="닫기">닫기</button>
@@ -664,12 +691,39 @@ html.phone .tabbar button[hidden]{display:none !important}
     e.preventDefault(); setToc(false); go(id);
   });
 
-  // 글자 크게
-  var fs = $('#fsBtn'), big = false;
-  try { big = localStorage.getItem(KEY + '-big') === '1'; } catch (e) {}
-  function applyFs(){ document.documentElement.style.setProperty('--u', big ? '20px' : '17px'); fs.setAttribute('aria-pressed', big ? 'true' : 'false'); $$('textarea[data-k]').forEach(grow); }
-  fs.addEventListener('click', function(){ big = !big; try { localStorage.setItem(KEY + '-big', big ? '1' : '0'); } catch (e) {} applyFs(); });
-  applyFs();
+  // 설정: 글자 크기 · 바탕 · 색감 (이 기기에만 저장)
+  var SET = { fs: '0', theme: 'auto', tone: 'soft' }, FSU = ['17px', '20px', '23px'];
+  try {
+    SET.fs = localStorage.getItem(KEY + '-fs') || (localStorage.getItem(KEY + '-big') === '1' ? '1' : '0');
+    SET.theme = localStorage.getItem(KEY + '-theme') || 'auto'; SET.tone = localStorage.getItem(KEY + '-tone') || 'soft';
+  } catch (e) {}
+  function applySet(){
+    var r = document.documentElement;
+    r.style.setProperty('--u', FSU[+SET.fs] || FSU[0]);
+    if (SET.theme === 'auto') r.removeAttribute('data-theme'); else r.setAttribute('data-theme', SET.theme);
+    if (SET.tone === 'clear') r.setAttribute('data-tone', 'clear'); else r.removeAttribute('data-tone');
+    $$('#setPane .seg').forEach(function(g){ $$('button', g).forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.v === SET[g.dataset.set] ? 'true' : 'false'); }); });
+    $$('textarea[data-k]').forEach(grow);
+    if (typeof topH === 'function') topH();
+  }
+  $$('#setPane .seg button').forEach(function(b){
+    b.addEventListener('click', function(){
+      var k = b.parentNode.dataset.set; SET[k] = b.dataset.v;
+      try { localStorage.setItem(KEY + '-' + k, SET[k]); } catch (e) {}
+      applySet();
+    });
+  });
+  var setPane = $('#setPane'), setBtn = $('#setBtn');
+  if (!window.MANUAL_API) $('#meOff').hidden = false;
+  function setOpen(on){
+    setPane.hidden = !on; setBtn.setAttribute('aria-expanded', on ? 'true' : 'false'); setBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    document.documentElement.classList.toggle('seton', on);
+    if (on) { setToc(false); topH(); setPane.scrollTop = 0; $$('#tabbar button').forEach(function(b){ b.setAttribute('aria-current', b.dataset.tab === 'set' ? 'true' : 'false'); }); }
+    else { var c = cur[curCh()] || {}; $$('#tabbar button').forEach(function(b){ b.setAttribute('aria-current', b.dataset.tab === c.tab ? 'true' : 'false'); }); }
+  }
+  setBtn.addEventListener('click', function(){ setOpen(setPane.hidden); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !setPane.hidden) setOpen(false); });
+  applySet();
 
   // 지금 읽는 자리 (장 › 부분 › 단계)
   var marks = $$('.chapter, .part, .step');
@@ -759,14 +813,18 @@ html.phone .tabbar button[hidden]{display:none !important}
     root.classList.toggle('phone', phone);
     root.classList.toggle('preview', preview && !mq.matches);
     root.classList.toggle('multi', multi);
-    $('#phBtn').hidden = mq.matches;
+    $('#phGroup').hidden = mq.matches;
     $('#phBtn').setAttribute('aria-pressed', preview ? 'true' : 'false');
     if (phone) { setToc(false); var target = document.getElementById(hereId) || chapters[0]; chapters.forEach(function(ch){ show(ch); }); show(target); }
     else chapters.forEach(function(x){ x.classList.remove('here'); });
     crumb();
   }
   $$('#tabbar button').forEach(function(b){
-    b.addEventListener('click', function(){ show(curChEl(), b.dataset.tab); window.scrollTo(0, 0); });
+    b.addEventListener('click', function(){
+      if (b.dataset.tab === 'set') { setOpen(setPane.hidden); return; }
+      if (!setPane.hidden) setOpen(false);
+      show(curChEl(), b.dataset.tab); window.scrollTo(0, 0);
+    });
   });
   function curChEl(){ return document.getElementById(curCh()) || $('.chapter'); }
   $('#phBtn').addEventListener('click', function(){
