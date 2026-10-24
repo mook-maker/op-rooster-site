@@ -1,5 +1,4 @@
-<!doctype html>
-<title>살처분 대응 농가 매뉴얼</title>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>살처분 대응 농가 매뉴얼</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap">
 <style>
@@ -375,6 +374,18 @@ html.phone table.order.card td:first-child{width:auto}
 /* 첫 화면이 따로 있는 장(6장): 첫 화면에 장 머리 상자와 용어 정리·보상금 산정 체계, 요약 탭에는 요약만 */
 html.phone .chapter[data-home][data-tab="home"]>.call{display:grid}
 html.phone .chapter[data-home]:not([data-tab="home"])>.call{display:none}
+
+/* 컴퓨터 보기도 한 번에 한 장 (사용자 2026-10-24): 차례에서 장을 고르거나, 장 끝 「이전 장」「다음 장」으로 넘긴다 */
+html.multi:not(.phone) .chapter{display:none}
+html.multi:not(.phone) .chapter.here{display:grid}
+html.multi .chapter + .chapter{margin-top:0;padding-top:0;border-top:0}
+.toc .tch.here>a{font-weight:700;color:var(--accent)}
+.chnav{display:flex;justify-content:space-between;gap:1em;margin-top:1.5em;padding-top:1.2em;border-top:1px solid var(--line)}
+.chnav a{display:grid;gap:.1em;max-width:48%;padding:.6em .9em;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--fg);font-weight:700}
+.chnav a small{font-size:var(--fs-s);font-weight:400;color:var(--muted)}
+.chnav a.nxt{margin-left:auto;text-align:right}
+.chnav a:hover{border-color:var(--accent);color:var(--accent)}
+html.phone .chnav{display:none}
 
 </style>
 <header class="top">
@@ -1362,6 +1373,11 @@ html.phone .chapter[data-home]:not([data-tab="home"])>.call{display:none}
     $$('.tips li.hl').forEach(function(x){ x.classList.remove('hl'); });
     if (el.matches('.tips li')) el.classList.add('hl');
     if (phone && el.classList.contains('chapter')) { show(el, homeTab(el), null); window.scrollTo(0, 0); return; }
+    if (!phone) {  // 컴퓨터 보기도 한 번에 한 장: 다른 장이면 그 장으로 바꾼 뒤 그 자리로
+      var och = el.closest('.chapter');
+      if (och && och.id !== hereId) setHere(och);
+      if (el.classList.contains('chapter')) { window.scrollTo(0, 0); crumb(); return; }
+    }
     if (phone) {
       var part = el.closest('.part'), ch = el.closest('.chapter');
       var tab = part ? tabOf(part.id) : 'sum';
@@ -1418,12 +1434,20 @@ html.phone .chapter[data-home]:not([data-tab="home"])>.call{display:none}
   var chapters = $$('.chapter'), multi = chapters.length > 1;
   var hereId = (cur0() || chapters[0].id);
   function cur0(){ try { return localStorage.getItem(KEY + '-ch'); } catch (e) { return null; } }
-  function curCh(){
-    if (phone) return hereId;
-    var y = topH(), ch = marks.length ? marks[0].closest('.chapter').id : '';
-    marks.forEach(function(el){ if (el.classList.contains('chapter') && el.getBoundingClientRect().top < y) ch = el.id; });
-    return ch;
+  function curCh(){ return hereId; }
+  function setHere(ch){   // 지금 보는 장 (스마트폰·컴퓨터 보기 모두 한 번에 한 장)
+    hereId = ch.id; try { localStorage.setItem(KEY + '-ch', hereId); } catch (e) {}
+    chapters.forEach(function(x){ x.classList.toggle('here', x === ch); });
+    $$('.toc .tch').forEach(function(t){ var a = t.querySelector('a'); t.classList.toggle('here', a && a.getAttribute('href') === '#' + ch.id); });
   }
+  // 장 끝: 이전 장 · 다음 장 (컴퓨터 보기)
+  chapters.forEach(function(ch, i){
+    var nav = document.createElement('nav'), p = chapters[i - 1], n = chapters[i + 1];
+    nav.className = 'chnav';
+    if (p) nav.innerHTML += '<a class="prv" href="#' + p.id + '"><small>이전 장</small>' + esc(p.dataset.ch) + '</a>';
+    if (n) nav.innerHTML += '<a class="nxt" href="#' + n.id + '"><small>다음 장</small>' + esc(n.dataset.ch) + '</a>';
+    if (p || n) ch.appendChild(nav);
+  });
   function topH(){ var h = $('.top').getBoundingClientRect().bottom; document.documentElement.style.setProperty('--toph', h + 'px'); return h + 8; }
   function crumb(){
     var y = topH(), ch = null, part = null, step = null;
@@ -1435,8 +1459,7 @@ html.phone .chapter[data-home]:not([data-tab="home"])>.call{display:none}
       else if (el.classList.contains('part')) { part = el; step = null; }
       else if (el.classList.contains('step') && r.bottom > y) step = el;
     });
-    ch = ch || marks[0];
-    if (phone) ch = document.getElementById(hereId);
+    ch = document.getElementById(hereId) || ch || marks[0];
     if (phone) {  // 스마트폰 보기: 스크롤 위치 대신 지금 탭·단계
       var c = cur[ch.id] || {}, onP = $$('.part.on', ch), stp = c.tab === 'detail' && document.getElementById(c.step);
       part = onP.length === 1 ? onP[0] : null; step = stp || null;
@@ -1483,9 +1506,7 @@ html.phone .chapter[data-home]:not([data-tab="home"])>.call{display:none}
     if (!document.getElementById(c.step)) c.step = ch.id + '-step1';
     try { localStorage.setItem(KEY + '-view', JSON.stringify(cur)); } catch (e) {}
     ch.dataset.tab = c.tab;
-    if (phone) { hereId = ch.id; try { localStorage.setItem(KEY + '-ch', hereId); } catch (e) {}
-      chapters.forEach(function(x){ x.classList.toggle('here', x === ch); });
-      $$('.toc .tch').forEach(function(t){ var a = t.querySelector('a'); t.classList.toggle('here', a && a.getAttribute('href') === '#' + ch.id); }); }
+    if (phone) setHere(ch);
     $$('.part', ch).forEach(function(p){ p.classList.toggle('on', tabOf(p.id) === c.tab); });
     $$('.step', ch).forEach(function(st){ var on = st.id === c.step; st.classList.toggle('on', on); if (on) st.open = true; });
     $$('.pg', ch).forEach(function(pg){ pg.setAttribute('aria-current', pg.dataset.step === c.step ? 'true' : 'false'); });
@@ -1505,7 +1526,7 @@ html.phone .chapter[data-home]:not([data-tab="home"])>.call{display:none}
     $('#phGroup').hidden = mq.matches;
     $('#phBtn').setAttribute('aria-pressed', preview ? 'true' : 'false');
     if (phone) { setToc(false); var target = document.getElementById(hereId) || chapters[0]; chapters.forEach(function(ch){ show(ch); }); show(target); }
-    else chapters.forEach(function(x){ x.classList.remove('here'); });
+    else setHere(document.getElementById(hereId) || chapters[0]);
     crumb();
   }
   $$('#tabbar button').forEach(function(b){
@@ -1592,3 +1613,5 @@ html.phone .chapter[data-home]:not([data-tab="home"])>.call{display:none}
 })();
 
 </script>
+
+</html>
