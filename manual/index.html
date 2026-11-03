@@ -399,12 +399,18 @@ html.phone .top-in .tbtn.me{max-width:9em}
 /* 홈: 이어서 할 단계 · 장별 진행 · 참고 장 목록 (사용자 2026-11-04) */
 .chapter.home{gap:1.3em}
 #homeBody{display:grid;gap:1.4em}
-.hcard{background:var(--tint);border-radius:12px;padding:1em 1.1em;display:grid;gap:.25em}
-.hcard small{color:var(--muted);font-weight:700}
-.hcard a{text-decoration:none;color:var(--fg);display:grid;gap:.15em}
-.hcard a b{font-size:var(--fs-l);color:var(--accent)}
-.hcard a span{color:var(--muted);font-size:var(--fs-s)}
-.hcard a span:empty{display:none}
+.hcard{background:var(--tint);border-radius:12px;padding:1em 1.1em;display:grid;gap:.9em;grid-template-columns:1fr auto;align-items:center}
+.hnow{display:grid;gap:.25em;min-width:0}
+.hnow small{color:var(--muted);font-weight:700}
+.hnow .hwhere{font-size:var(--fs-l)}
+.hnow .hsum{color:var(--muted);font-size:var(--fs-s)}
+.hnow .hbar{display:block;height:5px;background:var(--bg);border-radius:3px;overflow:hidden;margin-top:.2em}
+.hnow .hbar b{display:block;height:100%;background:var(--accent);width:0;transition:width .2s}
+.hgo{display:grid;gap:.05em;justify-items:start;text-decoration:none;background:var(--accent);color:var(--on);border-radius:10px;padding:.7em 1.1em;min-height:2.6em}
+.hgo small{color:var(--on);opacity:.9}
+.hgo b{font-size:var(--fs-m)}
+html.phone .hcard{grid-template-columns:1fr}
+html.phone .hgo{justify-items:stretch;text-align:left}
 .hgrp{display:grid;gap:.5em}
 .hgrp h2{font-size:var(--fs-s);color:var(--muted);font-weight:700}
 .hch{border:1px solid var(--line);border-radius:10px;background:var(--bg)}
@@ -1404,7 +1410,8 @@ html.phone .chapter.home{padding-bottom:1em}
   function chLabel(ch){ var m = /^(\d+)\.\s*(.*)$/.exec(ch.dataset.ch); return m ? [m[1] + '장', m[2]] : ['', ch.dataset.ch]; }
   function buildHome(){
     if (!homeEl) return;
-    var h = '<section class="hcard" id="hnext"><small></small><a class="jump" href="#"><b></b><span></span></a></section>';
+    var h = '<section class="hcard" id="hnext"><div class="hnow"><small>진행 상황</small><b class="hwhere"></b><span class="hsum"></span><i class="hbar"><b></b></i></div>' +
+            '<a class="hgo" href="#"><small></small><b></b></a></section>';
     var steps = '', refs = '';
     $$('.chapter').forEach(function(ch){
       if (ch.id === 'home') return;
@@ -1438,20 +1445,25 @@ html.phone .chapter.home{padding-bottom:1em}
   }
   function updateHome(){
     if (!homeEl || !homeEl.firstChild) return;
-    var st = lastStep(), label = '이어서 하기';
-    if (!st) { st = $('#c1 .step') || $('.step'); label = '시작하기'; }
-    else if (st.classList.contains('done')) { var nx = nextStep(st); if (nx) { st = nx; label = '다음 단계'; } else label = '마지막 단계'; }
-    var card = $('#hnext'), a = $('a', card);
+    // 진행 상황: 마지막으로 손댄 단계가 끝났으면 「~까지 마침」, 하는 중이면 「~ 하는 중」, 아무것도 없으면 「아직 시작 전」
+    var st = lastStep(), go = null, where = '아직 시작 전', btn = '시작하기';
     if (st) {
-      var lab = chLabel(st.closest('.chapter')), c = stepCount(st.id);
-      $('small', card).textContent = label;
-      a.setAttribute('href', '#' + st.id);
-      $('b', a).textContent = (lab[0] ? lab[0] + ' · ' : '') + st.dataset.title;
-      $('span', a).textContent = c[1] ? '필수사항 ' + c[0] + '/' + c[1] : '';
-      $$('.hsteps a').forEach(function(x){ x.classList.toggle('cur', x.dataset.step === st.id); });
-      var d = document.getElementById('h-' + st.closest('.chapter').id);
+      var lab0 = chLabel(st.closest('.chapter')), c0 = stepCount(st.id);
+      if (st.classList.contains('done')) { where = lab0[0] + ' ' + st.dataset.title + '까지 마침'; go = nextStep(st); btn = go ? '이어서 하기' : '마지막 단계'; if (!go) go = st; }
+      else { where = lab0[0] + ' ' + st.dataset.title + ' 하는 중' + (c0[1] ? ' · 필수사항 ' + c0[0] + '/' + c0[1] : ''); go = st; btn = '이어서 하기'; }
+    } else go = $('#c1 .step') || $('.step');
+    var card = $('#hnext'), a = $('.hgo', card);
+    $('.hwhere', card).textContent = where;
+    if (go) {
+      var lab = chLabel(go.closest('.chapter'));
+      a.setAttribute('href', '#' + go.id);
+      $('small', a).textContent = btn;
+      $('b', a).textContent = (lab[0] ? lab[0] + ' · ' : '') + go.dataset.title;
+      $$('.hsteps a').forEach(function(x){ x.classList.toggle('cur', x.dataset.step === go.id); });
+      var d = document.getElementById('h-' + go.closest('.chapter').id);
       if (d && !d.dataset.touched) d.open = true;
     }
+    var tAll = 0, tOn = 0;
     $$('.hch').forEach(function(d){
       var links = $$('.hsteps a', d), n = 0, all = 0;
       links.forEach(function(x){
@@ -1461,7 +1473,10 @@ html.phone .chapter.home{padding-bottom:1em}
       });
       $('.hc', d).textContent = all ? n + '/' + all + ' 단계' : '';
       $('.hbar b', d).style.width = (all ? 100 * n / all : 0) + '%';
+      tAll += all; tOn += n;
     });
+    $('#hnext .hsum').textContent = '마친 단계 ' + tOn + ' / ' + tAll;
+    $('#hnext .hnow .hbar b').style.width = (tAll ? 100 * tOn / tAll : 0) + '%';
     var c9 = $('.hrefs a[href="#c9"] .hc');
     if (c9) { var cl = $$('#c9 .cli input'), on = cl.filter(function(x){ return x.checked; }).length; c9.textContent = cl.length ? on + '/' + cl.length : ''; }
   }
