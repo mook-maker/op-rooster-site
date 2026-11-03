@@ -433,6 +433,12 @@ html.phone .hgo{justify-items:stretch;text-align:left}
 .hrefs a .hc{margin-left:auto}
 html.phone .chapter.home{padding-bottom:1em}
 
+/* 1안(2026-11-04): 아래 탭은 홈·매뉴얼·체크리스트·연락처·설정. 요약·세부·부록은 장 위 가로 단추 */
+.segbar{display:none}
+html.phone .segbar{display:flex;position:sticky;top:var(--toph,3.4em);z-index:5;background:var(--bg);padding:.5em 0 .55em;margin:0 0 -.3em;border-bottom:1px solid var(--line)}
+html.phone .segbar button{min-height:2.3em;font-size:var(--fs-s);font-weight:700}
+html.phone .tabbar button span{white-space:nowrap}
+
 </style>
 <header class="top">
   <div class="top-in">
@@ -448,11 +454,11 @@ html.phone .chapter.home{padding-bottom:1em}
   <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
   <nav class="toc" id="toc" hidden aria-label="차례"><ul><li class="tch"><a href="#home">홈</a><ul></ul></li><li class="tch"><a href="#c0"><b>0장</b> 읽는 법</a><ul><li class="lv0"><a href="#c0-sec1" data-for="c0-sec1"><span class="lbl">이 매뉴얼은</span></a></li><li class="lv0"><a href="#c0-sec2" data-for="c0-sec2"><span class="lbl">어떻게 되어 있나</span></a></li><li class="lv0"><a href="#c0-sec3" data-for="c0-sec3"><span class="lbl">읽을 때 규칙</span></a></li><li class="lv0"><a href="#c0-sec4" data-for="c0-sec4"><span class="lbl">근거 자료</span></a></li></ul></li><li class="tch"><a href="#c용어집">용어집</a><ul><li class="lv0"><a href="#c용어집-list" data-for="c용어집-list"><span class="lbl">용어집</span></a></li></ul></li><li class="tch"><a href="#c1"><b>1장</b> 이상 발견 ~ 가축방역관 도착</a><ul><li class="lv0"><a href="#c1-sum" data-for="c1-sum"><span class="lbl">요약 행동요령</span></a></li><li class="lv0"><a href="#c1-detail" data-for="c1-detail"><span class="lbl">세부 행동요령</span></a></li><li class="lv1"><a href="#c1-step1" data-for="c1-step1"><span class="lbl">1. 이상 발견</span></a></li><li class="lv1"><a href="#c1-step2" data-for="c1-step2"><span class="lbl">2. 신고 전화</span></a></li><li class="lv1"><a href="#c1-step3" data-for="c1-step3"><span class="lbl">3. 농장 폐쇄</span></a></li><li class="lv1"><a href="#c1-step4" data-for="c1-step4"><span class="lbl">4. 가축방역관 도착 전 대기</span></a></li><li class="lv1"><a href="#c1-step5" data-for="c1-step5"><span class="lbl">5. 가축방역관 도착</span></a></li><li class="lv0"><a href="#c1-app1" data-for="c1-app1"><span class="lbl">관련 서식</span></a></li></ul></li><li class="tch"><a href="#c2"><b>2장</b> 현장검사 ~ 검사 결과</a><ul><li class="lv0"><a href="#c2-sum" data-for="c2-sum"><span class="lbl">요약 행동요령</span></a></li><li class="lv0"><a href="#c2-detail" data-for="c2-detail"><span class="lbl">세부 행동요령</span></a></li><li class="lv1"><a href="#c2-step1" data-for="c2-step1"><span class="lbl">1. 임상검사·시료채취</span></a></li><li class="lv1"><a href="#c2-step2" data-for="c2-step2"><span class="lbl">2. 농장 통제</span></a></li><li class="lv1"><a href="#c2-step3" data-for="c2-step3"><span class="lbl">3. 역학조사 면담</span></a></li><li class="lv1"><a href="#c2-step4" data-for="c2-step4"><span class="lbl">4. 정밀검사 결과 대기</span></a></li><li class="lv1"><a href="#c2-step5" data-for="c2-step5"><span class="lbl">5. 양성 통보</span></a></li><li class="lv1"><a href="#c2-step6" data-for="c2-step6"><span class="lbl">6. 음성 통보</span></a></li><li class="lv0"><a href="#c2-app1" data-for="c2-app1"><span class="lbl">관련 서식</span></a></li></ul></li><li class="tch"><a href="#c3"><b>3장</b> 살처분 명령 ~ 살처분작업·1단계 소독</a><ul><li class="lv0"><a href="#c3-sum" data-for="c3-sum"><span class="lbl">요약 행동요령</span></a></li><li class="lv0"><a href="#c3-detail" data-for="c3-detail"><span class="lbl">세부 행동요령</span></a></li><li class="lv1"><a href="#c3-step1" data-for="c3-step1"><span class="lbl">1. 살처분 명령서 수령</span></a></li><li class="lv1"><a href="#c3-step2" data-for="c3-step2"><span class="lbl">2. 두수·오염물건 확인서 작성</span></a></li><li class="lv1"><a href="#c3-step3" data-for="c3-step3"><span class="lbl">3. 살처분 작업</span></a></li><li class="lv1"><a href="#c3-step4" data-for="c3-step4"><span class="lbl">4. 사체·알·오염물 처리</span></a></li><li class="lv1"><a href="#c3-step5" data-for="c3-step5"><span class="lbl">5. 살처분 직후 1단계 소독</span></a></li><li class="lv1"><a href="#c3-step6" data-for="c3-step6"><span class="lbl">6. 살처분 후 사람 관리</span></a></li><li class="lv0"><a href="#c3-app1" data-for="c3-app1"><span class="lbl">관련 서식</span></a></li></ul></li><li class="tch"><a href="#c함께보기">함께 보기 | 이동제한과 이동승인</a><ul><li class="lv0"><a href="#c함께보기-sec1" data-for="c함께보기-sec1"><span class="lbl">방역지역 별 행동요령(요약 행동요령)</span></a></li><li class="lv0"><a href="#c함께보기-sec2" data-for="c함께보기-sec2"><span class="lbl">방역대상 별 행동요령(상세 행동요령)</span></a></li><li class="lv0"><a href="#c함께보기-sec3" data-for="c함께보기-sec3"><span class="lbl">이동제한 해제 순서와 조건</span></a></li><li class="lv0"><a href="#c함께보기-sec4" data-for="c함께보기-sec4"><span class="lbl">그 밖에 제한 사항</span></a></li><li class="lv0"><a href="#c함께보기-sec5" data-for="c함께보기-sec5"><span class="lbl">이동제한 위반 시 제재·처벌</span></a></li><li class="lv0"><a href="#c함께보기-app1" data-for="c함께보기-app1"><span class="lbl">관련 서식</span></a></li></ul></li><li class="tch"><a href="#c4"><b>4장</b> 청소·소독 ~ 입식시험 승인</a><ul><li class="lv0"><a href="#c4-sum" data-for="c4-sum"><span class="lbl">요약 행동요령</span></a></li><li class="lv0"><a href="#c4-detail" data-for="c4-detail"><span class="lbl">세부 행동요령</span></a></li><li class="lv1"><a href="#c4-step1" data-for="c4-step1"><span class="lbl">1. 2단계 청소·세척·소독</span></a></li><li class="lv1"><a href="#c4-step2" data-for="c4-step2"><span class="lbl">2. 3·4단계 소독과 주 2회 소독</span></a></li><li class="lv1"><a href="#c4-step3" data-for="c4-step3"><span class="lbl">3. 분뇨 보관·처리·반출</span></a></li><li class="lv1"><a href="#c4-step4" data-for="c4-step4"><span class="lbl">4. 축사 밖 소독</span></a></li><li class="lv1"><a href="#c4-step5" data-for="c4-step5"><span class="lbl">5. 입식시험 전 점검 신청</span></a></li><li class="lv0"><a href="#c4-app1" data-for="c4-app1"><span class="lbl">관련 서식</span></a></li></ul></li><li class="tch"><a href="#c5"><b>5장</b> 입식시험 ~ 재입식</a><ul><li class="lv0"><a href="#c5-sum" data-for="c5-sum"><span class="lbl">요약 행동요령</span></a></li><li class="lv0"><a href="#c5-detail" data-for="c5-detail"><span class="lbl">세부 행동요령</span></a></li><li class="lv1"><a href="#c5-step1" data-for="c5-step1"><span class="lbl">1. 입식시험 승인 통보</span></a></li><li class="lv1"><a href="#c5-step2" data-for="c5-step2"><span class="lbl">2. 발생농장 환경검사</span></a></li><li class="lv1"><a href="#c5-step3" data-for="c5-step3"><span class="lbl">3. 시험가축 공급처 확보·검사</span></a></li><li class="lv1"><a href="#c5-step4" data-for="c5-step4"><span class="lbl">4. 시험가축 이동승인·반입</span></a></li><li class="lv1"><a href="#c5-step5" data-for="c5-step5"><span class="lbl">5. 입식시험 14일</span></a></li><li class="lv1"><a href="#c5-step6" data-for="c5-step6"><span class="lbl">6. 입식시험 종료 검사</span></a></li><li class="lv1"><a href="#c5-step7" data-for="c5-step7"><span class="lbl">7. 재입식 승인 요청</span></a></li><li class="lv1"><a href="#c5-step8" data-for="c5-step8"><span class="lbl">8. 재입식 승인·방역교육</span></a></li><li class="lv1"><a href="#c5-step9" data-for="c5-step9"><span class="lbl">9. 본 입식 가축 공급처 검사</span></a></li><li class="lv1"><a href="#c5-step10" data-for="c5-step10"><span class="lbl">10. 본 입식 가축 이동승인·반입</span></a></li><li class="lv1"><a href="#c5-step11" data-for="c5-step11"><span class="lbl">11. 재사육 시작</span></a></li><li class="lv0"><a href="#c5-app1" data-for="c5-app1"><span class="lbl">관련 서식</span></a></li></ul></li><li class="tch"><a href="#c6"><b>6장</b> 보상금과 지원제도 그리고 관련처벌</a><ul><li class="lv0"><a href="#c6-pre1" data-for="c6-pre1"><span class="lbl">용어 정리</span></a></li><li class="lv0"><a href="#c6-pre2" data-for="c6-pre2"><span class="lbl">보상금 산정 체계</span></a></li><li class="lv0"><a href="#c6-sum" data-for="c6-sum"><span class="lbl">요약 행동요령</span></a></li><li class="lv0"><a href="#c6-detail" data-for="c6-detail"><span class="lbl">세부 행동요령</span></a></li><li class="lv1"><a href="#c6-step1" data-for="c6-step1"><span class="lbl">1. 확인서 작성</span></a></li><li class="lv1"><a href="#c6-step2" data-for="c6-step2"><span class="lbl">2. 지원제도 먼저 신청</span></a></li><li class="lv1"><a href="#c6-step3" data-for="c6-step3"><span class="lbl">3. 증빙 모아 제출</span></a></li><li class="lv1"><a href="#c6-step4" data-for="c6-step4"><span class="lbl">4. 산정안 받아 대조</span></a></li><li class="lv1"><a href="#c6-step5" data-for="c6-step5"><span class="lbl">5. 협의</span></a></li><li class="lv1"><a href="#c6-step6" data-for="c6-step6"><span class="lbl">6. 지급</span></a></li><li class="lv1"><a href="#c6-step7" data-for="c6-step7"><span class="lbl">7. 과태료 통지를 받았을 때</span></a></li><li class="lv0"><a href="#c6-app1" data-for="c6-app1"><span class="lbl">관련 서식</span></a></li></ul></li><li class="tch"><a href="#c7"><b>7장</b> 관련법령</a><ul><li class="lv0"><a href="#c7-sec1" data-for="c7-sec1"><span class="lbl">1. 관계 법령·지침</span></a></li><li class="lv0"><a href="#c7-sec2" data-for="c7-sec2"><span class="lbl">2. 주요 규정 색인</span></a></li><li class="lv0"><a href="#c7-sec3" data-for="c7-sec3"><span class="lbl">3. 이동제한 관련 기준</span></a></li><li class="lv0"><a href="#c7-sec4" data-for="c7-sec4"><span class="lbl">4. 보상금 관련 기준</span></a></li><li class="lv0"><a href="#c7-sec5" data-for="c7-sec5"><span class="lbl">5. 공식 서식·자료 위치</span></a></li><li class="lv0"><a href="#c7-sec6" data-for="c7-sec6"><span class="lbl">6. SOP·원문 이용 방법</span></a></li></ul></li><li class="tch"><a href="#c8"><b>8장</b> 주요 기관 연락처</a><ul><li class="lv0"><a href="#c8-sec1" data-for="c8-sec1"><span class="lbl">기관별 역할과 대표 연락처</span></a></li><li class="lv0"><a href="#c8-sec2" data-for="c8-sec2"><span class="lbl">지역별 연락처 기입란</span></a></li></ul></li><li class="tch"><a href="#c9"><b>9장</b> 현장 체크리스트</a><ul><li class="lv0"><a href="#c9-sec1" data-for="c9-sec1"><span class="lbl">1장 이상 발견~가축방역관 도착</span></a></li><li class="lv0"><a href="#c9-sec2" data-for="c9-sec2"><span class="lbl">2장 현장검사~검사 결과</span></a></li><li class="lv0"><a href="#c9-sec3" data-for="c9-sec3"><span class="lbl">3장 살처분~1단계 소독</span></a></li><li class="lv0"><a href="#c9-sec4" data-for="c9-sec4"><span class="lbl">이동제한</span></a></li><li class="lv0"><a href="#c9-sec5" data-for="c9-sec5"><span class="lbl">4장 청소·소독~입식시험 전 점검</span></a></li><li class="lv0"><a href="#c9-sec6" data-for="c9-sec6"><span class="lbl">5장 입식시험~재입식</span></a></li><li class="lv0"><a href="#c9-sec7" data-for="c9-sec7"><span class="lbl">6장 보상금·지원(살처분 뒤 나란히)</span></a></li></ul></li><li class="tch"><a href="#c10"><b>10장</b> 자주 묻는 질문</a><ul><li class="lv0"><a href="#c10-sec1" data-for="c10-sec1"><span class="lbl">발견·신고·검사</span></a></li><li class="lv0"><a href="#c10-sec2" data-for="c10-sec2"><span class="lbl">확진·살처분·사람 안전</span></a></li><li class="lv0"><a href="#c10-sec3" data-for="c10-sec3"><span class="lbl">이동제한·청소·재입식</span></a></li><li class="lv0"><a href="#c10-sec4" data-for="c10-sec4"><span class="lbl">보상금·지원</span></a></li></ul></li></ul></nav>
 </header>
-<nav class="tabbar" id="tabbar" aria-label="부분">
+<nav class="tabbar" id="tabbar" aria-label="이동">
   <button type="button" data-tab="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg><span>홈</span></button>
-  <button type="button" data-tab="sum"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>요약</span></button>
-  <button type="button" data-tab="detail"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="6" cy="18" r="2"/><path d="M11 6h9M11 12h9M11 18h9"/></svg><span>세부</span></button>
-  <button type="button" data-tab="app"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 12h6M9 16h6"/></svg><span>부록</span></button>
+  <button type="button" data-tab="manual"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4zM20 4h-7a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h7z"/></svg><span>매뉴얼</span></button>
+  <button type="button" data-tab="check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6l2 2 3-3M4 12l2 2 3-3M4 18l2 2 3-3M12 7h8M12 13h8M12 19h8"/></svg><span>체크리스트</span></button>
+  <button type="button" data-tab="contact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><span>연락처</span></button>
   <button type="button" data-tab="set"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span>설정</span></button>
 </nav>
 <section class="setpane" id="setPane" hidden aria-label="설정">
@@ -1607,8 +1613,13 @@ html.phone .chapter.home{padding-bottom:1em}
     setPane.hidden = !on; setBtn.setAttribute('aria-expanded', on ? 'true' : 'false'); setBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
     document.documentElement.classList.toggle('seton', on);
     if (on) { setToc(false); topH(); setPane.scrollTop = 0; $$('#tabbar button').forEach(function(b){ b.setAttribute('aria-current', b.dataset.tab === 'set' ? 'true' : 'false'); }); }
-    else { var c = cur[curCh()] || {}; $$('#tabbar button').forEach(function(b){ b.setAttribute('aria-current', b.dataset.tab === c.tab ? 'true' : 'false'); }); }
+    else markTabs(document.getElementById(curCh()));
   }
+  var TABCH = { start: 'home', check: 'c9', contact: 'c8' };
+  function tabFor(ch){ var id = ch ? ch.id : ''; for (var k in TABCH) if (TABCH[k] === id) return k; return 'manual'; }
+  function markTabs(ch){ var t = tabFor(ch); $$('#tabbar button').forEach(function(b){ b.setAttribute('aria-current', b.dataset.tab === t ? 'true' : 'false'); }); }
+  var lastMan = null;   // 「매뉴얼」 탭이 여는 장: 홈·8장·9장이 아닌, 마지막으로 보던 장
+  try { lastMan = localStorage.getItem(KEY + '-man'); } catch (e) {}
   setBtn.addEventListener('click', function(){ setOpen(setPane.hidden); });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !setPane.hidden) setOpen(false); });
   applySet();
@@ -1621,6 +1632,7 @@ html.phone .chapter.home{padding-bottom:1em}
   function curCh(){ return hereId; }
   function setHere(ch){   // 지금 보는 장 (스마트폰·컴퓨터 보기 모두 한 번에 한 장)
     hereId = ch.id; try { localStorage.setItem(KEY + '-ch', hereId); } catch (e) {}
+    if (tabFor(ch) === 'manual') { lastMan = ch.id; try { localStorage.setItem(KEY + '-man', lastMan); } catch (e) {} }
     chapters.forEach(function(x){ x.classList.toggle('here', x === ch); });
     $$('.toc .tch').forEach(function(t){ var a = t.querySelector('a'); t.classList.toggle('here', a && a.getAttribute('href') === '#' + ch.id); });
   }
@@ -1696,11 +1708,9 @@ html.phone .chapter.home{padding-bottom:1em}
     $$('.part', ch).forEach(function(p){ p.classList.toggle('on', tabOf(p.id) === c.tab); });
     $$('.step', ch).forEach(function(st){ var on = st.id === c.step; st.classList.toggle('on', on); if (on) st.open = true; });
     $$('.pg', ch).forEach(function(pg){ pg.setAttribute('aria-current', pg.dataset.step === c.step ? 'true' : 'false'); });
-    var isHome = ch.id === 'home';
-    $$('#tabbar button').forEach(function(b){ b.setAttribute('aria-current', (isHome ? b.dataset.tab === 'start' : b.dataset.tab === c.tab) ? 'true' : 'false'); });
+    markTabs(ch);
+    $$('.segbar button', ch).forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.tab === c.tab ? 'true' : 'false'); });
     document.documentElement.classList.toggle('nobar', ch.classList.contains('list'));
-    var nb = ch.classList.contains('list');   // 탭 자리는 그대로 두고, 쓸 수 없는 탭만 흐리게
-    $$('#tabbar button').forEach(function(b){ if (b.dataset.tab !== 'set' && b.dataset.tab !== 'start') b.disabled = nb; });
     document.documentElement.style.setProperty('--dx', dir ? (dir > 0 ? '24px' : '-24px') : '0px');
     crumb(); refresh();
   }
@@ -1712,7 +1722,7 @@ html.phone .chapter.home{padding-bottom:1em}
     root.classList.toggle('multi', multi);
     $('#phGroup').hidden = mq.matches;
     $('#phBtn').setAttribute('aria-pressed', preview ? 'true' : 'false');
-    if (phone) { setToc(false); var target = document.getElementById(hereId) || chapters[0]; chapters.forEach(function(ch){ show(ch); }); show(target); }
+    if (phone) { setToc(false); var target = document.getElementById(hereId) || chapters[0], keep = lastMan; chapters.forEach(function(ch){ show(ch); }); lastMan = keep; show(target); }
     else setHere(document.getElementById(hereId) || chapters[0]);
     crumb();
   }
@@ -1720,8 +1730,10 @@ html.phone .chapter.home{padding-bottom:1em}
     b.addEventListener('click', function(){
       if (b.dataset.tab === 'set') { setOpen(setPane.hidden); return; }
       if (!setPane.hidden) setOpen(false);
-      if (b.dataset.tab === 'start') { go('home'); window.scrollTo(0, 0); return; }
-      show(curChEl(), b.dataset.tab); window.scrollTo(0, 0);
+      var t = b.dataset.tab, id = t === 'manual' ? ((lastMan && document.getElementById(lastMan)) ? lastMan : 'c1') : TABCH[t];
+      if (t === 'manual') { var el = document.getElementById(id); if (el !== curChEl()) show(el); }   // 보던 부분(요약·세부…) 그대로
+      else if (id && tabFor(curChEl()) !== t) go(id);
+      window.scrollTo(0, 0);
     });
   });
   function curChEl(){ return document.getElementById(curCh()) || $('.chapter'); }
@@ -1756,6 +1768,18 @@ html.phone .chapter.home{padding-bottom:1em}
   });
 
   $('#homeBtn').addEventListener('click', function(){ setToc(false); go('home'); });
+  var SEGL = { home: '개요', sum: '요약', detail: '세부', app: '부록' };
+  chapters.forEach(function(ch){
+    if (ch.classList.contains('list')) return;
+    var tabs = [];
+    if (ch.dataset.home) tabs.push('home');
+    ['sum', 'detail', 'app'].forEach(function(t){ if ($$('.part', ch).some(function(p){ return tabOf(p.id) === t; })) tabs.push(t); });
+    if (tabs.length < 2) return;
+    var bar = document.createElement('div'); bar.className = 'segbar seg'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', '부분');
+    bar.innerHTML = tabs.map(function(t){ return '<button type="button" data-tab="' + t + '">' + SEGL[t] + '</button>'; }).join('');
+    $$('button', bar).forEach(function(b){ b.addEventListener('click', function(){ show(ch, b.dataset.tab); window.scrollTo(0, 0); }); });
+    ch.insertBefore(bar, ch.firstChild);
+  });
   buildHome();
   $$('.hch').forEach(function(d){ d.addEventListener('toggle', function(){ d.dataset.touched = '1'; }); });
   setPhone();
