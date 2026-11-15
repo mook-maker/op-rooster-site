@@ -2028,7 +2028,7 @@ html.phone .planList{display:block}
     document.documentElement.style.setProperty('--dx', dir ? (dir > 0 ? '24px' : '-24px') : '0px');
     crumb(); refresh(); bars();
   }
-  function bars(){   // 아래 고정 막대 높이: 탭 + (장이면) 요약·세부·부록 단추. 본문 아래 여백과 「다음 단계」 줄이 이 값을 쓴다
+  function bars(){   // 아래 고정 막대 높이: 탭 + (장이면) 요약·세부·서식 단추. 본문 아래 여백과 「다음 단계」 줄이 이 값을 쓴다
     var r = document.documentElement, tb = $('#tabbar'), here = document.getElementById(hereId), sb = here && $('.segbar', here);
     r.style.setProperty('--tabh', (phone && tb ? tb.offsetHeight : 0) + 'px');
     r.style.setProperty('--segh', (phone && sb ? sb.offsetHeight : 0) + 'px');
@@ -2146,7 +2146,7 @@ html.phone .planList{display:block}
     });
     renderCtc();
   }
-  var SEGL = { home: '개요', sum: '요약', detail: '세부', app: '부록' };
+  var SEGL = { home: '개요', sum: '요약', detail: '세부', app: '서식' };   // 2026-11-16 사용자: 「부록」→「서식」
   chapters.forEach(function(ch){
     if (ch.classList.contains('list')) return;
     var tabs = [];
